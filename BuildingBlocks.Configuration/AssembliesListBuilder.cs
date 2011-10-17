@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Reflection;
 using CuttingEdge.Conditions;
 
-namespace BuildingBlocks.Common
+namespace BuildingBlocks.Configuration
 {
     public class AssembliesListBuilder
     {

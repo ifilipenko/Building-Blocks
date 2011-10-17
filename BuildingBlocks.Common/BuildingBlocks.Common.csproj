@@ -52,7 +52,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssembliesListBuilder.cs" />
     <Compile Include="Automapper\AutomapperExtensions.cs" />
     <Compile Include="Automapper\EnumMappingOptions.cs" />
     <Compile Include="Automapper\IAutomapperConfiguration.cs" />
