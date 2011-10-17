@@ -4,12 +4,7 @@
 /Building-Blocks.suo
 /Building-Blocks.6.0.ReSharper.user
 /packages
-/BuildingBlocks.Common/obj
-/BuildingBlocks.Common/bin
-/BuildingBlocks.Excel/obj
-/BuildingBlocks.Excel/bin
-/BuildingBlocks.Reflection/bin
-/BuildingBlocks.Reflection/obj
 /*/obj
 /*/bin
+/*/*.user
 *.cache
