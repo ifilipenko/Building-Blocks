@@ -10,3 +10,4 @@
 /BuildingBlocks.Excel/bin
 /BuildingBlocks.Reflection/bin
 /BuildingBlocks.Reflection/obj
+*.cache
