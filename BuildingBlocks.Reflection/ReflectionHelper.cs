@@ -4,11 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using BuildingBlocks.Common;
 using BuildingBlocks.Common.Sugar;
 using BuildingBlocks.Common.Utils;
 using CuttingEdge.Conditions;
 
-namespace BuildingBlocks.Common.Reflection
+namespace BuildingBlocks.Reflection
 {
     public static class ReflectionHelper
     {
