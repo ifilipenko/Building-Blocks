@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Common", "BuildingBlocks.Common\BuildingBlocks.Common.csproj", "{C047AD88-954E-48F9-9D38-7415548F152D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.IO", "BuildingBlocks.Excel\BuildingBlocks.IO.csproj", "{4D7FC660-A740-46F1-A115-0619BD0A67E6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Reflection", "BuildingBlocks.Reflection\BuildingBlocks.Reflection.csproj", "{7C3A0F4E-9DF5-43EA-B2A6-AB94C7B1E65C}"
 EndProject
 Global
@@ -17,10 +15,6 @@ Global
 		{C047AD88-954E-48F9-9D38-7415548F152D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C047AD88-954E-48F9-9D38-7415548F152D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C047AD88-954E-48F9-9D38-7415548F152D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4D7FC660-A740-46F1-A115-0619BD0A67E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4D7FC660-A740-46F1-A115-0619BD0A67E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4D7FC660-A740-46F1-A115-0619BD0A67E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4D7FC660-A740-46F1-A115-0619BD0A67E6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7C3A0F4E-9DF5-43EA-B2A6-AB94C7B1E65C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7C3A0F4E-9DF5-43EA-B2A6-AB94C7B1E65C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C3A0F4E-9DF5-43EA-B2A6-AB94C7B1E65C}.Release|Any CPU.ActiveCfg = Release|Any CPU
