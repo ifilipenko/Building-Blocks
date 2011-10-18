@@ -31,6 +31,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\packages\Castle.Core.2.5.2\lib\NET35\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="CuttingEdge.Conditions">
+      <HintPath>..\packages\CuttingEdge.Conditions.1.2.0.0\lib\NET35\CuttingEdge.Conditions.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentNHibernate">
+      <HintPath>..\packages\FluentNHibernate.1.2.0.712\lib\FluentNHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections">
+      <HintPath>..\packages\Iesi.Collections.3.1.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>..\packages\NHibernate.3.1.0.4000\lib\Net35\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate.ByteCode.Castle">
+      <HintPath>..\packages\NHibernate.Castle.3.1.0.4000\lib\Net35\NHibernate.ByteCode.Castle.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,6 +59,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlServerConfigurationParameters.cs" />
+    <Compile Include="SqlServerPersistenceConfigurationItem.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BuildingBlocks.Configuration\BuildingBlocks.Configuration.csproj">
+      <Project>{24957186-01D9-4986-9837-D841B9F3BBBA}</Project>
+      <Name>BuildingBlocks.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BuildingBlocks.Persistence\BuildingBlocks.Persistence.csproj">
+      <Project>{F7488AEA-D1A4-45AC-9216-29A97035553C}</Project>
+      <Name>BuildingBlocks.Persistence</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
