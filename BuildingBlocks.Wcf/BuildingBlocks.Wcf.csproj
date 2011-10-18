@@ -56,8 +56,11 @@
     <Compile Include="Helpers\ServiceActionUri.cs" />
     <Compile Include="IRouterService.cs" />
     <Compile Include="LoggingErrorHandler.cs" />
+    <Compile Include="Persistence\NHibernateContextAttribute.cs" />
+    <Compile Include="Persistence\NHibernateContextInitializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RouterService.cs" />
+    <Compile Include="Persistence\UnitOfWorkContext.cs" />
     <Compile Include="WcfProxyFactory.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +71,10 @@
     <ProjectReference Include="..\BuildingBlocks.Configuration\BuildingBlocks.Configuration.csproj">
       <Project>{24957186-01D9-4986-9837-D841B9F3BBBA}</Project>
       <Name>BuildingBlocks.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BuildingBlocks.Persistence\BuildingBlocks.Persistence.csproj">
+      <Project>{F7488AEA-D1A4-45AC-9216-29A97035553C}</Project>
+      <Name>BuildingBlocks.Persistence</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
