@@ -27,7 +27,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Web.TestHelp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Persistence.TestHelpers", "BuildingBlocks.Persistence.TestHelpers\BuildingBlocks.Persistence.TestHelpers.csproj", "{B1C8E68A-03C6-47D1-B830-0CF8AC331ED0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Testing", "BuildingBlocks.Testing\BuildingBlocks.Testing.csproj", "{E9B4583E-05A5-4CDA-8D06-A15128644D9A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{382F8E5D-0EEB-4416-87C5-B5A91D2DD0D3}"
+	ProjectSection(SolutionItems) = preProject
+		Building-Blocks.vsmdi = Building-Blocks.vsmdi
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Building-Blocks.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -85,6 +97,10 @@ Global
 		{B1C8E68A-03C6-47D1-B830-0CF8AC331ED0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1C8E68A-03C6-47D1-B830-0CF8AC331ED0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1C8E68A-03C6-47D1-B830-0CF8AC331ED0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9B4583E-05A5-4CDA-8D06-A15128644D9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9B4583E-05A5-4CDA-8D06-A15128644D9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9B4583E-05A5-4CDA-8D06-A15128644D9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9B4583E-05A5-4CDA-8D06-A15128644D9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
