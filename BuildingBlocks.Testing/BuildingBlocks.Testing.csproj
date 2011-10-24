@@ -47,6 +47,9 @@
     <Reference Include="CuttingEdge.Conditions">
       <HintPath>..\packages\CuttingEdge.Conditions.1.2.0.0\lib\NET35\CuttingEdge.Conditions.dll</HintPath>
     </Reference>
+    <Reference Include="FluentAssertions">
+      <HintPath>..\packages\FluentAssertions.1.5.0.0\Lib\.NetFramework 4.0\FluentAssertions.dll</HintPath>
+    </Reference>
     <Reference Include="FluentNHibernate">
       <HintPath>..\packages\FluentNHibernate.1.2.0.712\lib\FluentNHibernate.dll</HintPath>
     </Reference>
@@ -64,6 +67,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite">
       <HintPath>..\packages\System.Data.SQLite.1.0.76.0\lib\net40\System.Data.SQLite.dll</HintPath>
     </Reference>
@@ -77,10 +81,60 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Persistence\DefaultEntityMapConventionsTests.cs" />
+    <Compile Include="Persistence\EntityMappingTests.cs" />
+    <Compile Include="Persistence\EnumMappingTests.cs" />
+    <Compile Include="Persistence\EnumRepositoryTests.cs" />
+    <Compile Include="Persistence\FetchingStrategyTests\FetchStrategyTests.cs" />
+    <Compile Include="Persistence\FetchingStrategyTests\FetchTestBase.cs" />
+    <Compile Include="Persistence\FetchingStrategyTests\FetchTests.cs" />
+    <Compile Include="Persistence\ListSpecificatoinForQueryOverTests.cs" />
+    <Compile Include="Persistence\Maps\AggregateEntitiesMaps.cs" />
+    <Compile Include="Persistence\Maps\DepartmentMap.cs" />
+    <Compile Include="Persistence\Maps\EmployeeMap.cs" />
+    <Compile Include="Persistence\Maps\ProductMaps.cs" />
+    <Compile Include="Persistence\Maps\ServiceMaps.cs" />
+    <Compile Include="Persistence\Maps\TariffMaps.cs" />
+    <Compile Include="Persistence\Model\Contract.cs" />
+    <Compile Include="Persistence\Model\EmployeeDto.cs" />
+    <Compile Include="Persistence\Model\Product.cs" />
+    <Compile Include="Persistence\Model\ProductCategory.cs" />
+    <Compile Include="Persistence\Model\ProductCategoryEntity.cs" />
+    <Compile Include="Persistence\Model\Service.cs" />
+    <Compile Include="Persistence\Model\Storehouse.cs" />
+    <Compile Include="Persistence\Model\TariffPlan.cs" />
+    <Compile Include="Persistence\Model\TariffPlanVersion.cs" />
+    <Compile Include="Persistence\Model\TwoLevelAggregate.cs" />
+    <Compile Include="Persistence\ScopeWithoutTransactionTests.cs" />
+    <Compile Include="Persistence\TestBase.cs" />
+    <Compile Include="Persistence\TransactionScopeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BuildingBlocks.Common\BuildingBlocks.Common.csproj">
+      <Project>{C047AD88-954E-48F9-9D38-7415548F152D}</Project>
+      <Name>BuildingBlocks.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BuildingBlocks.Configuration\BuildingBlocks.Configuration.csproj">
+      <Project>{24957186-01D9-4986-9837-D841B9F3BBBA}</Project>
+      <Name>BuildingBlocks.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BuildingBlocks.Persistence.SQLite\BuildingBlocks.Persistence.SQLite.csproj">
+      <Project>{EFB76AD6-AAED-418C-A1DC-EA2DA9DBCE30}</Project>
+      <Name>BuildingBlocks.Persistence.SQLite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BuildingBlocks.Persistence\BuildingBlocks.Persistence.csproj">
+      <Project>{F7488AEA-D1A4-45AC-9216-29A97035553C}</Project>
+      <Name>BuildingBlocks.Persistence</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BuildingBlocks.TestHelpers\BuildingBlocks.TestHelpers.csproj">
+      <Project>{020B37C9-8188-4758-9586-CAF230273935}</Project>
+      <Name>BuildingBlocks.TestHelpers</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" />

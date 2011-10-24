@@ -16,7 +16,7 @@ namespace BuildingBlocks.TestHelpers
             string reason,
             params object[] reasonParameters)
         {
-            Execute.Verification.ForCondition(type == objectAssertions.GetType())
+            Execute.Verification.ForCondition(type == objectAssertions.Subject.GetType())
                 .BecauseOf(reason, reasonParameters)
                 .FailWith("Expected type {0}{reason}, but found {1}.",
                           type,
