@@ -24,7 +24,6 @@ namespace :source do
     
     asm.version = get_version
     asm.company_name = 'http://timesmart.ru'
-    asm.product_name = 'Building blocks'
     asm.copyright = 'Copyright 2011 Innokentiy Filipenko. All rights reserved.'
     asm.namespaces = ['System.Security']
     asm.custom_attributes :AllowPartiallyTrustedCallers => nil

@@ -71,6 +71,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+	<Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Configuration\PersistenceConfigurationItem.cs" />
     <Compile Include="Configuration\PersistenceConfigurationParameters.cs" />
     <Compile Include="Configuration\SchemaUpdateMode.cs" />

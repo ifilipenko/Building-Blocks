@@ -56,6 +56,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+	<Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="AssembliesListBuilder.cs" />
     <Compile Include="AssemblyInterfaceImplementationScanner.cs" />
     <Compile Include="AssemblyLoad\FileSystemAssembliesLoader.cs" />

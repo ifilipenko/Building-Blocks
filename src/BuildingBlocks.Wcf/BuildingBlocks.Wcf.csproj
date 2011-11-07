@@ -52,6 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+	<Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="EnsureAspNetCompatibilityServiceHostFactory.cs" />
     <Compile Include="ErrorHandlerBehaviorAttribute.cs" />
     <Compile Include="Helpers\InjectionHelper.cs" />

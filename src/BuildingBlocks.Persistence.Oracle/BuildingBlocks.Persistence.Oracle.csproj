@@ -58,6 +58,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+	<Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="OracleConfigurationParameters.cs" />
     <Compile Include="OraclePersistenceConfigurationItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
