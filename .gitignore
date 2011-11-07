@@ -1,104 +1,118 @@
 
-/_ReSharper.Building-Blocks
-/Building-Blocks.sln.docstates.suo
-/Building-Blocks.suo
-/Building-Blocks.6.0.ReSharper.user
-/*/obj
-/*/bin
-/*/*.user
-*.cache
-/packages/AutoMapper.2.0.0/AutoMapper.2.0.0.nupkg
-/packages/AutoMapper.2.0.0/lib/net40-client/AutoMapper.dll
-/packages/AutoMapper.2.0.0/lib/net40-client/AutoMapper.xml
-/packages/AutoMapper.2.0.0/lib/sl4/AutoMapper.XML
-/packages/AutoMapper.2.0.0/lib/sl4/AutoMapper.dll
-/packages/AutoPocoBeta.1.2.0/AutoPocoBeta.1.2.0.nupkg
-/packages/AutoPocoBeta.1.2.0/lib/AutoPoco.dll
-/packages/Castle.Core.2.5.2/Castle.Core.2.5.2.nupkg
-/packages/Castle.Core.2.5.2/lib/ASL - Apache Software Foundation License.txt
-/packages/Castle.Core.2.5.2/lib/BreakingChanges.txt
-/packages/Castle.Core.2.5.2/lib/Changes.txt
-/packages/Castle.Core.2.5.2/lib/Committers.txt
-/packages/Castle.Core.2.5.2/lib/NET35/Castle.Core.dll
-/packages/Castle.Core.2.5.2/lib/NET35/Castle.Core.xml
-/packages/Castle.Core.2.5.2/lib/NET40ClientProfile/Castle.Core.dll
-/packages/Castle.Core.2.5.2/lib/NET40ClientProfile/Castle.Core.xml
-/packages/Castle.Core.2.5.2/lib/SL3/Castle.Core.dll
-/packages/Castle.Core.2.5.2/lib/SL3/Castle.Core.xml
-/packages/Castle.Core.2.5.2/lib/SL4/Castle.Core.dll
-/packages/Castle.Core.2.5.2/lib/SL4/Castle.Core.xml
-/packages/Castle.Core.2.5.2/lib/releaseNotes.txt
-/packages/Common.Logging.2.0.0/Common.Logging.2.0.0.nupkg
-/packages/Common.Logging.2.0.0/lib/2.0/Common.Logging.dll
-/packages/CuttingEdge.Conditions.1.2.0.0/CuttingEdge.Conditions.1.2.0.0.nupkg
-/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/Code Snippets/ReSharper/CuttingEdge.Conditions Live Templates for ReSharper.xml
-/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/Code Snippets/Visual Studio/Visual Basic/My Code Snippets/ensures.snippet
-/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/Code Snippets/Visual Studio/Visual Basic/My Code Snippets/requires.snippet
-/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/Code Snippets/Visual Studio/Visual C-Sharp/My Code Snippets/ensures.snippet
-/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/Code Snippets/Visual Studio/Visual C-Sharp/My Code Snippets/requires.snippet
-/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/CuttingEdge.Conditions.dll
-/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/CuttingEdge.Conditions.xml
-/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/Documentation/CuttingEdge.Conditions.chm
-/packages/FluentAssertions.1.5.0.0/FluentAssertions.1.5.0.0.nupkg
-/packages/FluentAssertions.1.5.0.0/Lib/.NetFramework 3.5/FluentAssertions.dll
-/packages/FluentAssertions.1.5.0.0/Lib/.NetFramework 3.5/FluentAssertions.xml
-/packages/FluentAssertions.1.5.0.0/Lib/.NetFramework 4.0/FluentAssertions.dll
-/packages/FluentAssertions.1.5.0.0/Lib/.NetFramework 4.0/FluentAssertions.xml
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/FluentAssertions.Silverlight.dll
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/FluentAssertions.Silverlight.xml
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.pdb
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.xml
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/System.Xml.Serialization.dll
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/System.Xml.Serialization.xml
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/de/System.Xml.Serialization.resources.dll
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/es/System.Xml.Serialization.resources.dll
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/fr/System.Xml.Serialization.resources.dll
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/it/System.Xml.Serialization.resources.dll
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/ja/System.Xml.Serialization.resources.dll
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/ko/System.Xml.Serialization.resources.dll
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/ru/System.Xml.Serialization.resources.dll
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/zh-Hans/System.Xml.Serialization.resources.dll
-/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/zh-Hant/System.Xml.Serialization.resources.dll
-/packages/FluentNHibernate.1.2.0.712/FluentNHibernate.1.2.0.712.nupkg
-/packages/FluentNHibernate.1.2.0.712/lib/FluentNHibernate.dll
-/packages/FluentNHibernate.1.2.0.712/lib/FluentNHibernate.pdb
-/packages/Iesi.Collections.3.1.0.4000/Iesi.Collections.3.1.0.4000.nupkg
-/packages/Iesi.Collections.3.1.0.4000/lib/Net35/Iesi.Collections.dll
-/packages/Iesi.Collections.3.1.0.4000/lib/Net35/Iesi.Collections.license.txt
-/packages/Iesi.Collections.3.1.0.4000/lib/Net35/Iesi.Collections.pdb
-/packages/Moq.4.0.10827/License.txt
-/packages/Moq.4.0.10827/Moq.4.0.10827.nupkg
-/packages/Moq.4.0.10827/Moq.chm
-/packages/Moq.4.0.10827/lib/NET35/Moq.dll
-/packages/Moq.4.0.10827/lib/NET35/Moq.pdb
-/packages/Moq.4.0.10827/lib/NET35/Moq.xml
-/packages/Moq.4.0.10827/lib/NET40/Moq.dll
-/packages/Moq.4.0.10827/lib/NET40/Moq.pdb
-/packages/Moq.4.0.10827/lib/NET40/Moq.xml
-/packages/Moq.4.0.10827/lib/Silverlight4/Castle.Core.dll
-/packages/Moq.4.0.10827/lib/Silverlight4/Moq.Silverlight.dll
-/packages/Moq.4.0.10827/lib/Silverlight4/Moq.Silverlight.pdb
-/packages/Moq.4.0.10827/lib/Silverlight4/Moq.Silverlight.xml
-/packages/NHibernate.3.1.0.4000/NHibernate.3.1.0.4000.nupkg
-/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernate.dll
-/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernate.license.txt
-/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernate.readme.html
-/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernate.releasenotes.txt
-/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernateXmlConfigurationTemplates/FireBird.cfg.xml
-/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernateXmlConfigurationTemplates/MSSQL.cfg.xml
-/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernateXmlConfigurationTemplates/MySql.cfg.xml
-/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernateXmlConfigurationTemplates/Oracle.cfg.xml
-/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernateXmlConfigurationTemplates/PostgreSQL.cfg.xml
-/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernateXmlConfigurationTemplates/SQLite.cfg.xml
-/packages/NHibernate.Castle.3.1.0.4000/NHibernate.Castle.3.1.0.4000.nupkg
-/packages/NHibernate.Castle.3.1.0.4000/lib/Net35/NHibernate.ByteCode.Castle.dll
-/packages/NHibernate.Castle.3.1.0.4000/lib/Net35/NHibernate.ByteCode.Castle.xml
-/packages/NHibernate.Logging.1.1.0/NHibernate.Logging.1.1.0.nupkg
-/packages/NHibernate.Logging.1.1.0/content/App.config.transform
-/packages/NHibernate.Logging.1.1.0/lib/3.5/NHibernate.Logging.CommonLogging.dll
-/packages/NHibernate.Logging.1.1.0/lib/3.5/NHibernate.Logging.CommonLogging.xml
-/packages/structuremap.2.6.3/lib/StructureMap.XML
-/packages/structuremap.2.6.3/lib/StructureMap.dll
-/packages/structuremap.2.6.3/lib/StructureMap.pdb
-/packages/structuremap.2.6.3/structuremap.2.6.3.nupkg
+/src/_ReSharper.Building-Blocks
+/src/_ReSharper.*/*/
+/build/
+/build/*
+/build-all/
+/build-all/*
+/dist/
+/dist/*
+/src/Building-Blocks.sln.docstates.suo
+/src/Building-Blocks.suo
+/src/Building-Blocks.6.0.ReSharper.user
+/src/*/obj
+/src/*/obj/*
+/src/*/bin
+/src/*/bin/*
+/src/*/*.user
+/src*.cache
+/src/packages/AutoMapper.2.0.0/AutoMapper.2.0.0.nupkg
+/src/packages/AutoMapper.2.0.0/lib/net40-client/AutoMapper.dll
+/src/packages/AutoMapper.2.0.0/lib/net40-client/AutoMapper.xml
+/src/packages/AutoMapper.2.0.0/lib/sl4/AutoMapper.XML
+/src/packages/AutoMapper.2.0.0/lib/sl4/AutoMapper.dll
+/src/packages/AutoPocoBeta.1.2.0/AutoPocoBeta.1.2.0.nupkg
+/src/packages/AutoPocoBeta.1.2.0/lib/AutoPoco.dll
+/src/packages/Castle.Core.2.5.2/Castle.Core.2.5.2.nupkg
+/src/packages/Castle.Core.2.5.2/lib/ASL - Apache Software Foundation License.txt
+/src/packages/Castle.Core.2.5.2/lib/BreakingChanges.txt
+/src/packages/Castle.Core.2.5.2/lib/Changes.txt
+/src/packages/Castle.Core.2.5.2/lib/Committers.txt
+/src/packages/Castle.Core.2.5.2/lib/NET35/Castle.Core.dll
+/src/packages/Castle.Core.2.5.2/lib/NET35/Castle.Core.xml
+/src/packages/Castle.Core.2.5.2/lib/NET40ClientProfile/Castle.Core.dll
+/src/packages/Castle.Core.2.5.2/lib/NET40ClientProfile/Castle.Core.xml
+/src/packages/Castle.Core.2.5.2/lib/SL3/Castle.Core.dll
+/src/packages/Castle.Core.2.5.2/lib/SL3/Castle.Core.xml
+/src/packages/Castle.Core.2.5.2/lib/SL4/Castle.Core.dll
+/src/packages/Castle.Core.2.5.2/lib/SL4/Castle.Core.xml
+/src/packages/Castle.Core.2.5.2/lib/releaseNotes.txt
+/src/packages/Common.Logging.2.0.0/Common.Logging.2.0.0.nupkg
+/src/packages/Common.Logging.2.0.0/lib/2.0/Common.Logging.dll
+/src/packages/CuttingEdge.Conditions.1.2.0.0/CuttingEdge.Conditions.1.2.0.0.nupkg
+/src/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/Code Snippets/ReSharper/CuttingEdge.Conditions Live Templates for ReSharper.xml
+/src/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/Code Snippets/Visual Studio/Visual Basic/My Code Snippets/ensures.snippet
+/src/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/Code Snippets/Visual Studio/Visual Basic/My Code Snippets/requires.snippet
+/src/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/Code Snippets/Visual Studio/Visual C-Sharp/My Code Snippets/ensures.snippet
+/src/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/Code Snippets/Visual Studio/Visual C-Sharp/My Code Snippets/requires.snippet
+/src/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/CuttingEdge.Conditions.dll
+/src/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/CuttingEdge.Conditions.xml
+/src/packages/CuttingEdge.Conditions.1.2.0.0/lib/NET35/Documentation/CuttingEdge.Conditions.chm
+/src/packages/FluentAssertions.1.5.0.0/FluentAssertions.1.5.0.0.nupkg
+/src/packages/FluentAssertions.1.5.0.0/Lib/.NetFramework 3.5/FluentAssertions.dll
+/src/packages/FluentAssertions.1.5.0.0/Lib/.NetFramework 3.5/FluentAssertions.xml
+/src/packages/FluentAssertions.1.5.0.0/Lib/.NetFramework 4.0/FluentAssertions.dll
+/src/packages/FluentAssertions.1.5.0.0/Lib/.NetFramework 4.0/FluentAssertions.xml
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/FluentAssertions.Silverlight.dll
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/FluentAssertions.Silverlight.xml
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.pdb
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.xml
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/System.Xml.Serialization.dll
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/System.Xml.Serialization.xml
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/de/System.Xml.Serialization.resources.dll
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/es/System.Xml.Serialization.resources.dll
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/fr/System.Xml.Serialization.resources.dll
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/it/System.Xml.Serialization.resources.dll
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/ja/System.Xml.Serialization.resources.dll
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/ko/System.Xml.Serialization.resources.dll
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/ru/System.Xml.Serialization.resources.dll
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/zh-Hans/System.Xml.Serialization.resources.dll
+/src/packages/FluentAssertions.1.5.0.0/Lib/Silverlight 4.0/zh-Hant/System.Xml.Serialization.resources.dll
+/src/packages/FluentNHibernate.1.2.0.712/FluentNHibernate.1.2.0.712.nupkg
+/src/packages/FluentNHibernate.1.2.0.712/lib/FluentNHibernate.dll
+/src/packages/FluentNHibernate.1.2.0.712/lib/FluentNHibernate.pdb
+/src/packages/Iesi.Collections.3.1.0.4000/Iesi.Collections.3.1.0.4000.nupkg
+/src/packages/Iesi.Collections.3.1.0.4000/lib/Net35/Iesi.Collections.dll
+/src/packages/Iesi.Collections.3.1.0.4000/lib/Net35/Iesi.Collections.license.txt
+/src/packages/Iesi.Collections.3.1.0.4000/lib/Net35/Iesi.Collections.pdb
+/src/packages/Moq.4.0.10827/License.txt
+/src/packages/Moq.4.0.10827/Moq.4.0.10827.nupkg
+/src/packages/Moq.4.0.10827/Moq.chm
+/src/packages/Moq.4.0.10827/lib/NET35/Moq.dll
+/src/packages/Moq.4.0.10827/lib/NET35/Moq.pdb
+/src/packages/Moq.4.0.10827/lib/NET35/Moq.xml
+/src/packages/Moq.4.0.10827/lib/NET40/Moq.dll
+/src/packages/Moq.4.0.10827/lib/NET40/Moq.pdb
+/src/packages/Moq.4.0.10827/lib/NET40/Moq.xml
+/src/packages/Moq.4.0.10827/lib/Silverlight4/Castle.Core.dll
+/src/packages/Moq.4.0.10827/lib/Silverlight4/Moq.Silverlight.dll
+/src/packages/Moq.4.0.10827/lib/Silverlight4/Moq.Silverlight.pdb
+/src/packages/Moq.4.0.10827/lib/Silverlight4/Moq.Silverlight.xml
+/src/packages/NHibernate.3.1.0.4000/NHibernate.3.1.0.4000.nupkg
+/src/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernate.dll
+/src/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernate.license.txt
+/src/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernate.readme.html
+/src/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernate.releasenotes.txt
+/src/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernateXmlConfigurationTemplates/FireBird.cfg.xml
+/src/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernateXmlConfigurationTemplates/MSSQL.cfg.xml
+/src/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernateXmlConfigurationTemplates/MySql.cfg.xml
+/src/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernateXmlConfigurationTemplates/Oracle.cfg.xml
+/src/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernateXmlConfigurationTemplates/PostgreSQL.cfg.xml
+/src/packages/NHibernate.3.1.0.4000/lib/Net35/NHibernateXmlConfigurationTemplates/SQLite.cfg.xml
+/src/packages/NHibernate.Castle.3.1.0.4000/NHibernate.Castle.3.1.0.4000.nupkg
+/src/packages/NHibernate.Castle.3.1.0.4000/lib/Net35/NHibernate.ByteCode.Castle.dll
+/src/packages/NHibernate.Castle.3.1.0.4000/lib/Net35/NHibernate.ByteCode.Castle.xml
+/src/packages/NHibernate.Logging.1.1.0/NHibernate.Logging.1.1.0.nupkg
+/src/packages/NHibernate.Logging.1.1.0/content/App.config.transform
+/src/packages/NHibernate.Logging.1.1.0/lib/3.5/NHibernate.Logging.CommonLogging.dll
+/src/packages/NHibernate.Logging.1.1.0/lib/3.5/NHibernate.Logging.CommonLogging.xml
+/src/packages/structuremap.2.6.3/lib/StructureMap.XML
+/src/packages/structuremap.2.6.3/lib/StructureMap.dll
+/src/packages/structuremap.2.6.3/lib/StructureMap.pdb
+/src/packages/structuremap.2.6.3/structuremap.2.6.3.nupkg
+/src/packages/System.Data.SQLite.1.0.76.0/System.Data.SQLite.1.0.76.0.nupkg
+/src/packages/System.Data.SQLite.1.0.76.0/lib/net20/System.Data.SQLite.Linq.dll
+/src/packages/System.Data.SQLite.1.0.76.0/lib/net20/System.Data.SQLite.dll
+/src/packages/System.Data.SQLite.1.0.76.0/lib/net40/System.Data.SQLite.Linq.dll
+/src/packages/System.Data.SQLite.1.0.76.0/lib/net40/System.Data.SQLite.dll
