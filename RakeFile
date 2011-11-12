@@ -2,8 +2,6 @@ require 'fileutils'
 gem 'albacore', '> 0.2.4'
 require 'albacore'
 
-NH_VERSION = '3.x'
-
 def get_version
   ENV['BUILD_NUMBER'] || '0.1.0.0'
 end
@@ -26,7 +24,7 @@ namespace :source do
     asm.company_name = 'http://timesmart.ru'
     asm.copyright = 'Copyright 2011 Innokentiy Filipenko. All rights reserved.'
     asm.namespaces = ['System.Security']
-    asm.custom_attributes :AllowPartiallyTrustedCallers => nil
+    #asm.custom_attributes :AllowPartiallyTrustedCallers => nil
     
     puts "The build number is #{asm.version}"
   end
