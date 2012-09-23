@@ -33,7 +33,7 @@ namespace :source do
   msbuild :compile do |msb|
     msb.properties = { :configuration => :Release }
     msb.targets [:Clean, :Build]
-    msb.solution = 'src/Building-Blocks.sln'
+    msb.solution = 'src/BuildingBlocks.sln'
   end
 end
 
