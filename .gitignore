@@ -16,6 +16,8 @@
 /src/*/bin/*
 /src/*/*.user
 /src*.cache
+/src/packages/
+/src/packages/*
 /src/packages/AutoMapper.2.0.0/AutoMapper.2.0.0.nupkg
 /src/packages/AutoMapper.2.0.0/lib/net40-client/AutoMapper.dll
 /src/packages/AutoMapper.2.0.0/lib/net40-client/AutoMapper.xml
@@ -116,3 +118,5 @@
 /src/packages/System.Data.SQLite.1.0.76.0/lib/net20/System.Data.SQLite.dll
 /src/packages/System.Data.SQLite.1.0.76.0/lib/net40/System.Data.SQLite.Linq.dll
 /src/packages/System.Data.SQLite.1.0.76.0/lib/net40/System.Data.SQLite.dll
+/src/_ReSharper.BuildingBlocks
+src/BuildingBlocks.sln.DotSettings.user
