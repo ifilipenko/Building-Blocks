@@ -3,18 +3,15 @@
   <metadata>
     <id>BuildingBlocks.CopyManagement</id>
     <version>1.0.0.0</version>
-    <authors>Building-Blocks</authors>
+    <authors>Innokentiy Filipenko</authors>
     <owners>Building-Blocks</owners>
-    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
-    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
-    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <licenseUrl>https://raw.github.com/ifilipenko/Building-Blocks/master/License.txt</licenseUrl>
+    <projectUrl>https://github.com/ifilipenko/Building-Blocks</projectUrl>    
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Package description</description>
-    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <description>Helpers classes application copy protection</description>
+    <releaseNotes></releaseNotes>
     <copyright>Copyright 2012</copyright>
-    <tags>Tag1 Tag2</tags>
     <dependencies>
-      <dependency id="SampleDependency" version="1.0" />
     </dependencies>
   </metadata>
 </package>
