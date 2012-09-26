@@ -3,5 +3,5 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("Building-Blocks")]
 [assembly: AssemblyCopyright("Copyright 2012 Innokentiy Filipenko. All rights reserved.")]
-[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
 

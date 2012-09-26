@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>help</id>
-    <version>1.0.0</version>
-    <authors>developer</authors>
-    <owners>developer</owners>
+    <id>BuildingBlocks.Store.RavenDB</id>
+    <version>1.0.0.0</version>
+    <authors>Building-Blocks</authors>
+    <owners>Building-Blocks</owners>
     <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
     <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
     <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
