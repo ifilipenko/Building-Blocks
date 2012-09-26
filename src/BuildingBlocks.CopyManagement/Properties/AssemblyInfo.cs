@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BuildingBlocks.Store")]
+[assembly: AssemblyTitle("BuildingBlocks.CopyManagement")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("BuildingBlocks.Store")]
+[assembly: AssemblyProduct("BuildingBlocks.CopyManagement")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4e233456-7b7e-43b0-9925-afb76d7d5986")]
+[assembly: Guid("d012b104-5a94-4b25-a9e5-56c7563ea0df")]
 
 // Version information for an assembly consists of the following four values:
 //

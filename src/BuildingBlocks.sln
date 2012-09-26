@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Store", "BuildingBlocks.Store\BuildingBlocks.Store.csproj", "{44FC5F3F-8054-47D4-848F-783AF942F5FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Store.RavenDB", "BuildingBlocks.Store.RavenDB\BuildingBlocks.Store.RavenDB.csproj", "{E3456B0E-CD97-4973-9379-7B24C201FDEB}"
@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{60D5FA
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.CopyManagement", "BuildingBlocks.CopyManagement\BuildingBlocks.CopyManagement.csproj", "{D163F1B1-83F0-468F-9A4F-74B5E3CB4797}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +28,10 @@ Global
 		{E3456B0E-CD97-4973-9379-7B24C201FDEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3456B0E-CD97-4973-9379-7B24C201FDEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3456B0E-CD97-4973-9379-7B24C201FDEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D163F1B1-83F0-468F-9A4F-74B5E3CB4797}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D163F1B1-83F0-468F-9A4F-74B5E3CB4797}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D163F1B1-83F0-468F-9A4F-74B5E3CB4797}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D163F1B1-83F0-468F-9A4F-74B5E3CB4797}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

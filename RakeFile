@@ -1,6 +1,6 @@
 require 'fileutils'
-gem 'albacore', '> 0.2.4'
 require 'albacore'
+require './tools/albacore/nuspec_patch'
 
 def get_version
   ENV['BUILD_NUMBER'] || '0.1.0.0'
@@ -21,8 +21,8 @@ namespace :source do
     asm.output_file = 'src/CommonAssemblyInfo.cs'
     
     asm.version = get_version
-    asm.company_name = 'http://timesmart.ru'
-    asm.copyright = 'Copyright 2011 Innokentiy Filipenko. All rights reserved.'
+    asm.company_name = 'Building-Blocks'
+    asm.copyright = 'Copyright 2012 Innokentiy Filipenko. All rights reserved.'
     asm.namespaces = ['System.Security']
     #asm.custom_attributes :AllowPartiallyTrustedCallers => nil
     
@@ -63,6 +63,34 @@ namespace :package do
     Dir.mkdir 'dist'
   end
   
+  desc "create the BuildingBlock nuspec file"
+  nuspec :create_spec do |nuspec|
+     version = "#{get_version}"
+
+     nuspec.id = "Building-Blocks"
+     nuspec.version = version
+     nuspec.authors = "Innokentiy Filipenko"
+     nuspec.owners = "Innokentiy Filipenko"
+     nuspec.description = "Building Blocks."
+     nuspec.title = "Building Blocks"
+     nuspec.language = "en-US"
+     nuspec.projectUrl = "https://github.com/ifilipenko/Building-Blocks"
+     nuspec.working_directory = "build"
+     nuspec.output_file = "Building-Blocks.nuspec"
+  end
+  
+  def nuget_pack(base_folder, nuspec_path)
+    cmd = Exec.new
+    output = 'nuget/'
+    cmd.command = 'src/.nuget/NuGet.exe'
+    cmd.parameters = "pack #{nuspec_path} -basepath #{base_folder} -outputdirectory #{output}"
+    cmd.execute
+  end
+  
+  task :make_nuget_packages do
+	nuget_pack('dist', 'build/Building-Blocks.nuspec')
+  end
+  
   desc 'Copy builded nuget package files'  
   task :copy do 
     Dir.glob 'src/BuildingBlocks.*/bin/Release/*.nupkg' do |path|		
@@ -76,8 +104,8 @@ namespace :package do
     %w{bin obj}.each {|x| exclusions << "**/#{x}" << "**/#{x}/**/**" }
     [/_ReSharper/, /.user/, /.suo/, /.resharper/, /.cache/].each {|x| exclusions << x }
     exclusions
-  end
-  
+  end 
+    
   desc 'Create zip of binaries'
   zip :binaries do |zip|
     file_prefix = ENV['BinaryDistFilename'] || 'building-blocks-binary'
@@ -95,7 +123,7 @@ namespace :package do
   end
   
   desc 'Package everything (src, bin, nuget)'
-  task :all => [:prepare_dist_directory, :binaries, :binariesfull, :copy]
+  task :all => [:prepare_dist_directory, :binaries, :create_spec, :binariesfull, :copy, :make_nuget_packages]
 end
 
 task :sln do
