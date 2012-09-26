@@ -121,3 +121,4 @@
 /src/_ReSharper.BuildingBlocks
 src/BuildingBlocks.sln.DotSettings.user
 /packages
+src/CommonAssemblyInfo.cs
