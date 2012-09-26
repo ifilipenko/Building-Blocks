@@ -65,31 +65,72 @@ end
 
 namespace :package do
 	desc "creating Nuget packages for every projects in solution"
-	task :all => [:clean_output, :create_packages]
+	task :all => [:create_packages]
 
 	task :create_packages do
+		renew_packages_dir(params)
 		nuspec_list = FileList.new("#{params[:build_output]}/*.nuspec").to_a
 		nuspec_list.each do |f|			
-			Rake::Task["package:create_package"].execute(f)
+			if is_assmblies_package(f)
+				packageName = f.pathmap("%n")
+				packageDir = copy_nuspec_to_packages_dir(f, packageName, params)
+				libsDir = copy_binaries_to_libs_dir(packageDir, packageName, params)
+				newNuspecFile = "#{packageDir}/" + f.pathmap("%f")								
+				nuget_pack(newNuspecFile, packageDir, params)
+			else
+				nuget_pack(f, nil, params)
+			end
 		end
 	end
 
-	nugetpack :create_package, :nuspec_file do |nuget, nuspec_file|
+	def copy_nuspec_to_packages_dir(nuspecfile, packageName, params)
+		packageDir = "#{params[:package_output]}/#{packageName}"
+		Dir.chdir(params[:package_output])
+		Dir.mkdir packageName unless Dir.exist? packageName
+		Dir.chdir("..")
+		copy nuspecfile, packageDir if File.file? nuspecfile
+		packageDir
+	end
+
+	def copy_binaries_to_libs_dir(packageDir, packageName, params)
+		dir = Dir.pwd
+		Dir.chdir(packageDir)
+		Dir.mkdir "lib" unless Dir.exist? "lib"
+		Dir.chdir(dir)
+
+		libsDir = "#{packageDir}/lib"
+
+		FileList.new("#{params[:build_output]}/#{packageName}.dll").each do |path|
+			copy path, libsDir if File.file? path
+		end		
+
+		libsDir
+	end
+
+	def renew_packages_dir(params)
+		if (Dir.exist? params[:package_output])
+			FileUtils.rm_rf params[:package_output]
+		end
+		Dir.mkdir params[:package_output]
+		puts "Directory '#{params[:package_output]}' clear"
+	end
+
+	def is_assmblies_package(nuspecfile)
+		File.exist? nuspecfile.ext('dll')
+	end
+
+	def nuget_pack(nuspec_file, content_dir, params)
 		puts ""
 		puts "Creating package for #{nuspec_file}"
-		Dir.mkdir params[:package_output] unless File.exist? params[:package_output]
 
-		nuget.command     = "src/.nuget/nuget.exe"
-		nuget.nuspec      = nuspec_file
-		nuget.output      = params[:package_output]
+    	cmd = Exec.new
+    	output = params[:package_output]
+    	cmd.command = 'src/.nuget/NuGet.exe'
+    	cmd.parameters = "pack #{nuspec_file} -basepath #{content_dir} -outputdirectory #{output}"
+    	cmd.execute
 
-		puts "Package for #{nuspec_file} created"
-	end
-
-	task :clean_output do
-		FileUtils.rm_rf params[:package_output]
-    	puts "Directory '#{params[:package_output]}' removed"
-	end
+    	puts "Package for #{nuspec_file} created"
+  	end	
 
 	task :create_nuspec do
 		assemblyList = FileList.new("#{params[:build_output]}/*.dll").to_a
