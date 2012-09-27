@@ -1,24 +1,29 @@
 require 'albacore'
+require 'rexml/document'
 
 def get_version
-	ENV['BUILD_NUMBER'] || '1.0.0.0'
+	ENV['BUILD_NUMBER'] || '1.0.0.1'
 end
 
 params = {
 	:package_output		=> "packages",
 	:build_output		=> "build",
 	:version 			=> get_version(),
-	:solution_file_name => "src/BuildingBlocks.sln"	
+	:solution_file_name => "src/BuildingBlocks.sln",
+	:nuget_apikey		=> ENV['apikey']
 }
 
 task :default  => "build:all"
 
 namespace :ci do
-	desc "create TeamCity artifacts"
-	task :run => [
-		"build:all",
-		"package:all"
-	]
+	desc "buid and create packages"
+	task :run => ["build:all", "package:create_packages"]
+
+	desc "build and create packages and push to nuget server"	
+	task :push, :nuget_apikey do |t, args|
+		Rake::Task["package:push"].execute(args[:nuget_apikey])
+	end
+	task :push => ["ci:run"]
 end
 
 namespace :source do
@@ -73,13 +78,20 @@ namespace :package do
 		nuspec_list.each do |f|			
 			if is_assmblies_package(f)
 				packageName = f.pathmap("%n")
+				patch_nuspec_file_version(f, params)
 				packageDir = copy_nuspec_to_packages_dir(f, packageName, params)
-				libsDir = copy_binaries_to_libs_dir(packageDir, packageName, params)
+				copy_binaries_to_libs_dir(packageDir, packageName, params)
 				newNuspecFile = "#{packageDir}/" + f.pathmap("%f")								
 				nuget_pack(newNuspecFile, packageDir, params)
 			else
 				nuget_pack(f, nil, params)
 			end
+		end
+	end
+
+	task  :push, :nuget_apikey do |t, nuget_apikey|
+		FileList.new("#{params[:package_output]}/*.nupkg").each do |f|
+    		nuget_push(f, nuget_apikey, params)
 		end
 	end
 
@@ -96,9 +108,11 @@ namespace :package do
 		dir = Dir.pwd
 		Dir.chdir(packageDir)
 		Dir.mkdir "lib" unless Dir.exist? "lib"
+		Dir.chdir("lib")
+		Dir.mkdir "net40" unless Dir.exist? "net40"
 		Dir.chdir(dir)
 
-		libsDir = "#{packageDir}/lib"
+		libsDir = "#{packageDir}/lib/net40/"
 
 		FileList.new("#{params[:build_output]}/#{packageName}.dll").each do |path|
 			copy path, libsDir if File.file? path
@@ -131,6 +145,50 @@ namespace :package do
 
     	puts "Package for #{nuspec_file} created"
   	end	
+
+  	def nuget_push(nupkg_file, api_key, params)
+		puts ""
+		puts "Pushing package #{nupkg_file}"
+
+		dirBefore = Dir.pwd
+		Dir.chdir(params[:package_output])
+
+		begin
+			nugetpath = "../src/.nuget/NuGet.exe";
+
+			cmdSetApiKey = Exec.new
+    		cmdSetApiKey.command = nugetpath
+    		cmdSetApiKey.parameters = "SetApiKey #{api_key}"
+
+    		cmdPush = Exec.new
+    		nupkg_file = nupkg_file.pathmap("%f")
+    		cmdPush.command = nugetpath
+    		cmdPush.parameters = "Push #{nupkg_file}"
+
+	    	cmdSetApiKey.execute
+    		cmdPush.execute
+		ensure
+			Dir.chdir(dirBefore)			
+		end    	
+  	end	
+
+  	def patch_nuspec_file_version(nuspecfile, params)
+  		contents = File.new(nuspecfile).read
+  		doc = REXML::Document.new(contents)
+  		verElm = doc.root.elements["metadata/version"]
+  		verElm.text = params[:version]
+  		doc.root.elements.each("metadata/dependencies/dependency") do |elm|
+  			package = elm.attributes["id"]
+            if package.start_with? 'BuildingBlocks'
+            	elm.attributes["version"] = params[:version]
+            end
+  		end
+
+		formatter = REXML::Formatters::Default.new
+		File.open(nuspecfile, 'w') do |result|
+			formatter.write(doc, result)
+		end
+  	end
 
 	task :create_nuspec do
 		assemblyList = FileList.new("#{params[:build_output]}/*.dll").to_a

@@ -11,5 +11,8 @@
     <description>Session implementation for RavenDB</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2012</copyright>
+    <dependencies>
+      <dependency id="BuildingBlocks.Store" version="1.0.0.0" />
+    </dependencies>
   </metadata>
 </package>
