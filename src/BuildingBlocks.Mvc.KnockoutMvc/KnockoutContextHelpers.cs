@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Web;
+using System.Web.Mvc;
+using Fasterflect;
+using PerpetuumSoft.Knockout;
 
 namespace BuildingBlocks.Mvc.KnockoutMvc
 {
@@ -19,8 +23,8 @@ namespace BuildingBlocks.Mvc.KnockoutMvc
             knockoutForeachContext.WriteStart(viewContext.Writer);
 
             var contextStackProperty = context.GetType().Property("ContextStack");
-            var contextStack = (List<IKnockoutContext>) contextStackProperty.GetValue(context);
-            contextStackProperty.SetValue(context, contextStack);
+            var contextStack = (List<IKnockoutContext>) contextStackProperty.Get(context);
+            contextStackProperty.Set(context, contextStack);
 
             contextStack.Add(knockoutForeachContext);
             return knockoutForeachContext;
