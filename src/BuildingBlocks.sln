@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Store", "BuildingBlocks.Store\BuildingBlocks.Store.csproj", "{44FC5F3F-8054-47D4-848F-783AF942F5FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Store.RavenDB", "BuildingBlocks.Store.RavenDB\BuildingBlocks.Store.RavenDB.csproj", "{E3456B0E-CD97-4973-9379-7B24C201FDEB}"
@@ -13,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{60D5FA
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.CopyManagement", "BuildingBlocks.CopyManagement\BuildingBlocks.CopyManagement.csproj", "{D163F1B1-83F0-468F-9A4F-74B5E3CB4797}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Mvc.KnockoutMvc", "BuildingBlocks.Mvc.KnockoutMvc\BuildingBlocks.Mvc.KnockoutMvc.csproj", "{574BA7C4-83DC-4AFA-BC74-0CDBB772ACC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Mvc", "BuildingBlocks.Mvc\BuildingBlocks.Mvc.csproj", "{635D645C-3796-4668-8E11-B21E3FC82733}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +36,14 @@ Global
 		{D163F1B1-83F0-468F-9A4F-74B5E3CB4797}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D163F1B1-83F0-468F-9A4F-74B5E3CB4797}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D163F1B1-83F0-468F-9A4F-74B5E3CB4797}.Release|Any CPU.Build.0 = Release|Any CPU
+		{574BA7C4-83DC-4AFA-BC74-0CDBB772ACC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{574BA7C4-83DC-4AFA-BC74-0CDBB772ACC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{574BA7C4-83DC-4AFA-BC74-0CDBB772ACC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{574BA7C4-83DC-4AFA-BC74-0CDBB772ACC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{635D645C-3796-4668-8E11-B21E3FC82733}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{635D645C-3796-4668-8E11-B21E3FC82733}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{635D645C-3796-4668-8E11-B21E3FC82733}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{635D645C-3796-4668-8E11-B21E3FC82733}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
