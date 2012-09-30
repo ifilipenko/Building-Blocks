@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
+using PerpetuumSoft.Knockout;
 
-namespace BuildingBlocks.Web.KnockoutMvc
+namespace BuildingBlocks.Mvc.KnockoutMvc
 {
     public static class KnockoutDropDownHelpers
     {

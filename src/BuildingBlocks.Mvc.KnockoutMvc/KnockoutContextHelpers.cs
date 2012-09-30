@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace BuildingBlocks.Web.KnockoutMvc
+namespace BuildingBlocks.Mvc.KnockoutMvc
 {
     public static class KnockoutContextHelpers
     {

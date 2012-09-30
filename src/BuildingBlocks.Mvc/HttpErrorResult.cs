@@ -1,8 +1,9 @@
 using System;
 using System.Net;
 using System.Text;
+using System.Web.Mvc;
 
-namespace BuildingBlocks.Web
+namespace BuildingBlocks.Mvc
 {
     public class HttpErrorResult : ActionResult
     {
