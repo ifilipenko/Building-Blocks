@@ -16,7 +16,7 @@ namespace BuildingBlocks.CopyManagement
             get { return _current.Value; }
         }
 
-        private static readonly Guid _instanceId = new Guid();
+        private static readonly Guid _instanceId = Guid.NewGuid();
         private readonly string _applicationUid;
         private readonly string _mashineId;
         private readonly DateTime _instanceStartTime;
