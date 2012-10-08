@@ -18,7 +18,10 @@ namespace BuildingBlocks.Store
 
         IQueryable<T> Query<T>(ILoadingStrategy<T> loadingStrategy = null);
 
-        void Save(IEntity entity);
+        void Save(IEntity<string> entity);
+
+        void Save<TId>(IEntity<TId> entity)
+            where TId : struct;
 
         void Delete<T>(T entity);
 

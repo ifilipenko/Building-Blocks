@@ -1,7 +1,7 @@
 namespace BuildingBlocks.Store
 {
-    public interface IEntity
+    public interface IEntity<TId>
     {
-        string Id { get; set; }
+        TId Id { get; set; }
     }
 }
