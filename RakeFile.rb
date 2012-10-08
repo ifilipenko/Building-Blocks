@@ -75,16 +75,18 @@ namespace :package do
 	task :create_packages do
 		renew_packages_dir(params)
 		nuspec_list = FileList.new("#{params[:build_output]}/*.nuspec").to_a
-		nuspec_list.each do |f|			
-			if is_assmblies_package(f)
-				packageName = f.pathmap("%n")
-				patch_nuspec_file_version(f, params)
-				packageDir = copy_nuspec_to_packages_dir(f, packageName, params)
-				copy_binaries_to_libs_dir(packageDir, packageName, params)
-				newNuspecFile = "#{packageDir}/" + f.pathmap("%f")								
-				nuget_pack(newNuspecFile, packageDir, params)
-			else
-				nuget_pack(f, nil, params)
+		nuspec_list.each do |f|
+			if not is_file_of_tests_project(f)
+				if is_assmblies_package(f)
+					packageName = f.pathmap("%n")
+					patch_nuspec_file_version(f, params)
+					packageDir = copy_nuspec_to_packages_dir(f, packageName, params)
+					copy_binaries_to_libs_dir(packageDir, packageName, params)
+					newNuspecFile = "#{packageDir}/" + f.pathmap("%f")
+					nuget_pack(newNuspecFile, packageDir, params)
+				else
+					nuget_pack(f, nil, params)
+				end
 			end
 		end
 	end
@@ -132,6 +134,10 @@ namespace :package do
 	def is_assmblies_package(nuspecfile)
 		File.exist? nuspecfile.ext('dll')
 	end
+	
+	def is_file_of_tests_project(file)
+		file.pathmap("%n").end_with?(".Tests") or file.pathmap("%n").end_with?(".tests") or file.pathmap("%n").end_with?(".test") or file.pathmap("%n").end_with?(".tests")
+	end	
 
 	def nuget_pack(nuspec_file, content_dir, params)
 		puts ""
@@ -144,6 +150,7 @@ namespace :package do
     	cmd.execute
 
     	puts "Package for #{nuspec_file} created"
+		puts ""
   	end	
 
   	def nuget_push(nupkg_file, api_key, params)
