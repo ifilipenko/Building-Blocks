@@ -122,3 +122,4 @@
 src/BuildingBlocks.sln.DotSettings.user
 /packages
 src/CommonAssemblyInfo.cs
+*.startup
