@@ -77,12 +77,18 @@ namespace BuildingBlocks.Store.RavenDB
             return query;
         }
 
-        public void Save(IEntity entity)
+        public void Save(IEntity<string> entity)
         {
             if (string.IsNullOrWhiteSpace(entity.Id))
             {
                 entity.Id = null;
             }
+            Session.Store(entity);
+        }
+
+        public void Save<TId>(IEntity<TId> entity)
+            where TId : struct
+        {
             Session.Store(entity);
         }
 
