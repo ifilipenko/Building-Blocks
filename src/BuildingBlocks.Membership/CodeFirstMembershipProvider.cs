@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Web.Security;
 using BuildingBlocks.Membership.Entities;
 
 namespace BuildingBlocks.Membership
