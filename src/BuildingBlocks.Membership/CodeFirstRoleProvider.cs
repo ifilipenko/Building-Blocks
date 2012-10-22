@@ -1,236 +1,178 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
+using System.Web.Security;
+using BuildingBlocks.Membership.Contract;
 using BuildingBlocks.Membership.Entities;
 
 namespace BuildingBlocks.Membership
 {
     public class CodeFirstRoleProvider : RoleProvider
     {
+        private string _applicationName;
+        private readonly Lazy<IRoleRepository> _roleRepository;
+        private readonly Lazy<IUserRepository> _userRepository;
+
+        public CodeFirstRoleProvider()
+        {
+            _roleRepository = new Lazy<IRoleRepository>(() => RepositoryFactory.Current.CreateRoleRepository(), true);
+            _userRepository = new Lazy<IUserRepository>(() => RepositoryFactory.Current.CreateUserRepository(), true);
+        }
+
+        public IRoleRepository RoleRepository
+        {
+            get { return _roleRepository.Value; }
+        }
+
+        public IUserRepository UserRepository
+        {
+            get { return _userRepository.Value; }
+        }
+
         public override string ApplicationName
         {
             get
             {
-                return this.GetType().Assembly.GetName().Name.ToString();
+                return _applicationName ?? GetType().Assembly.GetName().Name;
             }
             set
             {
-                this.ApplicationName = this.GetType().Assembly.GetName().Name.ToString();
+                _applicationName = value;
             }
         }
 
         public override bool RoleExists(string roleName)
         {
-            if (string.IsNullOrEmpty(roleName))
-            {
-                return false;
-            }
-            using (DataContext Context = new DataContext())
-            {
-                Role Role = null;
-                Role = Context.Roles.FirstOrDefault(Rl => Rl.RoleName == roleName);
-                if (Role != null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            return !string.IsNullOrEmpty(roleName) && RoleRepository.IsRoleExists(roleName);
         }
 
         public override bool IsUserInRole(string username, string roleName)
         {
-            if (string.IsNullOrEmpty(username))
-            {
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(roleName))
                 return false;
-            }
-            if (string.IsNullOrEmpty(roleName))
+            
             {
-                return false;
-            }
-            using (DataContext Context = new DataContext())
-            {
-                User User = null;
-                User = Context.Users.FirstOrDefault(Usr => Usr.Username == username);
-                if (User == null)
-                {
+                var user = UserRepository.FindUserByName(username);
+                if (user == null)
                     return false;
-                }
-                Role Role = Context.Roles.FirstOrDefault(Rl => Rl.RoleName == roleName);
-                if (Role == null)
-                {
+
+                var role = RoleRepository.FindByName(roleName);
+                if (role == null)
                     return false;
-                }
-                return User.Roles.Contains(Role);
+
+                return user.Roles.Contains(role.RoleName);
             }
         }
 
         public override string[] GetAllRoles()
         {
-            using (DataContext Context = new DataContext())
-            {
-                return Context.Roles.Select(Rl => Rl.RoleName).ToArray();
-            }
+            return RoleRepository.GetAll().Select(r => r.RoleName).ToArray();
         }
 
         public override string[] GetUsersInRole(string roleName)
         {
             if (string.IsNullOrEmpty(roleName))
-            {
                 return null;
-            }
-            using (DataContext Context = new DataContext())
-            {
-                Role Role = null;
-                Role = Context.Roles.FirstOrDefault(Rl => Rl.RoleName == roleName);
-                if (Role != null)
-                {
-                    return Role.Users.Select(Usr => Usr.Username).ToArray();
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            var role = RoleRepository.FindByName(roleName);
+            return role == null ? null : role.Users.ToArray();
         }
 
         public override string[] GetRolesForUser(string username)
         {
             if (string.IsNullOrEmpty(username))
-            {
                 return null;
-            }
-            using (DataContext Context = new DataContext())
-            {
-                User User = null;
-                User = Context.Users.FirstOrDefault(Usr => Usr.Username == username);
-                if (User != null)
-                {
-                    return User.Roles.Select(Rl => Rl.RoleName).ToArray();
-                }
-                else
-                {
-                    return null;
-                }
-            }
+
+            var user = UserRepository.FindUserByName(username);
+            return user == null ? null : user.Roles.ToArray();
         }
 
         public override string[] FindUsersInRole(string roleName, string usernameToMatch)
         {
-            if (string.IsNullOrEmpty(roleName))
-            {
+            if (string.IsNullOrEmpty(roleName) || string.IsNullOrEmpty(usernameToMatch))
                 return null;
-            }
 
-            if (string.IsNullOrEmpty(usernameToMatch))
-            {
-                return null;
-            }
-
-            using (DataContext Context = new DataContext())
-            {
-
-                return (from Rl in Context.Roles from Usr in Rl.Users where Rl.RoleName == roleName && Usr.Username.Contains(usernameToMatch) select Usr.Username).ToArray();
-            }
+            return (from r in RoleRepository.GetAll()
+                    from userName in r.Users
+                    where r.RoleName == roleName && userName.Contains(usernameToMatch)
+                    select userName).ToArray();
         }
 
         public override void CreateRole(string roleName)
         {
-            if (!string.IsNullOrEmpty(roleName))
+            if (string.IsNullOrEmpty(roleName))
+                return;
+            var role = RoleRepository.FindByName(roleName);
+            if (role != null) 
+                return;
+
+            var newRole = new Role
             {
-                using (DataContext Context = new DataContext())
-                {
-                    Role Role = null;
-                    Role = Context.Roles.FirstOrDefault(Rl => Rl.RoleName == roleName);
-                    if (Role == null)
-                    {
-                        Role NewRole = new Role
-                            {
-                                RoleId = Guid.NewGuid(),
-                                RoleName = roleName
-                            };
-                        Context.Roles.Add(NewRole);
-                        Context.SaveChanges();
-                    }
-                }
-            }
+                RoleId = Guid.NewGuid(),
+                RoleName = roleName
+            };
+            RoleRepository.CreateRole(newRole);
         }
 
         public override bool DeleteRole(string roleName, bool throwOnPopulatedRole)
         {
             if (string.IsNullOrEmpty(roleName))
-            {
                 return false;
-            }
-            using (DataContext Context = new DataContext())
+            
             {
-                Role Role = null;
-                Role = Context.Roles.FirstOrDefault(Rl => Rl.RoleName == roleName);
-                if (Role == null)
-                {
+                var role = RoleRepository.FindByName(roleName);
+                if (role == null)
                     return false;
-                }
+
                 if (throwOnPopulatedRole)
                 {
-                    if (Role.Users.Any())
-                    {
+                    if (role.Users.Any())
                         return false;
-                    }
                 }
                 else
                 {
-                    Role.Users.Clear();
+                    foreach (var userName in role.Users)
+                    {
+                        var user = UserRepository.FindUserByName(userName);
+                        if (user != null)
+                        {
+                            user.RemoveRole(role.RoleName);
+                            UserRepository.SaveUser(user);
+                        }
+                    }
                 }
-                Context.Roles.Remove(Role);
-                Context.SaveChanges();
+                RoleRepository.DeleteRole(role);
                 return true;
             }
         }
 
         public override void AddUsersToRoles(string[] usernames, string[] roleNames)
         {
-            using (DataContext Context = new DataContext())
             {
-                List<User> Users = Context.Users.Where(Usr => usernames.Contains(Usr.Username)).ToList();
-                List<Role> Roles = Context.Roles.Where(Rl => roleNames.Contains(Rl.RoleName)).ToList();
-                foreach (User user in Users)
+                var users = UserRepository.FindUsersByNames(usernames);
+                var roles = RoleRepository.FindRolesByNames(roleNames);
+                foreach (var user in users)
                 {
-                    foreach (Role role in Roles)
+                    foreach (var role in roles)
                     {
-                        if (!user.Roles.Contains(role))
-                        {
-                            user.Roles.Add(role);
-                        }
+                        user.AddRole(role.RoleName);
+                        UserRepository.SaveUser(user);  
                     }
                 }
-                Context.SaveChanges();
             }
         }
 
         public override void RemoveUsersFromRoles(string[] usernames, string[] roleNames)
         {
-            using (DataContext Context = new DataContext())
+            var users = UserRepository.FindUsersByNames(usernames).Where(u => u != null);
+            var roles = RoleRepository.FindRolesByNames(roleNames).Where(r => r != null).ToList();
+            foreach (var user in users)
             {
-                foreach (String username in usernames)
+                foreach (var role in roles)
                 {
-                    String us = username;
-                    User user = Context.Users.FirstOrDefault(U => U.Username == us);
-                    if (user != null)
-                    {
-                        foreach (String roleName in roleNames)
-                        {
-                            String rl = roleName;
-                            Role role = user.Roles.FirstOrDefault(R => R.RoleName == rl);
-                            if (role != null)
-                            {
-                                user.Roles.Remove(role);
-                            }
-                        }
-                    }
+                    user.RemoveRole(role.RoleName);
+                    UserRepository.SaveUser(user);
                 }
-                Context.SaveChanges();
             }
         }
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Web;
 using System.Web.Security;
 using BuildingBlocks.Membership.Contract;
 using BuildingBlocks.Membership.Entities;
@@ -10,17 +11,29 @@ namespace BuildingBlocks.Membership
 {
     public class CodeFirstMembershipProvider : MembershipProvider
     {
+        private string _applicationName;
         private const int TokenSizeInBytes = 16;
+        private readonly Lazy<IUserRepository> _userRepository;
+
+        public CodeFirstMembershipProvider()
+        {
+            _userRepository = new Lazy<IUserRepository>(() => RepositoryFactory.Current.CreateUserRepository(), true);
+        }
+
+        public IUserRepository UserRepository
+        {
+            get { return _userRepository.Value; }
+        }
 
         public override string ApplicationName
         {
             get
             {
-                return this.GetType().Assembly.GetName().Name.ToString();
+                return _applicationName ?? GetType().Assembly.GetName().Name;
             }
-            set
+            set 
             {
-                this.ApplicationName = this.GetType().Assembly.GetName().Name.ToString();
+                _applicationName = value;
             }
         }
 
@@ -59,10 +72,10 @@ namespace BuildingBlocks.Membership
             get { return true; }
         }
 
-        #region Functions
-
         public override MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out MembershipCreateStatus status)
         {
+            status = MembershipCreateStatus.Success;
+
             if (string.IsNullOrEmpty(username))
             {
                 status = MembershipCreateStatus.InvalidUserName;
@@ -79,49 +92,59 @@ namespace BuildingBlocks.Membership
                 return null;
             }
 
-            string HashedPassword = Crypto.HashPassword(password);
-            if (HashedPassword.Length > 128)
+            var hashedPassword = Crypto.HashPassword(password);
+            if (hashedPassword.Length > 128)
             {
                 status = MembershipCreateStatus.InvalidPassword;
                 return null;
             }
 
             var userRepository = RepositoryFactory.Current.CreateUserRepository();
+            if (userRepository.HasUserWithName(username))
             {
-                if (userRepository.HasUserWithName(username))
-                {
-                    status = MembershipCreateStatus.DuplicateUserName;
-                    return null;
-                }
-
-                if (context.Users.Where(Usr => Usr.Email == email).Any())
-                {
-                    status = MembershipCreateStatus.DuplicateEmail;
-                    return null;
-                }
-
-                User NewUser = new User
-                    {
-                        UserId = Guid.NewGuid(),
-                        Username = username,
-                        Password = HashedPassword,
-                        IsApproved = isApproved,
-                        Email = email,
-                        CreateDate = DateTime.UtcNow,
-                        LastPasswordChangedDate = DateTime.UtcNow,
-                        PasswordFailuresSinceLastSuccess = 0,
-                        LastLoginDate = DateTime.UtcNow,
-                        LastActivityDate = DateTime.UtcNow,
-                        LastLockoutDate = DateTime.UtcNow,
-                        IsLockedOut = false,
-                        LastPasswordFailureDate = DateTime.UtcNow
-                    };
-
-                context.Users.Add(NewUser);
-                context.SaveChanges();
-                status = MembershipCreateStatus.Success;
-                return new MembershipUser(Membership.Provider.Name, NewUser.Username, NewUser.UserId, NewUser.Email, null, null, NewUser.IsApproved, NewUser.IsLockedOut, NewUser.CreateDate.Value, NewUser.LastLoginDate.Value, NewUser.LastActivityDate.Value, NewUser.LastPasswordChangedDate.Value, NewUser.LastLockoutDate.Value);
+                status = MembershipCreateStatus.DuplicateUserName;
+                return null;
             }
+
+            if (userRepository.HasUserWithEmail(email))
+            {
+                status = MembershipCreateStatus.DuplicateEmail;
+                return null;
+            }
+
+            var newUser = new User
+            {
+                UserId = Guid.NewGuid(),
+                Username = username,
+                Password = hashedPassword,
+                IsApproved = isApproved,
+                Email = email,
+                CreateDate = DateTime.UtcNow,
+                LastPasswordChangedDate = DateTime.UtcNow,
+                PasswordFailuresSinceLastSuccess = 0,
+                LastLoginDate = DateTime.UtcNow,
+                LastActivityDate = DateTime.UtcNow,
+                LastLockoutDate = DateTime.UtcNow,
+                IsLockedOut = false,
+                LastPasswordFailureDate = DateTime.UtcNow
+            };
+
+            userRepository.AddUser(newUser);
+            return new MembershipUser(
+                System.Web.Security.Membership.Provider.Name,
+                newUser.Username,
+                newUser.UserId,
+                newUser.Email,
+                null,
+                null,
+                newUser.IsApproved,
+                newUser.IsLockedOut,
+                newUser.CreateDate.Value,
+                newUser.LastLoginDate.Value,
+                newUser.LastActivityDate.Value,
+                newUser.LastPasswordChangedDate.Value,
+                newUser.LastLockoutDate.Value
+            );
         }
 
         public string CreateUserAndAccount(string userName, string password, bool requireConfirmation, IDictionary<string, object> values)
@@ -131,402 +154,360 @@ namespace BuildingBlocks.Membership
 
         public override bool ValidateUser(string username, string password)
         {
-            if (string.IsNullOrEmpty(username))
-            {
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return false;
-            }
-            if (string.IsNullOrEmpty(password))
-            {
+
+            var user = UserRepository.FindUserByName(username);
+            if (user == null || !user.IsApproved || user.IsLockedOut)
                 return false;
-            }
-            using (DataContext Context = new DataContext())
+
+            var hashedPassword = user.Password;
+            var verificationSucceeded = hashedPassword != null && Crypto.VerifyHashedPassword(hashedPassword, password);
+            if (verificationSucceeded)
             {
-                User User = null;
-                User = Context.Users.FirstOrDefault(Usr => Usr.Username == username);
-                if (User == null)
+                user.PasswordFailuresSinceLastSuccess = 0;
+                user.LastLoginDate = DateTime.UtcNow;
+                user.LastActivityDate = DateTime.UtcNow;
+            }
+            else
+            {
+                var failures = user.PasswordFailuresSinceLastSuccess;
+                if (failures < MaxInvalidPasswordAttempts)
                 {
-                    return false;
+                    user.PasswordFailuresSinceLastSuccess += 1;
+                    user.LastPasswordFailureDate = DateTime.UtcNow;
                 }
-                if (!User.IsApproved)
+                else if (failures >= MaxInvalidPasswordAttempts)
                 {
-                    return false;
-                }
-                if (User.IsLockedOut)
-                {
-                    return false;
-                }
-                String HashedPassword = User.Password;
-                Boolean VerificationSucceeded = (HashedPassword != null && Crypto.VerifyHashedPassword(HashedPassword, password));
-                if (VerificationSucceeded)
-                {
-                    User.PasswordFailuresSinceLastSuccess = 0;
-                    User.LastLoginDate = DateTime.UtcNow;
-                    User.LastActivityDate = DateTime.UtcNow;
-                }
-                else
-                {
-                    int Failures = User.PasswordFailuresSinceLastSuccess;
-                    if (Failures < MaxInvalidPasswordAttempts)
-                    {
-                        User.PasswordFailuresSinceLastSuccess += 1;
-                        User.LastPasswordFailureDate = DateTime.UtcNow;
-                    }
-                    else if (Failures >= MaxInvalidPasswordAttempts)
-                    {
-                        User.LastPasswordFailureDate = DateTime.UtcNow;
-                        User.LastLockoutDate = DateTime.UtcNow;
-                        User.IsLockedOut = true;
-                    }
-                }
-                Context.SaveChanges();
-                if (VerificationSucceeded)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
+                    user.LastPasswordFailureDate = DateTime.UtcNow;
+                    user.LastLockoutDate = DateTime.UtcNow;
+                    user.IsLockedOut = true;
                 }
             }
+
+            UserRepository.SaveUser(user);
+            return verificationSucceeded;
         }
 
         public override MembershipUser GetUser(string username, bool userIsOnline)
         {
             if (string.IsNullOrEmpty(username))
-            {
                 return null;
-            }
-            using (DataContext Context = new DataContext())
+
+            var user = UserRepository.FindUserByName(username);
+            if (user == null)
+                return null;
+
+            if (userIsOnline)
             {
-                User User = null;
-                User = Context.Users.FirstOrDefault(Usr => Usr.Username == username);
-                if (User != null)
-                {
-                    if (userIsOnline)
-                    {
-                        User.LastActivityDate = DateTime.UtcNow;
-                        Context.SaveChanges();
-                    }
-                    return new MembershipUser(Membership.Provider.Name, User.Username, User.UserId, User.Email, null, null, User.IsApproved, User.IsLockedOut, User.CreateDate.Value, User.LastLoginDate.Value, User.LastActivityDate.Value, User.LastPasswordChangedDate.Value, User.LastLockoutDate.Value);
-                }
-                else
-                {
-                    return null;
-                }
+                user.LastActivityDate = DateTime.UtcNow;
+                UserRepository.SaveUser(user);
             }
+
+            return new MembershipUser(
+                System.Web.Security.Membership.Provider.Name,
+                user.Username,
+                user.UserId,
+                user.Email,
+                null,
+                null,
+                user.IsApproved,
+                user.IsLockedOut,
+                user.CreateDate.Value,
+                user.LastLoginDate.Value,
+                user.LastActivityDate.Value,
+                user.LastPasswordChangedDate.Value,
+                user.LastLockoutDate.Value
+            );
         }
 
         public override MembershipUser GetUser(object providerUserKey, bool userIsOnline)
         {
-            if (providerUserKey is Guid) { }
-            else
-            {
+            if (!(providerUserKey is Guid))
                 return null;
+
+            var user = UserRepository.FindUserById((Guid) providerUserKey);
+            if (user == null)
+                return null;
+
+            if (userIsOnline)
+            {
+                user.LastActivityDate = DateTime.UtcNow;
+                UserRepository.SaveUser(user);
             }
 
-            using (DataContext Context = new DataContext())
-            {
-                User User = null;
-                User = Context.Users.Find(providerUserKey);
-                if (User != null)
-                {
-                    if (userIsOnline)
-                    {
-                        User.LastActivityDate = DateTime.UtcNow;
-                        Context.SaveChanges();
-                    }
-                    return new MembershipUser(Membership.Provider.Name, User.Username, User.UserId, User.Email, null, null, User.IsApproved, User.IsLockedOut, User.CreateDate.Value, User.LastLoginDate.Value, User.LastActivityDate.Value, User.LastPasswordChangedDate.Value, User.LastLockoutDate.Value);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            return new MembershipUser(
+                System.Web.Security.Membership.Provider.Name,
+                user.Username,
+                user.UserId,
+                user.Email,
+                null,
+                null,
+                user.IsApproved,
+                user.IsLockedOut,
+                user.CreateDate.Value,
+                user.LastLoginDate.Value,
+                user.LastActivityDate.Value,
+                user.LastPasswordChangedDate.Value,
+                user.LastLockoutDate.Value
+            );
         }
 
         public override bool ChangePassword(string username, string oldPassword, string newPassword)
         {
-            if (string.IsNullOrEmpty(username))
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(oldPassword) || string.IsNullOrEmpty(newPassword))
+                return false;
+            var user = UserRepository.FindUserByName(username);
+            if (user == null)
+                return false;
+
+            var hashedPassword = user.Password;
+            var verificationSucceeded = (hashedPassword != null &&
+                                         Crypto.VerifyHashedPassword(hashedPassword, oldPassword));
+            if (verificationSucceeded)
             {
+                user.PasswordFailuresSinceLastSuccess = 0;
+            }
+            else
+            {
+                var failures = user.PasswordFailuresSinceLastSuccess;
+                if (failures < MaxInvalidPasswordAttempts)
+                {
+                    user.PasswordFailuresSinceLastSuccess += 1;
+                    user.LastPasswordFailureDate = DateTime.UtcNow;
+                }
+                else if (failures >= MaxInvalidPasswordAttempts)
+                {
+                    user.LastPasswordFailureDate = DateTime.UtcNow;
+                    user.LastLockoutDate = DateTime.UtcNow;
+                    user.IsLockedOut = true;
+                }
+                UserRepository.SaveUser(user);
                 return false;
             }
-            if (string.IsNullOrEmpty(oldPassword))
-            {
+
+            var newHashedPassword = Crypto.HashPassword(newPassword);
+            if (newHashedPassword.Length > 128)
                 return false;
-            }
-            if (string.IsNullOrEmpty(newPassword))
-            {
-                return false;
-            }
-            using (DataContext Context = new DataContext())
-            {
-                User User = null;
-                User = Context.Users.FirstOrDefault(Usr => Usr.Username == username);
-                if (User == null)
-                {
-                    return false;
-                }
-                String HashedPassword = User.Password;
-                Boolean VerificationSucceeded = (HashedPassword != null && Crypto.VerifyHashedPassword(HashedPassword, oldPassword));
-                if (VerificationSucceeded)
-                {
-                    User.PasswordFailuresSinceLastSuccess = 0;
-                }
-                else
-                {
-                    int Failures = User.PasswordFailuresSinceLastSuccess;
-                    if (Failures < MaxInvalidPasswordAttempts)
-                    {
-                        User.PasswordFailuresSinceLastSuccess += 1;
-                        User.LastPasswordFailureDate = DateTime.UtcNow;
-                    }
-                    else if (Failures >= MaxInvalidPasswordAttempts)
-                    {
-                        User.LastPasswordFailureDate = DateTime.UtcNow;
-                        User.LastLockoutDate = DateTime.UtcNow;
-                        User.IsLockedOut = true;
-                    }
-                    Context.SaveChanges();
-                    return false;
-                }
-                String NewHashedPassword = Crypto.HashPassword(newPassword);
-                if (NewHashedPassword.Length > 128)
-                {
-                    return false;
-                }
-                User.Password = NewHashedPassword;
-                User.LastPasswordChangedDate = DateTime.UtcNow;
-                Context.SaveChanges();
-                return true;
-            }
+
+            user.Password = newHashedPassword;
+            user.LastPasswordChangedDate = DateTime.UtcNow;
+            UserRepository.SaveUser(user);
+
+            return true;
         }
 
         public override bool UnlockUser(string userName)
         {
-            using (DataContext Context = new DataContext())
-            {
-                User User = null;
-                User = Context.Users.FirstOrDefault(Usr => Usr.Username == userName);
-                if (User != null)
-                {
-                    User.IsLockedOut = false;
-                    User.PasswordFailuresSinceLastSuccess = 0;
-                    Context.SaveChanges();
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            var user = UserRepository.FindUserByName(userName);
+            if (user == null)
+                return false;
+
+            user.IsLockedOut = false;
+            user.PasswordFailuresSinceLastSuccess = 0;
+            UserRepository.SaveUser(user);
+
+            return true;
         }
 
         public override int GetNumberOfUsersOnline()
         {
-            DateTime DateActive = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(Convert.ToDouble(Membership.UserIsOnlineTimeWindow)));
-            using (DataContext Context = new DataContext())
-            {
-                return Context.Users.Where(Usr => Usr.LastActivityDate > DateActive).Count();
-            }
+            var userIsOnlineTimeWindow = (double) System.Web.Security.Membership.UserIsOnlineTimeWindow;
+            var dateActive = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(userIsOnlineTimeWindow));
+            return UserRepository.GetUsersCountWithLastActivityDateGreaterThen(dateActive);
         }
 
         public override bool DeleteUser(string username, bool deleteAllRelatedData)
         {
             if (string.IsNullOrEmpty(username))
-            {
                 return false;
-            }
-            using (DataContext Context = new DataContext())
-            {
-                User User = null;
-                User = Context.Users.FirstOrDefault(Usr => Usr.Username == username);
-                if (User != null)
-                {
-                    Context.Users.Remove(User);
-                    Context.SaveChanges();
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+
+            var user = UserRepository.FindUserByName(username);
+            if (user == null)
+                return false;
+
+            UserRepository.DeleteUser(user);
+            return true;
         }
 
         public override string GetUserNameByEmail(string email)
         {
-            using (DataContext Context = new DataContext())
-            {
-                User User = null;
-                User = Context.Users.FirstOrDefault(Usr => Usr.Email == email);
-                if (User != null)
-                {
-                    return User.Username;
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
+            var user = UserRepository.FindUserByEmail(email);
+            return user == null ? string.Empty : user.Username;
         }
 
         public override MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords)
         {
-            MembershipUserCollection MembershipUsers = new MembershipUserCollection();
-            using (DataContext Context = new DataContext())
+            var page = UserRepository.GetUsersPageByEmail(emailToMatch, pageIndex, pageSize);
+            totalRecords = (int) page.TotalItemCount;
+
+            var membershipUsers = new MembershipUserCollection();
+            foreach (var user in page.Items)
             {
-                totalRecords = Context.Users.Where(Usr => Usr.Email == emailToMatch).Count();
-                IQueryable<User> Users = Context.Users.Where(Usr => Usr.Email == emailToMatch).OrderBy(Usrn => Usrn.Username).Skip(pageIndex * pageSize).Take(pageSize);
-                foreach (User user in Users)
-                {
-                    MembershipUsers.Add(new MembershipUser(Membership.Provider.Name, user.Username, user.UserId, user.Email, null, null, user.IsApproved, user.IsLockedOut, user.CreateDate.Value, user.LastLoginDate.Value, user.LastActivityDate.Value, user.LastPasswordChangedDate.Value, user.LastLockoutDate.Value));
-                }
+                var membershipUser = new MembershipUser(
+                    System.Web.Security.Membership.Provider.Name, 
+                    user.Username, 
+                    user.UserId, 
+                    user.Email, 
+                    null, 
+                    null, 
+                    user.IsApproved, 
+                    user.IsLockedOut, 
+                    user.CreateDate.Value, 
+                    user.LastLoginDate.Value, 
+                    user.LastActivityDate.Value, 
+                    user.LastPasswordChangedDate.Value, 
+                    user.LastLockoutDate.Value
+                );
+                membershipUsers.Add(membershipUser);
             }
-            return MembershipUsers;
+            return membershipUsers;
         }
 
         public override MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords)
         {
-            MembershipUserCollection MembershipUsers = new MembershipUserCollection();
-            using (DataContext Context = new DataContext())
+            var page = UserRepository.GetUsersPageByUsername(usernameToMatch, pageIndex, pageSize);
+            totalRecords = (int) page.TotalItemCount;
+
+            var membershipUsers = new MembershipUserCollection();
+            foreach (var user in page.Items)
             {
-                totalRecords = Context.Users.Where(Usr => Usr.Username == usernameToMatch).Count();
-                IQueryable<User> Users = Context.Users.Where(Usr => Usr.Username == usernameToMatch).OrderBy(Usrn => Usrn.Username).Skip(pageIndex * pageSize).Take(pageSize);
-                foreach (User user in Users)
-                {
-                    MembershipUsers.Add(new MembershipUser(Membership.Provider.Name, user.Username, user.UserId, user.Email, null, null, user.IsApproved, user.IsLockedOut, user.CreateDate.Value, user.LastLoginDate.Value, user.LastActivityDate.Value, user.LastPasswordChangedDate.Value, user.LastLockoutDate.Value));
-                }
+                var membershipUser = new MembershipUser(
+                    System.Web.Security.Membership.Provider.Name,
+                    user.Username,
+                    user.UserId,
+                    user.Email,
+                    null,
+                    null,
+                    user.IsApproved,
+                    user.IsLockedOut,
+                    user.CreateDate.Value,
+                    user.LastLoginDate.Value,
+                    user.LastActivityDate.Value,
+                    user.LastPasswordChangedDate.Value,
+                    user.LastLockoutDate.Value
+                );
+                membershipUsers.Add(membershipUser);
             }
-            return MembershipUsers;
+            return membershipUsers;
         }
 
         public override MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords)
         {
-            MembershipUserCollection MembershipUsers = new MembershipUserCollection();
-            using (DataContext Context = new DataContext())
+            var page = UserRepository.GetUsersPage(pageIndex, pageSize);
+            totalRecords = (int) page.TotalItemCount;
+
+            var membershipUsers = new MembershipUserCollection();
+            foreach (var user in page.Items)
             {
-                totalRecords = Context.Users.Count();
-                IQueryable<User> Users = Context.Users.OrderBy(Usrn => Usrn.Username).Skip(pageIndex * pageSize).Take(pageSize);
-                foreach (User user in Users)
-                {
-                    MembershipUsers.Add(new MembershipUser(Membership.Provider.Name, user.Username, user.UserId, user.Email, null, null, user.IsApproved, user.IsLockedOut, user.CreateDate.Value, user.LastLoginDate.Value, user.LastActivityDate.Value, user.LastPasswordChangedDate.Value, user.LastLockoutDate.Value));
-                }
+                var membershipUser = new MembershipUser(
+                    System.Web.Security.Membership.Provider.Name,
+                    user.Username,
+                    user.UserId,
+                    user.Email,
+                    null,
+                    null,
+                    user.IsApproved,
+                    user.IsLockedOut,
+                    user.CreateDate.Value,
+                    user.LastLoginDate.Value,
+                    user.LastActivityDate.Value,
+                    user.LastPasswordChangedDate.Value,
+                    user.LastLockoutDate.Value
+                );
+                membershipUsers.Add(membershipUser);
             }
-            return MembershipUsers;
+            return membershipUsers;
         }
 
         public string CreateAccount(string userName, string password, bool requireConfirmationToken)
         {
-
             if (string.IsNullOrEmpty(userName))
-            {
                 throw new MembershipCreateUserException(MembershipCreateStatus.InvalidUserName);
-            }
-
             if (string.IsNullOrEmpty(password))
-            {
                 throw new MembershipCreateUserException(MembershipCreateStatus.InvalidPassword);
-            }
 
-            string hashedPassword = Crypto.HashPassword(password);
+            var hashedPassword = Crypto.HashPassword(password);
             if (hashedPassword.Length > 128)
-            {
                 throw new MembershipCreateUserException(MembershipCreateStatus.InvalidPassword);
-            }
+            if (UserRepository.HasUserWithName(userName))
+                throw new MembershipCreateUserException(MembershipCreateStatus.DuplicateUserName);
 
-            using (DataContext Context = new DataContext())
+            var token = string.Empty;
+            if (requireConfirmationToken)
             {
-                if (Context.Users.Where(Usr => Usr.Username == userName).Any())
-                {
-                    throw new MembershipCreateUserException(MembershipCreateStatus.DuplicateUserName);
-                }
-
-                string token = string.Empty;
-                if (requireConfirmationToken)
-                {
-                    token = GenerateToken();
-                }
-            
-                User NewUser = new User
-                    {
-                        UserId = Guid.NewGuid(),
-                        Username = userName,
-                        Password = hashedPassword,        
-                        IsApproved = !requireConfirmationToken,
-                        Email = string.Empty,
-                        CreateDate = DateTime.UtcNow,
-                        LastPasswordChangedDate = DateTime.UtcNow,
-                        PasswordFailuresSinceLastSuccess = 0,
-                        LastLoginDate = DateTime.UtcNow,
-                        LastActivityDate = DateTime.UtcNow,
-                        LastLockoutDate = DateTime.UtcNow,
-                        IsLockedOut = false,
-                        LastPasswordFailureDate = DateTime.UtcNow,
-                        ConfirmationToken = token 
-                    };
-
-                Context.Users.Add(NewUser);
-                Context.SaveChanges();
-                return token;
+                token = GenerateToken();
             }
-         
+
+            var newUser = new User
+            {
+                UserId = Guid.NewGuid(),
+                Username = userName,
+                Password = hashedPassword,
+                IsApproved = !requireConfirmationToken,
+                Email = string.Empty,
+                CreateDate = DateTime.UtcNow,
+                LastPasswordChangedDate = DateTime.UtcNow,
+                PasswordFailuresSinceLastSuccess = 0,
+                LastLoginDate = DateTime.UtcNow,
+                LastActivityDate = DateTime.UtcNow,
+                LastLockoutDate = DateTime.UtcNow,
+                IsLockedOut = false,
+                LastPasswordFailureDate = DateTime.UtcNow,
+                ConfirmationToken = token
+            };
+            UserRepository.AddUser(newUser);
+            return token;
         }
 
         private static string GenerateToken()
         {
-            using (var prng = new RNGCryptoServiceProvider())
+            using (var cryptoServiceProvider = new RNGCryptoServiceProvider())
             {
-                return GenerateToken(prng);
+                return GenerateToken(cryptoServiceProvider);
             }
         }
 
-        internal static string GenerateToken(RandomNumberGenerator generator)
+        private static string GenerateToken(RandomNumberGenerator generator)
         {
-            byte[] tokenBytes = new byte[TokenSizeInBytes];
+            var tokenBytes = new byte[TokenSizeInBytes];
             generator.GetBytes(tokenBytes);
             return HttpServerUtility.UrlTokenEncode(tokenBytes);
         }
 
-        #endregion
-
-        #region Not Supported
-
-        //CodeFirstMembershipProvider does not support password retrieval scenarios.
         public override bool EnablePasswordRetrieval
         {
             get { return false; }
         }
+
         public override string GetPassword(string username, string answer)
         {
             throw new NotSupportedException("Consider using methods from WebSecurity module.");
         }
 
-        //CodeFirstMembershipProvider does not support password reset scenarios.
         public override bool EnablePasswordReset
         {
             get { return false; }
         }
+
         public override string ResetPassword(string username, string answer)
         {
             throw new NotSupportedException("Consider using methods from WebSecurity module.");
         }
 
-        //CodeFirstMembershipProvider does not support question and answer scenarios.
         public override bool RequiresQuestionAndAnswer
         {
             get { return false; }
         }
+
         public override bool ChangePasswordQuestionAndAnswer(string username, string password, string newPasswordQuestion, string newPasswordAnswer)
         {
             throw new NotSupportedException("Consider using methods from WebSecurity module.");
         }
 
-        //CodeFirstMembershipProvider does not support UpdateUser because this method is useless.
         public override void UpdateUser(MembershipUser user)
         {
             throw new NotSupportedException();
         }
-
-        #endregion
     }
 }

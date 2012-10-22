@@ -5,11 +5,11 @@ namespace BuildingBlocks.Membership.Entities
 {
     public class User
     {
-        private IList<Role> _roles;
+        private IList<string> _roles;
 
         public User()
         {
-            _roles = new List<Role>();
+            _roles = new List<string>();
         }
 
         public virtual Guid UserId { get; set; }
@@ -37,10 +37,23 @@ namespace BuildingBlocks.Membership.Entities
         public virtual string PasswordVerificationToken { get; set; }
         public virtual DateTime? PasswordVerificationTokenExpirationDate { get; set; }
 
-        public virtual IEnumerable<Role> Roles
+        public virtual IEnumerable<string> Roles
         {
             get { return _roles; }
-            set { _roles = (IList<Role>)value; }
+            set { _roles = (IList<string>) value; }
+        }
+
+        public void RemoveRole(string roleName)
+        {
+            _roles.Remove(roleName);
+        }
+
+        public void AddRole(string roleName)
+        {
+            if (_roles.Contains(roleName)) 
+                return;
+
+            _roles.Add(roleName);
         }
     }
 }

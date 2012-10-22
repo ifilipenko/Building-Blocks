@@ -1,4 +1,6 @@
-﻿namespace BuildingBlocks.Membership.Contract
+using BuildingBlocks.Membership.Contract;
+
+namespace BuildingBlocks.Membership
 {
     public static class RepositoryFactory
     {
@@ -13,15 +15,5 @@
         {
             get { return _factoryImplementation; }
         }
-    }
-
-    public interface IRepositoryFactory
-    {
-        IUserRepository CreateUserRepository();
-    }
-
-    public interface IUserRepository
-    {
-        bool HasUserWithName(string username);
     }
 }
