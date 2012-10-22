@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BuildingBlocks.Common;
 
 namespace BuildingBlocks.Query
 {

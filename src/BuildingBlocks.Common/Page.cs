@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BuildingBlocks.Query
+namespace BuildingBlocks.Common
 {
     public class Page<T>
     {
