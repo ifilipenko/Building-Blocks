@@ -5,10 +5,11 @@ namespace BuildingBlocks.Membership.Contract
 {
     public interface IRoleRepository
     {
-        IEnumerable<Role> GetAll();
-        Role FindByName(string roleName);
-        IEnumerable<Role> FindRolesByNames(string[] roleNames);
         bool IsRoleExists(string roleName);
+
+        IEnumerable<Role> GetAll();
+        IEnumerable<Role> FindRolesByNames(params string[] roleNames);
+
         void CreateRole(Role role);
         void DeleteRole(Role role);
     }

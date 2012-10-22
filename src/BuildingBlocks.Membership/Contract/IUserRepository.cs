@@ -9,16 +9,19 @@ namespace BuildingBlocks.Membership.Contract
     {
         bool HasUserWithName(string username);
         bool HasUserWithEmail(string email);
-        IEnumerable<User> FindUsersByNames(string[] usernames);
-        User FindUserByName(string username);
+
+        IEnumerable<User> FindUsersByNames(params string[] usernames);
         User FindUserByEmail(string email);
         User FindUserById(Guid userId);
+
+        Page<User> GetUsersPageByEmail(string emailToMatch, int pageIndex, int pageSize);
+        Page<User> GetUsersPageByUsername(string usernameToMatch, int pageIndex, int pageSize);
+        Page<User> GetUsersPage(int pageIndex, int pageSize);
+
         int GetUsersCountWithLastActivityDateGreaterThen(DateTime dateActive);
+
         void AddUser(User newUser);
         void SaveUser(User user);
         void DeleteUser(User user);
-        Page<User> GetUsersPageByEmail(string emailToMatch,int pageIndex, int pageSize);
-        Page<User> GetUsersPageByUsername(string usernameToMatch, int pageIndex, int pageSize);
-        Page<User> GetUsersPage(int pageIndex, int pageSize);
     }
 }

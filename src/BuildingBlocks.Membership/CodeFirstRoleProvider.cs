@@ -53,15 +53,12 @@ namespace BuildingBlocks.Membership
                 return false;
             
             {
-                var user = UserRepository.FindUserByName(username);
+                var user = UserRepository.FindUsersByNames(username).SingleOrDefault();
                 if (user == null)
                     return false;
 
-                var role = RoleRepository.FindByName(roleName);
-                if (role == null)
-                    return false;
-
-                return user.Roles.Contains(role.RoleName);
+                var role = RoleRepository.FindRolesByNames(roleName).SingleOrDefault();
+                return role != null && user.Roles.Contains(role.RoleName);
             }
         }
 
@@ -74,7 +71,7 @@ namespace BuildingBlocks.Membership
         {
             if (string.IsNullOrEmpty(roleName))
                 return null;
-            var role = RoleRepository.FindByName(roleName);
+            var role = RoleRepository.FindRolesByNames(roleName).SingleOrDefault();
             return role == null ? null : role.Users.ToArray();
         }
 
@@ -83,7 +80,7 @@ namespace BuildingBlocks.Membership
             if (string.IsNullOrEmpty(username))
                 return null;
 
-            var user = UserRepository.FindUserByName(username);
+            var user = UserRepository.FindUsersByNames(username).SingleOrDefault();
             return user == null ? null : user.Roles.ToArray();
         }
 
@@ -102,7 +99,7 @@ namespace BuildingBlocks.Membership
         {
             if (string.IsNullOrEmpty(roleName))
                 return;
-            var role = RoleRepository.FindByName(roleName);
+            var role = RoleRepository.FindRolesByNames(roleName).SingleOrDefault();
             if (role != null) 
                 return;
 
@@ -120,7 +117,7 @@ namespace BuildingBlocks.Membership
                 return false;
             
             {
-                var role = RoleRepository.FindByName(roleName);
+                var role = RoleRepository.FindRolesByNames(roleName).SingleOrDefault();
                 if (role == null)
                     return false;
 
@@ -133,7 +130,7 @@ namespace BuildingBlocks.Membership
                 {
                     foreach (var userName in role.Users)
                     {
-                        var user = UserRepository.FindUserByName(userName);
+                        var user = UserRepository.FindUsersByNames(userName).SingleOrDefault();
                         if (user != null)
                         {
                             user.RemoveRole(role.RoleName);

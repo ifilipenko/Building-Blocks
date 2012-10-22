@@ -157,7 +157,7 @@ namespace BuildingBlocks.Membership
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return false;
 
-            var user = UserRepository.FindUserByName(username);
+            var user = FindUserByName(username);
             if (user == null || !user.IsApproved || user.IsLockedOut)
                 return false;
 
@@ -194,7 +194,7 @@ namespace BuildingBlocks.Membership
             if (string.IsNullOrEmpty(username))
                 return null;
 
-            var user = UserRepository.FindUserByName(username);
+            var user = FindUserByName(username);
             if (user == null)
                 return null;
 
@@ -257,7 +257,7 @@ namespace BuildingBlocks.Membership
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(oldPassword) || string.IsNullOrEmpty(newPassword))
                 return false;
-            var user = UserRepository.FindUserByName(username);
+            var user = FindUserByName(username);
             if (user == null)
                 return false;
 
@@ -299,7 +299,7 @@ namespace BuildingBlocks.Membership
 
         public override bool UnlockUser(string userName)
         {
-            var user = UserRepository.FindUserByName(userName);
+            var user = FindUserByName(userName);
             if (user == null)
                 return false;
 
@@ -322,7 +322,7 @@ namespace BuildingBlocks.Membership
             if (string.IsNullOrEmpty(username))
                 return false;
 
-            var user = UserRepository.FindUserByName(username);
+            var user = FindUserByName(username);
             if (user == null)
                 return false;
 
@@ -508,6 +508,12 @@ namespace BuildingBlocks.Membership
         public override void UpdateUser(MembershipUser user)
         {
             throw new NotSupportedException();
+        }
+
+        private User FindUserByName(string username)
+        {
+            var users = UserRepository.FindUsersByNames(username);
+            return users == null ? null : users.SingleOrDefault();
         }
     }
 }
