@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="CodeFirstMembershipProvider.cs" />
     <Compile Include="CodeFirstRoleProvider.cs" />
+    <Compile Include="Contract\Class1.cs" />
     <Compile Include="Crypto.cs" />
     <Compile Include="Entities\Role.cs" />
     <Compile Include="Entities\User.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Web.Security;
+using BuildingBlocks.Membership.Contract;
 using BuildingBlocks.Membership.Entities;
 
 namespace BuildingBlocks.Membership
@@ -85,15 +86,15 @@ namespace BuildingBlocks.Membership
                 return null;
             }
 
-            using (DataContext Context = new DataContext())
+            var userRepository = RepositoryFactory.Current.CreateUserRepository();
             {
-                if (Context.Users.Where(Usr => Usr.Username == username).Any())
+                if (userRepository.HasUserWithName(username))
                 {
                     status = MembershipCreateStatus.DuplicateUserName;
                     return null;
                 }
 
-                if (Context.Users.Where(Usr => Usr.Email == email).Any())
+                if (context.Users.Where(Usr => Usr.Email == email).Any())
                 {
                     status = MembershipCreateStatus.DuplicateEmail;
                     return null;
@@ -116,8 +117,8 @@ namespace BuildingBlocks.Membership
                         LastPasswordFailureDate = DateTime.UtcNow
                     };
 
-                Context.Users.Add(NewUser);
-                Context.SaveChanges();
+                context.Users.Add(NewUser);
+                context.SaveChanges();
                 status = MembershipCreateStatus.Success;
                 return new MembershipUser(Membership.Provider.Name, NewUser.Username, NewUser.UserId, NewUser.Email, null, null, NewUser.IsApproved, NewUser.IsLockedOut, NewUser.CreateDate.Value, NewUser.LastLoginDate.Value, NewUser.LastActivityDate.Value, NewUser.LastPasswordChangedDate.Value, NewUser.LastLockoutDate.Value);
             }
