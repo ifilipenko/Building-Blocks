@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Mic.Infrastructure.Membership.Entities
+namespace BuildingBlocks.Membership.Entities
 {
     public class Role
     {

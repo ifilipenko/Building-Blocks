@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Mic.Infrastructure.Membership")]
+[assembly: AssemblyTitle("BuildingBlocks.Membership")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("Mic.Infrastructure.Membership")]
+[assembly: AssemblyProduct("BuildingBlocks.Membership")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("072bc0c4-194e-436c-b6d1-7a044b7326f5")]
+[assembly: Guid("e804a056-1fc1-44d2-af42-ca7b3b91e2da")]
 
 // Version information for an assembly consists of the following four values:
 //

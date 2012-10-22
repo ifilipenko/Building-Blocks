@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
-namespace Mic.Infrastructure.Membership
+namespace BuildingBlocks.Membership
 {
     public static class Crypto
     {

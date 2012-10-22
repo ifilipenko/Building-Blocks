@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Mic.Infrastructure.Membership.Entities;
+using BuildingBlocks.Membership.Entities;
 
-namespace Mic.Infrastructure.Membership
+namespace BuildingBlocks.Membership
 {
     public class CodeFirstRoleProvider : RoleProvider
     {

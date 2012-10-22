@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Mic.Infrastructure.Membership.Entities;
+using BuildingBlocks.Membership.Entities;
 
-namespace Mic.Infrastructure.Membership
+namespace BuildingBlocks.Membership
 {
     public sealed class WebSecurity
     {

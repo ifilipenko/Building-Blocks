@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using Mic.Infrastructure.Membership.Entities;
+using BuildingBlocks.Membership.Entities;
 
-namespace Mic.Infrastructure.Membership
+namespace BuildingBlocks.Membership
 {
     public class CodeFirstMembershipProvider : MembershipProvider
     {
