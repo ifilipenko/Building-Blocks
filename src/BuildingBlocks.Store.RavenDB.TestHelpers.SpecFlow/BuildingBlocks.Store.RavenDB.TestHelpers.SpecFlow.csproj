@@ -66,13 +66,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="BuildingBlocks.Store.RavenDB.nuspec">
+    <None Include="BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow.nuspec">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BuildingBlocks.Store.RavenDB\BuildingBlocks.Store.RavenDB.csproj">
+      <Project>{E3456B0E-CD97-4973-9379-7B24C201FDEB}</Project>
+      <Name>BuildingBlocks.Store.RavenDB</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BuildingBlocks.Store\BuildingBlocks.Store.csproj">
       <Project>{44FC5F3F-8054-47D4-848F-783AF942F5FF}</Project>
       <Name>BuildingBlocks.Store</Name>
