@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow</id>
+    <id>BuildingBlocks.Store.RavenDB</id>
     <version>1.0.0.0</version>
     <authors>Innokentiy Filipenko</authors>
     <owners>Building-Blocks</owners>
@@ -12,11 +12,7 @@
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2012</copyright>
     <dependencies>
-      <dependency id="RavenDB.Client" version="1.0.972" />
-      <dependency id="RavenDB.Embedded" version="1.0.960" />
-      <dependency id="SpecFlow" version="1.9.0" />
       <dependency id="BuildingBlocks.Store" version="1.0.0.0" />
-      <dependency id="BuildingBlocks.Store.RavenDB" version="1.0.0.0" />
     </dependencies>
   </metadata>
 </package>
