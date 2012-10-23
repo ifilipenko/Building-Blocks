@@ -66,6 +66,7 @@
   <ItemGroup>
     <None Include="BuildingBlocks.Store.RavenDB.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
