@@ -42,8 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeFirstMembershipProvider.cs" />
-    <Compile Include="CodeFirstRoleProvider.cs" />
+    <Compile Include="MembershipProvider.cs" />
+    <Compile Include="RoleProvider.cs" />
     <Compile Include="Contract\IRoleRepository.cs" />
     <Compile Include="Contract\IUserRepository.cs" />
     <Compile Include="Contract\IRepositoryFactory.cs" />
