@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Web.Security;
 using BuildingBlocks.Membership.Contract;
 using BuildingBlocks.Membership.Entities;
 
 namespace BuildingBlocks.Membership
 {
-    public class CodeFirstRoleProvider : RoleProvider
+    public class RoleProvider : System.Web.Security.RoleProvider
     {
         private string _applicationName;
         private readonly Lazy<IRoleRepository> _roleRepository;
         private readonly Lazy<IUserRepository> _userRepository;
 
-        public CodeFirstRoleProvider()
+        public RoleProvider()
         {
             _roleRepository = new Lazy<IRoleRepository>(() => RepositoryFactory.Current.CreateRoleRepository(), true);
             _userRepository = new Lazy<IUserRepository>(() => RepositoryFactory.Current.CreateUserRepository(), true);

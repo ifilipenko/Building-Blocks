@@ -9,13 +9,13 @@ using BuildingBlocks.Membership.Entities;
 
 namespace BuildingBlocks.Membership
 {
-    public class CodeFirstMembershipProvider : MembershipProvider
+    public class MembershipProvider : System.Web.Security.MembershipProvider
     {
         private string _applicationName;
         private const int TokenSizeInBytes = 16;
         private readonly Lazy<IUserRepository> _userRepository;
 
-        public CodeFirstMembershipProvider()
+        public MembershipProvider()
         {
             _userRepository = new Lazy<IUserRepository>(() => RepositoryFactory.Current.CreateUserRepository(), true);
         }
