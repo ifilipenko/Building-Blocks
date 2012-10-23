@@ -8,7 +8,7 @@
     <licenseUrl>https://raw.github.com/ifilipenko/Building-Blocks/master/License.txt</licenseUrl>
     <projectUrl>https://github.com/ifilipenko/Building-Blocks</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Session implementation for RavenDB</description>
+    <description>Helpers for integration tests with RavenDB and SpecFlow</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2012</copyright>
     <dependencies>
