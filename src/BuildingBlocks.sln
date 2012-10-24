@@ -28,6 +28,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Membership",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow", "BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow\BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow.csproj", "{9F2BF224-30DA-4D63-87A8-5BE319DB0C5A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Membership.RavenDB.Tests", "BuildingBlocks.Membership.RavenDB.Tests\BuildingBlocks.Membership.RavenDB.Tests.csproj", "{F436716D-7A23-4B16-88FD-523BDC828DA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Membership.RavenDB", "BuildingBlocks.Membership.RavenDB\BuildingBlocks.Membership.RavenDB.csproj", "{858854A4-7679-483B-98BE-98AFBBC4EC2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +78,14 @@ Global
 		{9F2BF224-30DA-4D63-87A8-5BE319DB0C5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F2BF224-30DA-4D63-87A8-5BE319DB0C5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F2BF224-30DA-4D63-87A8-5BE319DB0C5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F436716D-7A23-4B16-88FD-523BDC828DA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F436716D-7A23-4B16-88FD-523BDC828DA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F436716D-7A23-4B16-88FD-523BDC828DA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F436716D-7A23-4B16-88FD-523BDC828DA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{858854A4-7679-483B-98BE-98AFBBC4EC2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{858854A4-7679-483B-98BE-98AFBBC4EC2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{858854A4-7679-483B-98BE-98AFBBC4EC2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{858854A4-7679-483B-98BE-98AFBBC4EC2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

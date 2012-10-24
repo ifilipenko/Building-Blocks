@@ -28,7 +28,7 @@ namespace BuildingBlocks.Store.RavenDB
             _session = new Lazy<IDocumentSession>(() => session);
         }
 
-        private IDocumentSession Session
+        public IDocumentSession Session
         {
             get
             {
@@ -65,19 +65,19 @@ namespace BuildingBlocks.Store.RavenDB
             return Session.Load<T>(ids);
         }
 
-        public T[] GetByIds<T>(IEnumerable<string> ids, ILoadingStrategy<T> loadingStrategy)
+        public T[] GetByIds<T>(IEnumerable<string> ids, ILoadingStrategy<T> loadingStrategy = null)
         {
             var loader = ApplyLoadingStrategyToSession(Session, loadingStrategy);
             return loader == null ? Session.Load<T>(ids) : loader.Load(ids.ToArray());
         }
 
-        public T GetById<T>(ValueType id, ILoadingStrategy<T> loadingStrategy)
+        public T GetById<T>(ValueType id, ILoadingStrategy<T> loadingStrategy = null)
         {
             var loader = ApplyLoadingStrategyToSession(Session, loadingStrategy);
             return loader == null ? Session.Load<T>(id) : loader.Load(id);
         }
 
-        public IQueryable<T> Query<T>(ILoadingStrategy<T> loadingStrategy)
+        public IQueryable<T> Query<T>(ILoadingStrategy<T> loadingStrategy = null)
         {
             var query = Session.Query<T>();
             ApplyLoadingStrategyToQuery(query, loadingStrategy);
@@ -149,6 +149,11 @@ namespace BuildingBlocks.Store.RavenDB
                         x.Include(property);
                     }
                 });
+        }
+
+        public void ForcedInitialize()
+        {
+            Query<object>(null);
         }
     }
 }

@@ -19,9 +19,6 @@ namespace BuildingBlocks.Membership.Entities
 
         public virtual string Password { get; set; }
 
-        public virtual string FirstName { get; set; }
-        public virtual string LastName { get; set; }
-
         public virtual string Comment { get; set; }
 
         public virtual bool IsApproved { get; set; }

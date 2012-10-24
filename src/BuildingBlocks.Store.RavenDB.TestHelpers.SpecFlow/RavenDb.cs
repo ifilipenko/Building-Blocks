@@ -5,7 +5,7 @@ namespace BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow
     public static class RavenDb
     {
         private static IDocumentSession _currentSession;
-        private static IStorageSession _currentStorageSession;
+        private static RavenDbSession _currentStorageSession;
 
         public static IDocumentStore Store { get; set; }
 
@@ -19,11 +19,6 @@ namespace BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow
             get { return _currentStorageSession ?? (_currentStorageSession = OpenStorageSession()); }
         }
 
-        public static bool HasCurrentStorageSession
-        {
-            get { return _currentStorageSession != null; }
-        }
-
         public static bool HasCurrentSession
         {
             get { return _currentSession != null; }
@@ -31,15 +26,11 @@ namespace BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow
 
         public static void DisposeSessions()
         {
-            if (_currentSession != null)
+            if (HasCurrentSession)
             {
-                _currentSession.Dispose();
-                _currentSession = null;
-            }
-            if (_currentStorageSession != null)
-            {
-                _currentStorageSession.Dispose();
+                CurrentStorageSession.Dispose();
                 _currentStorageSession = null;
+                _currentSession = null;
             }
         }
 
@@ -48,9 +39,14 @@ namespace BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow
             return Store.OpenSession();
         }
 
-        public static IStorageSession OpenStorageSession()
+        public static RavenDbSession OpenStorageSession()
         {
-            return new RavenDbSession(Store);
+            var storageSession = new RavenDbSession(CurrentSession);
+            if (!storageSession.IsInitialized)
+            {
+                storageSession.ForcedInitialize();
+            }
+            return storageSession;
         }
     }
 }

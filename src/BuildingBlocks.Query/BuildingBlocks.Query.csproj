@@ -44,6 +44,7 @@
     <Compile Include="IQueryBuilder.cs" />
     <Compile Include="IQueryFactory.cs" />
     <Compile Include="IQueryFor.cs" />
+    <Compile Include="PageCriteria.cs" />
     <Compile Include="Pagination.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryBuilder.cs" />

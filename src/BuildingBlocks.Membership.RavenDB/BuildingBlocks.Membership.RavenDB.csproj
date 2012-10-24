@@ -1,15 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E3456B0E-CD97-4973-9379-7B24C201FDEB}</ProjectGuid>
+    <ProjectGuid>{858854A4-7679-483B-98BE-98AFBBC4EC2B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BuildingBlocks.Store.RavenDB</RootNamespace>
-    <AssemblyName>BuildingBlocks.Store.RavenDB</AssemblyName>
+    <RootNamespace>BuildingBlocks.Membership.RavenDB</RootNamespace>
+    <AssemblyName>BuildingBlocks.Membership.RavenDB</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -33,16 +32,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.4.5.7\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
+    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="Raven.Abstractions">
+    <Reference Include="Raven.Abstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\RavenDB.Client.1.0.972\lib\net40\Raven.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Raven.Client.Lightweight">
+    <Reference Include="Raven.Client.Lightweight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\RavenDB.Client.1.0.972\lib\net40\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -55,24 +58,44 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DomainModel\RoleEntity.cs" />
+    <Compile Include="DomainModel\RoleEntityMappingHelpers.cs" />
+    <Compile Include="DomainModel\RoleReference.cs" />
+    <Compile Include="DomainModel\UserEntity.cs" />
+    <Compile Include="DomainModel\UserEntityMappingHelpers.cs" />
+    <Compile Include="DomainModel\UserReference.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="RavenDbSession.cs" />
-    <Compile Include="SessionHelpers.cs" />
-    <Compile Include="StaleResultsStrategy.cs" />
+    <Compile Include="Queries\Criteria\FindByUsernameSubstring.cs" />
+    <Compile Include="Queries\UserWithMatchedEmails.cs" />
+    <Compile Include="Queries\Criteria\FindByEmailSubstring.cs" />
+    <Compile Include="Queries\Criteria\UsernameMatch.cs" />
+    <Compile Include="RoleRepositoryImpl.cs" />
+    <Compile Include="UserRepositoryImpl.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="BuildingBlocks.Store.RavenDB.nuspec">
+    <None Include="BuildingBlocks.Membership.RavenDB.nuspec">
+      <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BuildingBlocks.Common\BuildingBlocks.Common.csproj">
+      <Project>{D03AFEE9-3AD7-472D-8D88-4E7C19267AA3}</Project>
+      <Name>BuildingBlocks.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BuildingBlocks.Membership\BuildingBlocks.Membership.csproj">
+      <Project>{79EE9CF8-4A24-4D47-898C-9C4F226D6F42}</Project>
+      <Name>BuildingBlocks.Membership</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BuildingBlocks.Query\BuildingBlocks.Query.csproj">
+      <Project>{A8F52D30-935B-4D17-ABF2-42E04F1DBC70}</Project>
+      <Name>BuildingBlocks.Query</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BuildingBlocks.Store.RavenDB\BuildingBlocks.Store.RavenDB.csproj">
+      <Project>{E3456B0E-CD97-4973-9379-7B24C201FDEB}</Project>
+      <Name>BuildingBlocks.Store.RavenDB</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BuildingBlocks.Store\BuildingBlocks.Store.csproj">
       <Project>{44FC5F3F-8054-47D4-848F-783AF942F5FF}</Project>
       <Name>BuildingBlocks.Store</Name>

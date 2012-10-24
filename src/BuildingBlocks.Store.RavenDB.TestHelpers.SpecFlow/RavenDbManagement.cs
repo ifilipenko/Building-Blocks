@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using System.Linq;
+using Common.Logging;
 using Raven.Client;
 using Raven.Client.Embedded;
 using TechTalk.SpecFlow;
@@ -8,6 +10,7 @@ namespace BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow
     [Binding]
     public class RavenDbManagement
     {
+        private static readonly ILog _log = LogManager.GetLogger<RavenDbManagement>();
         private static IDocumentStore _store;
 
         [BeforeScenario()]
@@ -21,36 +24,38 @@ namespace BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow
         {
             RavenDb.DisposeSessions();
             RavenDb.Store.Dispose();
+            _log.Debug(m => m("Document store disposed"));
         }
 
         [BeforeStep]
         public void OpenSessions()
         {
-            if (!IsRavenDbStepOrSession)
+            if (!IsRavenDbStepOrFeature)
                 return;
 
             RavenDb.OpenSession();
             RavenDb.OpenStorageSession();
+            _log.Debug(m => m("Raven db session opened, id={0}", GetCurrentSessionId()));
         }
 
         [AfterStep]
         public void CloseSessions()
         {
+            if (!RavenDb.HasCurrentSession)
+                return;
+
             if (ScenarioContext.Current.TestError == null)
             {
-                if (RavenDb.HasCurrentSession)
-                {
-                    RavenDb.CurrentSession.SaveChanges();
-                }
-                if (RavenDb.HasCurrentStorageSession)
-                {
-                    RavenDb.CurrentStorageSession.SumbitChanges();
-                }
+                RavenDb.CurrentStorageSession.SumbitChanges();
+                _log.Debug(m => m("All changes saved to raven db, id={0}", GetCurrentSessionId()));
             }
+
+            var id = GetCurrentSessionId();
             RavenDb.DisposeSessions();
+            _log.Debug(m => m("Raven Db session closed, id={0}", id));
         }
 
-        private bool IsRavenDbStepOrSession
+        private bool IsRavenDbStepOrFeature
         {
             get
             {
@@ -66,12 +71,22 @@ namespace BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow
 
         private static IDocumentStore CreateStorage()
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
             var store = new EmbeddableDocumentStore
                 {
                     RunInMemory = true
                 };
             store.Initialize();
+            stopWatch.Stop();
+
+            _log.Debug(m => m("Document store initilized ({0:F2}s)", stopWatch.Elapsed.TotalSeconds));
             return store;
+        }
+
+        private static object GetCurrentSessionId()
+        {
+            return ((RavenDbSession) RavenDb.CurrentStorageSession).Id;
         }
     }
 }
