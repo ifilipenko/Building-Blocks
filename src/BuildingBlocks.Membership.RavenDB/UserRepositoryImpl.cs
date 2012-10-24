@@ -60,12 +60,17 @@ namespace BuildingBlocks.Membership.RavenDB
 
         public Page<User> GetUsersPageByUsername(string usernameToMatch, int pageIndex, int pageSize)
         {
-            throw new NotImplementedException();
+            var page = _queryBuilder.For<User>()
+                .With(new FindByUsernameSubstring(usernameToMatch, pageIndex + 1, pageSize))
+                .Page();
+            return page;
         }
 
         public Page<User> GetUsersPage(int pageIndex, int pageSize)
         {
-            throw new NotImplementedException();
+            return Pagination.From(_session.Query<UserEntity>())
+                .Page(pageIndex + 1, pageSize)
+                .GetPageWithItemsMappedBy(u => u.ToUser());
         }
 
         public int GetUsersCountWithLastActivityDateGreaterThen(DateTime dateActive)

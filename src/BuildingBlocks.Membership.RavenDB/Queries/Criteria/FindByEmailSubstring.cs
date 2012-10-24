@@ -7,9 +7,9 @@ namespace BuildingBlocks.Membership.RavenDB.Queries.Criteria
         public FindByEmailSubstring(string emailSubstring, int pageNumber, int pageSize)
             : base(pageNumber, pageSize)
         {
-            Email = emailSubstring;
+            EmailSubstring = emailSubstring;
         }
 
-        public string Email { get; private set; }
+        public string EmailSubstring { get; private set; }
     }
 }

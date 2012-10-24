@@ -91,25 +91,32 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         }
 
         [When(@"загружают (.*) страницу пользоватлей по (.*) пользовател€ с фильтром по email ""(.*)""")]
-        public void ≈сли«агружают—траницуѕользоватлейѕоѕользовател€—‘ильтромѕоEmailKreml_Uc(int pageNumber, int pageSize, string emailToMatch)
+        public void ≈сли«агружают—траницуѕользоватлейѕоѕользовател€—‘ильтромѕоEmail(int pageNumber, int pageSize, string emailToMatch)
         {
             Mock.Get(QueryFactory)
                 .Setup(f => f.Create<FindByEmailSubstring, Page<User>>())
-                .Returns(new UserWithMatchedEmails(RavenDb.CurrentStorageSession));
+                .Returns(new UsersColumnMatchedToSubstring(RavenDb.CurrentStorageSession));
 
             var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
             UserPageResult = userRepository.GetUsersPageByEmail(emailToMatch, pageNumber - 1, pageSize);
         }
 
         [When(@"загружают (.*) страницу пользоватлей по (.*) пользовател€ с фильтром по имени ""(.*)""")]
-        public void ≈сли«агружают—траницуѕользоватлейѕоѕользовател€—‘ильтромѕо»мени(int p0, int p1, string p2)
+        public void ≈сли«агружают—траницуѕользоватлейѕоѕользовател€—‘ильтромѕо»мени(int pageNumber, int pageSize, string usernameToMatch)
         {
             Mock.Get(QueryFactory)
                 .Setup(f => f.Create<FindByUsernameSubstring, Page<User>>())
-                .Returns(new UserWithMatchedUsernames(RavenDb.CurrentStorageSession));
+                .Returns(new UsersColumnMatchedToSubstring(RavenDb.CurrentStorageSession));
 
             var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
-            UserPageResult = userRepository.GetUsersPageByEmail(emailToMatch, pageNumber - 1, pageSize);
+            UserPageResult = userRepository.GetUsersPageByUsername(usernameToMatch, pageNumber - 1, pageSize);
+        }
+
+        [When(@"загружают (.*) страницу пользоватлей по (.*) пользовател€")]
+        public void ≈сли«агружают—траницуѕользоватлейѕоѕользовател€(int pageNumber, int pageSize)
+        {
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            UserPageResult = userRepository.GetUsersPage(pageNumber - 1, pageSize);
         }
 
         [Then(@"возвращаетс€ страница пользователей")]
