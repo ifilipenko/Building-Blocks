@@ -21,6 +21,13 @@ namespace BuildingBlocks.Store.RavenDB
             _documentStore = documentStore;
         }
 
+        public RavenDbSession(IDocumentSession session)
+        {
+            if (session == null)
+                throw new ArgumentNullException("session");
+            _session = new Lazy<IDocumentSession>(() => session);
+        }
+
         private IDocumentSession Session
         {
             get
