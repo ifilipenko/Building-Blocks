@@ -12,7 +12,6 @@
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2012</copyright>
     <dependencies>
-      <dependency id="System.Linq.Dynamic" version="1.0.0" />
       <dependency id="BuildingBlocks.Store" version="1.0.0.0" />
     </dependencies>
   </metadata>

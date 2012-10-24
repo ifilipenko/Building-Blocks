@@ -11,5 +11,8 @@
     <description>Abstract store session and session scope management</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2012</copyright>
+    <dependencies>
+      <dependency id="System.Linq.Dynamic" version="1.0.0" />
+    </dependencies>
   </metadata>
 </package>
