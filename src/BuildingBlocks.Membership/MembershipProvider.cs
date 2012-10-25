@@ -521,7 +521,7 @@ namespace BuildingBlocks.Membership
 
         private string ShouldBePositive(int? value)
         {
-            if (value.HasValue && value.Value > -1)
+            if (value.HasValue && value.Value < 0)
             {
                 return "value should be greater then -1";
             }
