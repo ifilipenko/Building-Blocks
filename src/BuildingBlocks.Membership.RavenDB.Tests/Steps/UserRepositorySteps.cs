@@ -55,14 +55,14 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         [When(@"провер€ют что пользователь с именем ""(.*)"" существует")]
         public void ≈слиѕровер€ют„тоѕользователь—уществует(string userName)
         {
-            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession);
             UserExistsResult = userRepository.HasUserWithName(MembershipSettings.ApplicationName, userName);
         }
 
         [When(@"провер€ют что пользователь с email ""(.*)"" существует")]
         public void ≈слиѕровер€ют„тоѕользовательByEmail—уществует(string email)
         {
-            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession);
             UserExistsResult = userRepository.HasUserWithEmail(MembershipSettings.ApplicationName, email);
         }
 
@@ -70,21 +70,21 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         public void ≈слиѕолучают—писокѕользователей—одержащих»мена(Table table)
         {
             var namesList = table.Rows.Select(r => r["им€"]).ToArray();
-            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession);
             UsersResult = userRepository.FindUsersByNames(MembershipSettings.ApplicationName, namesList);
         }
 
         [When(@"ищут пользовател€ с email ""(.*)""")]
         public void ≈сли»щутѕользовател€—Email(string email)
         {
-            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession);
             UsersResult = userRepository.FindUserByEmail(MembershipSettings.ApplicationName, email).ToEnumerableOrEmpty();
         }
 
         [When(@"ищут пользовател€ с Id ""(.*)""")]
         public void ≈сли»щутѕользовател€—Id(string id)
         {
-            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession);
             UsersResult = userRepository.FindUserById(new Guid(id)).ToEnumerableOrEmpty();
         }
 
@@ -95,7 +95,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
                 .Setup(f => f.Create<FindByEmailSubstring, Page<User>>())
                 .Returns(new UsersColumnMatchedToSubstring(RavenDb.CurrentStorageSession));
 
-            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession);
             UserPageResult = userRepository.GetUsersPageByEmail(MembershipSettings.ApplicationName, emailToMatch, pageNumber - 1, pageSize);
         }
 
@@ -106,14 +106,14 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
                 .Setup(f => f.Create<FindByUsernameSubstring, Page<User>>())
                 .Returns(new UsersColumnMatchedToSubstring(RavenDb.CurrentStorageSession));
 
-            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession);
             UserPageResult = userRepository.GetUsersPageByUsername(MembershipSettings.ApplicationName, usernameToMatch, pageNumber - 1, pageSize);
         }
 
         [When(@"загружают (.*) страницу пользоватлей по (.*) пользовател€")]
         public void ≈сли«агружают—траницуѕользоватлейѕоѕользовател€(int pageNumber, int pageSize)
         {
-            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession);
             UserPageResult = userRepository.GetUsersPage(MembershipSettings.ApplicationName, pageNumber - 1, pageSize);
         }
 
@@ -124,7 +124,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
             {
                 Password = "123"
             };
-            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession);
             userRepository.AddUser(user);
         }
 
@@ -142,14 +142,14 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
                 user.AddRole(roleName);
             }
 
-            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession);
             userRepository.AddUser(user);
         }
 
         [When(@"получают количество пользователей с последней активностью от (.*)")]
         public void ≈слиѕолучают оличествоѕользователей—ѕоследнейјктивностьюќт(DateTime dateTime)
         {
-            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession);
             UsersCountResult = userRepository.GetUsersCountWithLastActivityDateGreaterThen(MembershipSettings.ApplicationName, dateTime);
         }
 
@@ -177,7 +177,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
             user.PasswordVerificationToken               = data.PasswordVerificationToken;
             user.PasswordVerificationTokenExpirationDate = data.PasswordVerificationTokenExpirationDate;
 
-            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession);
             userRepository.SaveUser(user);
         }
 
@@ -196,7 +196,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
                 string roleName = row.роль;
                 user.AddRole(roleName);
             }
-            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession);
             userRepository.SaveUser(user);
         }
 
@@ -205,7 +205,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         {
             var user = RavenDb.CurrentStorageSession.Query<UserEntity>().Single(u => u.Username == userName).ToUser();
 
-            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession);
             userRepository.DeleteUser(user);
         }
 

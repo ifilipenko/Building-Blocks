@@ -5,6 +5,7 @@ using BuildingBlocks.Common;
 using BuildingBlocks.Membership.Contract;
 using BuildingBlocks.Membership.Entities;
 using BuildingBlocks.Membership.RavenDB.DomainModel;
+using BuildingBlocks.Membership.RavenDB.Queries;
 using BuildingBlocks.Membership.RavenDB.Queries.Criteria;
 using BuildingBlocks.Query;
 using BuildingBlocks.Store;
@@ -14,12 +15,10 @@ namespace BuildingBlocks.Membership.RavenDB
     public class UserRepositoryImpl : IUserRepository
     {
         private readonly IStorageSession _session;
-        private readonly IQueryBuilder _queryBuilder;
 
-        public UserRepositoryImpl(IStorageSession session, IQueryBuilder queryBuilder)
+        public UserRepositoryImpl(IStorageSession session)
         {
             _session = session;
-            _queryBuilder = queryBuilder;
         }
 
         public bool HasUserWithName(string applicationName, string username)
@@ -52,17 +51,15 @@ namespace BuildingBlocks.Membership.RavenDB
 
         public Page<User> GetUsersPageByEmail(string applicationName, string emailToMatch, int pageIndex, int pageSize)
         {
-            var page = _queryBuilder.For<User>()
-                .With(new FindByEmailSubstring(emailToMatch, pageIndex + 1, pageSize))
-                .Page();
+            IQuery<FindByEmailSubstring, Page<User>> query = new UsersColumnMatchedToSubstring(_session);
+            var page = query.Execute(new FindByEmailSubstring(emailToMatch, pageIndex + 1, pageSize));
             return page;
         }
 
         public Page<User> GetUsersPageByUsername(string applicationName, string usernameToMatch, int pageIndex, int pageSize)
         {
-            var page = _queryBuilder.For<User>()
-                .With(new FindByUsernameSubstring(usernameToMatch, pageIndex + 1, pageSize))
-                .Page();
+            IQuery<FindByUsernameSubstring, Page<User>> query = new UsersColumnMatchedToSubstring(_session);
+            var page = query.Execute(new FindByUsernameSubstring(usernameToMatch, pageIndex + 1, pageSize));
             return page;
         }
 
