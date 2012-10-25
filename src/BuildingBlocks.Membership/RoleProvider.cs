@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Linq;
 using BuildingBlocks.Membership.Contract;
 using BuildingBlocks.Membership.Entities;
@@ -31,12 +32,35 @@ namespace BuildingBlocks.Membership
         {
             get
             {
-                return _applicationName ?? GetType().Assembly.GetName().Name;
+                return _applicationName ?? GetType().Namespace;
             }
             set
             {
                 _applicationName = value;
             }
+        }
+
+        public override void Initialize(string name, NameValueCollection config)
+        {
+            if (config == null)
+                throw new ArgumentNullException("config");
+
+            if (string.IsNullOrEmpty(name))
+            {
+                name = "BuildingBlocks.RoleProvider";
+            }
+
+            if (string.IsNullOrEmpty(config["description"]))
+            {
+                config.Remove("description");
+                config.Add("description", "Simple role provider");
+            }
+
+            base.Initialize(name, config);
+
+            ApplicationName = !string.IsNullOrEmpty(config["applicationName"])
+                ? config["applicationName"]
+                : ProviderHelpers.GetDefaultAppName();
         }
 
         public override bool RoleExists(string roleName)

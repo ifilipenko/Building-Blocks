@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Specialized;
-using System.Configuration;
-using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Web;
-using System.Web.Hosting;
 using System.Web.Security;
 using BuildingBlocks.Membership.Contract;
 using BuildingBlocks.Membership.Entities;
@@ -95,16 +92,16 @@ namespace BuildingBlocks.Membership
                 config.Add("description", "Simple membership provider");
             }
 
-            _minRequiredPasswordLength            = GetSetting<int?>(config, "minRequiredPasswordLength", validator: ShouldBePositive);
-            _minRequiredNonAlphanumericCharacters = GetSetting<int?>(config, "minRequiredNonalphanumericCharacters", validator: ShouldBePositive);
-            _maxInvalidPasswordAttempts           = GetSetting<int?>(config, "maxInvalidPasswordAttempts", validator: ShouldBePositive);
-            _passwordAttemptWindow                = GetSetting<int?>(config, "passwordAttemptWindow", validator: ShouldBePositive);
+            _minRequiredPasswordLength            = config.GetOf<int?>("minRequiredPasswordLength", validator: ShouldBePositive);
+            _minRequiredNonAlphanumericCharacters = config.GetOf<int?>("minRequiredNonalphanumericCharacters", validator: ShouldBePositive);
+            _maxInvalidPasswordAttempts           = config.GetOf<int?>("maxInvalidPasswordAttempts", validator: ShouldBePositive);
+            _passwordAttemptWindow                = config.GetOf<int?>("passwordAttemptWindow", validator: ShouldBePositive);
 
             base.Initialize(name, config);
 
             ApplicationName = !string.IsNullOrEmpty(config["applicationName"]) 
-                ? config["applicationName"] 
-                : GetDefaultAppName();
+                ? config["applicationName"]
+                : ProviderHelpers.GetDefaultAppName();
         }
 
         public override MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out MembershipCreateStatus status)
@@ -520,64 +517,6 @@ namespace BuildingBlocks.Membership
         {
             var users = UserRepository.FindUsersByNames(ApplicationName, username);
             return users == null ? null : users.SingleOrDefault();
-        }
-
-        private string GetDefaultAppName()
-        {
-            try
-            {
-                var virtualPath = HostingEnvironment.ApplicationVirtualPath;
-
-                if (string.IsNullOrEmpty(virtualPath))
-                {
-                    virtualPath = Process.GetCurrentProcess().MainModule.ModuleName;
-                    var startIndex = virtualPath.IndexOf('.');
-                    if (startIndex > -1)
-                    {
-                        virtualPath = virtualPath.Remove(startIndex);
-                    }
-                }
-
-                return string.IsNullOrEmpty(virtualPath) ? "/" : virtualPath;
-            }
-            catch (Exception)
-            {
-                return "/";
-            }
-        }
-
-        private static T GetSetting<T>(NameValueCollection config, string sectionName, T defaultValue = default(T), Func<T, string> validator = null)
-        {
-            string settingValue;
-            try
-            {
-                settingValue = config[sectionName];
-            }
-            catch (Exception)
-            {
-                return defaultValue;
-            }
-
-            T value;
-            try
-            {
-                value = (T) Convert.ChangeType(settingValue, typeof (T));
-            }
-            catch (Exception)
-            {
-                throw new InvalidCastException(string.Format("Value \"{0}\" of membership attribute \"{1}\" can be converted to \"{2}\"", value, sectionName, typeof(T)));
-            }
-
-            if (validator != null)
-            {
-                var error = validator(value);
-                if (!string.IsNullOrEmpty(error))
-                {
-                    throw new ConfigurationErrorsException(string.Format("Value \"{0}\" of membership attribute \"{1}\" is invalid: \"{2}\"", value, sectionName, error));
-                }
-            }
-
-            return value;
         }
 
         private string ShouldBePositive(int? value)
