@@ -33,14 +33,15 @@ namespace BuildingBlocks.Membership.RavenDB.Queries
             if (string.IsNullOrWhiteSpace(term))
             {
                 return Pagination
-                    .From(_session.Query<UserEntity>())
+                    .From(_session.Query<UserEntity>().OrderBy(u => u.Username))
                     .Page(pageCriteria.PageNumber, pageCriteria.PageSize)
                     .GetPageWithItemsMappedBy(u => u.ToUser());
             }
 
-            var session = ((RavenDbSession)_session).Session;
+            var session = ((RavenDbSession) _session).Session;
             var allMatchedUsers = session.Advanced.LuceneQuery<UserEntity>()
                 .Where(string.Format("{0}: *{1}*", column, term))
+                .OrderBy(u => u.Username)
                 .WaitForNonStaleResultsAsOfLastWrite()
                 .ToList();
 

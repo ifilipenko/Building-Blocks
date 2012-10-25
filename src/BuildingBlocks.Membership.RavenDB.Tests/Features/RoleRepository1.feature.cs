@@ -175,7 +175,7 @@ this.FeatureBackground();
 #line 42
  testRunner.When("создают роль \"Медбрат\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
 #line 43
- testRunner.Then("существует 4 роли", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Тогда ");
+ testRunner.Then("существует \"4\" роли", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Тогда ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -234,7 +234,65 @@ this.FeatureBackground();
 #line 61
  testRunner.When("удаляют роль \"Медсестра\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
 #line 62
- testRunner.Then("существует 2 роли", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Тогда ");
+ testRunner.Then("существует \"2\" роли", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Тогда ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("удаление роли с удалением из списка ролей пользователей")]
+        public virtual void УдалениеРолиСУдалениемИзСпискаРолейПользователей()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("удаление роли с удалением из списка ролей пользователей", ((string[])(null)));
+#line 64
+this.ScenarioSetup(scenarioInfo);
+#line 5
+this.FeatureBackground();
+#line hidden
+            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+                        "имя"});
+            table8.AddRow(new string[] {
+                        "Иванов"});
+            table8.AddRow(new string[] {
+                        "Петров"});
+            table8.AddRow(new string[] {
+                        "Сидоров"});
+#line 65
+ testRunner.Given("существуют пользователи", ((string)(null)), table8, "Пусть ");
+#line hidden
+            TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+                        "имя"});
+            table9.AddRow(new string[] {
+                        "Иванов"});
+            table9.AddRow(new string[] {
+                        "Петров"});
+#line 70
+ testRunner.When("создают роль \"Медбрат\" со списком пользователей", ((string)(null)), table9, "Когда ");
+#line hidden
+            TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+                        "имя"});
+            table10.AddRow(new string[] {
+                        "Иванов"});
+            table10.AddRow(new string[] {
+                        "Петров"});
+#line 74
+ testRunner.And("создают роль \"Уборщик\" со списком пользователей", ((string)(null)), table10, "И ");
+#line 78
+ testRunner.And("удаляют роль \"Медбрат\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "И ");
+#line hidden
+            TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+                        "роль"});
+            table11.AddRow(new string[] {
+                        "Уборщик"});
+#line 79
+ testRunner.Then("существует пользователь \"Иванов\" со списком ролей", ((string)(null)), table11, "Тогда ");
+#line hidden
+            TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
+                        "роль"});
+            table12.AddRow(new string[] {
+                        "Уборщик"});
+#line 82
+ testRunner.Then("существует пользователь \"Петров\" со списком ролей", ((string)(null)), table12, "Тогда ");
 #line hidden
             this.ScenarioCleanup();
         }

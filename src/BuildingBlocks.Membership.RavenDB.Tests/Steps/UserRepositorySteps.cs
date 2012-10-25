@@ -36,6 +36,12 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
             set { ScenarioContext.Current.Set(value, "UserPageResult"); }
         }
 
+        private int UsersCountResult
+        {
+            get { return ScenarioContext.Current.Get<int>("UsersCountResult"); }
+            set { ScenarioContext.Current.Set(value, "UsersCountResult"); }
+        }
+
         private IQueryBuilder QueryBuilder
         {
             get { return ScenarioContext.Current.Obtain(() => new QueryBuilder(QueryFactory), "QueryBuilder"); }
@@ -75,14 +81,6 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
             UsersResult = userRepository.FindUserByEmail(email).ToEnumerableOrEmpty();
         }
 
-        [Given(@"пользователь ""(.*)"" имеет Id ""(.*)""")]
-        public void ƒопустимѕользователь»меетId(string userName, string id)
-        {
-            var user = RavenDb.CurrentStorageSession.Query<UserEntity>().Single(u => u.Username == userName);
-            user.UserId = new Guid(id);
-            RavenDb.CurrentStorageSession.Save(user);
-        }
-
         [When(@"ищут пользовател€ с Id ""(.*)""")]
         public void ≈сли»щутѕользовател€—Id(string id)
         {
@@ -119,11 +117,126 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
             UserPageResult = userRepository.GetUsersPage(pageNumber - 1, pageSize);
         }
 
+        [When(@"создают нового пользовател€ ""(.*)""")]
+        public void ≈сли—оздаютЌовогоѕользовател€(string username)
+        {
+            var user = new User
+            {
+                UserId = Guid.NewGuid(),
+                Username = username,
+                Email = username + "@mail.ru",
+                Password = "123"
+            };
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            userRepository.AddUser(user);
+        }
+
+        [When(@"создают нового пользовател€ ""(.*)"" с назначенными рол€ми")]
+        public void ≈сли—оздаютЌовогоѕользовател€—Ќазначенными–ол€ми(string username, Table table)
+        {
+            var user = new User
+            {
+                UserId = Guid.NewGuid(),
+                Username = username,
+                Email = username + "@mail.ru",
+                Password = "123"
+            };
+
+            foreach (var row in table.CreateDynamicSet())
+            {
+                string roleName = row.роль;
+                user.AddRole(roleName);
+            }
+
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            userRepository.AddUser(user);
+        }
+
+        [When(@"получают количество пользователей с последней активностью от (.*)")]
+        public void ≈слиѕолучают оличествоѕользователей—ѕоследнейјктивностьюќт(DateTime dateTime)
+        {
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            UsersCountResult = userRepository.GetUsersCountWithLastActivityDateGreaterThen(dateTime);
+        }
+
+        [When(@"дл€ пользовател€ с Id ""(.*)"" обновл€ют пол€")]
+        public void ≈слиƒл€ѕользовател€—Idќбновл€ютѕол€(Guid id, Table table)
+        {
+            var user = RavenDb.CurrentStorageSession.Query<UserEntity>().Single(u => u.UserId == id).ToUser();
+
+            dynamic data = table.CreateDynamicInstance();
+            user.Password                                = data.ѕароль;
+            user.Username                                = data.»м€;
+            user.Email                                   = data.Email;
+            user.Comment                                 = data. омментарий;
+            user.ConfirmationToken                       = data.ConfirmationToken;
+            user.CreateDate                              = data.CreateDate;
+            user.IsApproved                              = data.IsApproved;
+            user.IsLockedOut                             = data.IsLockedOut;
+            user.LastActivityDate                        = data.LastActivityDate;
+            user.LastLockoutDate                         = data.LastLockoutDate;
+            user.LastLoginDate                           = data.LastLoginDate;
+            user.LastPasswordChangedDate                 = data.LastPasswordChangedDate;
+            user.LastPasswordFailureDate                 = data.LastPasswordFailureDate;
+            user.PasswordFailuresSinceLastSuccess        = data.PasswordFailuresSinceLastSuccess;
+            user.PasswordVerificationToken               = data.PasswordVerificationToken;
+            user.PasswordVerificationTokenExpirationDate = data.PasswordVerificationTokenExpirationDate;
+
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            userRepository.SaveUser(user);
+        }
+
+        [When(@"пользователю ""(.*)"" мен€ют назначение ролей")]
+        public void ≈слиѕользователюћен€ютЌазначение–олей(string userName, Table table)
+        {
+            var user = RavenDb.CurrentStorageSession.Query<UserEntity>().Single(u => u.Username == userName).ToUser();
+
+            foreach (var role in user.Roles.ToList())
+            {
+                user.RemoveRole(role);
+            }
+
+            foreach (var row in table.CreateDynamicSet())
+            {
+                string roleName = row.роль;
+                user.AddRole(roleName);
+            }
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            userRepository.SaveUser(user);
+        }
+
+        [When(@"удал€ют пользовател€ ""(.*)""")]
+        public void ≈сли”дал€ютѕользовател€(string userName)
+        {
+            var user = RavenDb.CurrentStorageSession.Query<UserEntity>().Single(u => u.Username == userName).ToUser();
+
+            var userRepository = new UserRepositoryImpl(RavenDb.CurrentStorageSession, QueryBuilder);
+            userRepository.DeleteUser(user);
+        }
+
+        [Then(@"количество пользователей равно (.*)")]
+        public void “о оличествоѕользователей–авно(int count)
+        {
+            UsersCountResult.Should().Be(count);
+        }
+
         [Then(@"возвращаетс€ страница пользователей")]
         public void “о¬озвращаетс€—траницаѕользователей(dynamic page)
         {
             UserPageResult.TotalItemCount.Should().Be((int) page.всего);
             UserPageResult.Items.Should().HaveCount((int) page.на—транице);
+        }
+
+        [Then(@"возвращаетс€ страница с пользовател€ми")]
+        public void “о¬озвращаетс€—траница—ѕользовател€ми(Table table)
+        {
+            UserPageResult.Items.Should().HaveCount(table.RowCount);
+            for (int i = 0; i < table.RowCount; i++)
+            {
+                var username = table.Rows[i]["им€"];
+                var actualUser = UserPageResult.Items.ElementAt(i);
+                actualUser.Username.Should().Be(username);
+            }
         }
 
         [Then(@"не возвращаетс€ ни одного пользовател€")]

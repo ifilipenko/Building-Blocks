@@ -9,27 +9,27 @@ namespace BuildingBlocks.Membership.RavenDB
 {
     public class RoleRepositoryImpl : IRoleRepository
     {
-        private readonly IStorageSession _storageSession;
+        private readonly IStorageSession _session;
         
-        public RoleRepositoryImpl(IStorageSession storageSession)
+        public RoleRepositoryImpl(IStorageSession session)
         {
-            _storageSession = storageSession;
+            _session = session;
         }
 
         public bool IsRoleExists(string roleName)
         {
-            return _storageSession.Query<RoleEntity>().Any(r => r.RoleName == roleName);
+            return _session.Query<RoleEntity>().Any(r => r.RoleName == roleName);
         }
 
         public IEnumerable<Role> GetAll()
         {
-            var roles = _storageSession.Query<RoleEntity>().OrderBy(r => r.RoleName).ToList();
+            var roles = _session.Query<RoleEntity>().OrderBy(r => r.RoleName).ToList();
             return roles.Select(r => r.ToRole()).ToList();
         }
 
         public IEnumerable<Role> FindRolesByNames(params string[] roleNames)
         {
-            var roles = _storageSession.Query<RoleEntity>()
+            var roles = _session.Query<RoleEntity>()
                 .ContainsIn(r => r.RoleName, roleNames)
                 .OrderBy(r => r.RoleName)
                 .ToList();
@@ -38,23 +38,38 @@ namespace BuildingBlocks.Membership.RavenDB
 
         public void CreateRole(Role role)
         {
-            var entity = role.ToEntityWithoutUsers();
-            var users = _storageSession.Query<UserEntity>()
+            var roleEntity = role.ToEntityWithoutUsers();
+            var users = _session.Query<UserEntity>()
                 .ContainsIn(r => r.Username, role.Users)
                 .ToList();
             foreach (var user in users)
             {
-                entity.Users.Add(new UserReference(user));
+                roleEntity.AddUserOrUpdate(user);
             }
-            _storageSession.Save(entity);
+            _session.Save(roleEntity);
+
+            foreach (var user in users)
+            {
+                user.AddRoleOrUpdate(roleEntity);
+                _session.Save(user);
+            }
         }
 
         public void DeleteRole(Role role)
         {
-            var rolesToDelete = _storageSession.Query<RoleEntity>().Where(r => r.RoleName == role.RoleName).ToList();
+            var rolesToDelete = _session.Query<RoleEntity>().Where(r => r.RoleName == role.RoleName).ToList();
             foreach (var roleToDelete in rolesToDelete)
             {
-                _storageSession.Delete(roleToDelete);
+                foreach (var userReference in roleToDelete.Users)
+                {
+                    var user = _session.GetById<UserEntity>(userReference.Id);
+                    if (user != null)
+                    {
+                        user.RemoveRole(roleToDelete);
+                        _session.Save(user);
+                    }
+                }
+                _session.Delete(roleToDelete);
             }
         }
     }

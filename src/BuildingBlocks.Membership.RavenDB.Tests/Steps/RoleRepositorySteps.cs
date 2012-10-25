@@ -98,8 +98,8 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
             }
         }
 
-        [Then(@"существует (.*) роли")]
-        [Then(@"существует (.*) ролей")]
+        [Then(@"существует ""(.*)"" роли")]
+        [Then(@"существует ""(.*)"" ролей")]
         public void “о—уществует–оли(int count)
         {
             RavenDb.CurrentStorageSession.Query<RoleEntity>().WaitForNonStaleResultsAsOfLastWrite().Count().Should().Be(count);

@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using BuildingBlocks.Membership.Entities;
 using BuildingBlocks.Store;
 
 namespace BuildingBlocks.Membership.RavenDB.DomainModel
 {
     public class UserEntity : IEntity<string>
     {
-        private IList<RoleReference> _roles;
-
         public UserEntity()
         {
-            _roles = new List<RoleReference>();
+            Roles = new List<RoleReference>();
         }
 
         public string Id { get; set; }
@@ -39,10 +39,66 @@ namespace BuildingBlocks.Membership.RavenDB.DomainModel
         public string PasswordVerificationToken { get; set; }
         public DateTime? PasswordVerificationTokenExpirationDate { get; set; }
 
-        public IEnumerable<RoleReference> Roles
+        public IList<RoleReference> Roles { get; set; }
+
+        public void UpdateUser(User user)
         {
-            get { return _roles; }
-            set { _roles = (IList<RoleReference>)value; }
+            Username = user.Username;
+            Email = user.Email;
+            Password = user.Password;
+            Comment = user.Comment;
+            ConfirmationToken = user.ConfirmationToken;
+            CreateDate = user.CreateDate;
+            IsApproved = user.IsApproved;
+            IsLockedOut = user.IsLockedOut;
+            LastActivityDate = user.LastActivityDate;
+            LastLockoutDate = user.LastLockoutDate;
+            LastLoginDate = user.LastLoginDate;
+            LastPasswordChangedDate = user.LastPasswordChangedDate;
+            LastPasswordFailureDate = user.LastPasswordFailureDate;
+            PasswordFailuresSinceLastSuccess = user.PasswordFailuresSinceLastSuccess;
+            PasswordVerificationToken = user.PasswordVerificationToken;
+            PasswordVerificationTokenExpirationDate = user.PasswordVerificationTokenExpirationDate;
+        }
+
+        public IEnumerable<string> GetRoleIdsToRemove(IEnumerable<RoleEntity> newRoles)
+        {
+            return Roles
+                .Where(exist => newRoles.All(newRole => newRole.Id != exist.Id))
+                .Select(r => r.Id)
+                .ToList();
+        }
+
+        public void AddRoleOrUpdate(RoleEntity role)
+        {
+            var roles = Roles.Where(r => r.Id == role.Id).ToList();
+            if (roles.Any())
+            {
+                foreach (var roleReference in roles)
+                {
+                    roleReference.Name = role.RoleName;
+                }
+            }
+            else
+            {
+                Roles.Add(new RoleReference(role));
+            }
+        }
+
+        public void RemoveRole(RoleEntity role)
+        {
+            foreach (var roleReference in Roles.Where(r => r.Id == role.Id).ToList())
+            {
+                Roles.Remove(roleReference);
+            }
+        }
+
+        public void RemoveRoleWithId(string roleId)
+        {
+            foreach (var roleReference in Roles.Where(r => r.Id == roleId).ToList())
+            {
+                Roles.Remove(roleReference);
+            }
         }
     }
 }

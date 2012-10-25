@@ -64,11 +64,11 @@
     <Compile Include="DomainModel\UserEntity.cs" />
     <Compile Include="DomainModel\UserEntityMappingHelpers.cs" />
     <Compile Include="DomainModel\UserReference.cs" />
+    <Compile Include="DomainModel\UserRolesChanges.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Queries\Criteria\FindByUsernameSubstring.cs" />
     <Compile Include="Queries\UsersColumnMatchedToSubstring.cs" />
     <Compile Include="Queries\Criteria\FindByEmailSubstring.cs" />
-    <Compile Include="Queries\Criteria\UsernameMatch.cs" />
     <Compile Include="RoleRepositoryImpl.cs" />
     <Compile Include="UserRepositoryImpl.cs" />
   </ItemGroup>

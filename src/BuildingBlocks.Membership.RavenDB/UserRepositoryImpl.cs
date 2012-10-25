@@ -68,29 +68,81 @@ namespace BuildingBlocks.Membership.RavenDB
 
         public Page<User> GetUsersPage(int pageIndex, int pageSize)
         {
-            return Pagination.From(_session.Query<UserEntity>())
+            return Pagination.From(_session.Query<UserEntity>().OrderBy(u => u.Username))
                 .Page(pageIndex + 1, pageSize)
                 .GetPageWithItemsMappedBy(u => u.ToUser());
         }
 
         public int GetUsersCountWithLastActivityDateGreaterThen(DateTime dateActive)
         {
-            throw new NotImplementedException();
+            return _session.Query<UserEntity>().Count(u => u.LastActivityDate > dateActive);
         }
 
         public void AddUser(User newUser)
         {
-            throw new NotImplementedException();
+            var userEntity = newUser.ToEntityWithoutRoles();
+            var roles = _session.Query<RoleEntity>().ContainsIn(r => r.RoleName, newUser.Roles).ToList();
+            foreach (var role in roles)
+            {
+                userEntity.Roles.Add(new RoleReference(role));
+            }
+            _session.Save(userEntity);
+
+            foreach (var role in roles)
+            {
+                role.Users.Add(new UserReference(userEntity));
+                _session.Save(role);
+            }
         }
 
         public void SaveUser(User user)
         {
-            throw new NotImplementedException();
+            var userEntity = _session.Query<UserEntity>().Single(u => u.UserId == user.UserId);
+            userEntity.UpdateUser(user);
+
+            UpdateUsersRolesList(userEntity, user.Roles);
+
+            _session.Save(userEntity);
         }
 
         public void DeleteUser(User user)
         {
-            throw new NotImplementedException();
+            var userEntity = _session.Query<UserEntity>().Single(u => u.UserId == user.UserId);
+            var roles = _session.Query<RoleEntity>().ContainsIn(r => r.RoleName, user.Roles).ToList();
+            foreach (var role in roles)
+            {
+                role.RemoveUser(userEntity);
+                _session.Save(role);
+            }
+            _session.Delete(userEntity);
+        }
+
+        private void UpdateUsersRolesList(UserEntity userEntity, IEnumerable<string> newRoles)
+        {
+            var newRolesList = _session.Query<RoleEntity>().ContainsIn(r => r.RoleName, newRoles).ToList();
+            var roleIdsToRemove = userEntity.GetRoleIdsToRemove(newRolesList);
+
+            foreach (var roleId in roleIdsToRemove)
+            {
+                var roleEntity = _session.GetById<RoleEntity>(roleId);
+                if (roleEntity == null)
+                {
+                    userEntity.RemoveRoleWithId(roleId);
+                }
+                else
+                {
+                    userEntity.RemoveRole(roleEntity);
+                    roleEntity.RemoveUser(userEntity);
+                    _session.Save(roleEntity);
+                }
+            }
+
+            foreach (var roleEntity in newRolesList)
+            {
+                userEntity.AddRoleOrUpdate(roleEntity);
+                roleEntity.AddUserOrUpdate(userEntity);
+                _session.Save(roleEntity);
+            }
         }
     }
 }
