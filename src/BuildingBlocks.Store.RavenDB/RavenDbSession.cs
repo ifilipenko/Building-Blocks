@@ -12,9 +12,7 @@ namespace BuildingBlocks.Store.RavenDB
         private readonly IDocumentStore _documentStore;
         private Lazy<IDocumentSession> _session;
 
-#if DEBUG
         public readonly Guid Id = Guid.NewGuid();
-#endif
 
         public RavenDbSession(IDocumentStore documentStore)
         {
