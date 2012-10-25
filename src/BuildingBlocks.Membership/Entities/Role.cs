@@ -5,21 +5,16 @@ namespace BuildingBlocks.Membership.Entities
 {
     public class Role
     {
-        private IList<string> _users;
-
         public Role()
         {
-            _users = new List<string>();
+            Users = new List<string>();
         }
 
-        public virtual Guid RoleId { get; set; }
-        public virtual string RoleName { get; set; }
-        public virtual string Description { get; set; }
+        public Guid RoleId { get; set; }
+        public string ApplicationName { get; set; }
+        public string RoleName { get; set; }
+        public string Description { get; set; }
 
-        public virtual IEnumerable<string> Users
-        {
-            get { return _users; }
-            set { _users = (IList<string>)value; }
-        }
+        public IEnumerable<string> Users { get; set; }
     }
 }
