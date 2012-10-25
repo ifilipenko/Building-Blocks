@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Specialized;
 using System.Configuration;
+using System.Linq;
 
 namespace BuildingBlocks.Membership
 {
-    static class ConfigHelper
+    public static class ConfigHelper
     {
         public static T GetOf<T>(this NameValueCollection config, string sectionName, T defaultValue = default(T), Func<T, string> validator = null)
         {
+            if (config.AllKeys.All(v => v != sectionName))
+                return defaultValue;
+
             string settingValue;
             try
             {
@@ -18,14 +22,29 @@ namespace BuildingBlocks.Membership
                 return defaultValue;
             }
 
+            if (string.IsNullOrWhiteSpace(settingValue))
+                return defaultValue;
+
             T value;
             try
             {
-                value = (T)Convert.ChangeType(settingValue, typeof(T));
+                if (IsNullable(typeof(T)))
+                {
+                    value = (T) Convert.ChangeType(settingValue, UnwrapNullableType(typeof (T)));
+                }
+                else
+                {
+                    value = (T) Convert.ChangeType(settingValue, typeof (T));
+                }
             }
             catch (Exception)
             {
-                throw new InvalidCastException(string.Format("Value \"{0}\" of membership attribute \"{1}\" can be converted to \"{2}\"", settingValue, sectionName, typeof(T)));
+                var type = typeof (T);
+                if (IsNullable(type))
+                {
+                    type = UnwrapNullableType(typeof (T));
+                }
+                throw new InvalidCastException(string.Format("Value \"{0}\" of membership attribute \"{1}\" can be converted to \"{2}\"", settingValue, sectionName, type));
             }
 
             if (validator != null)
@@ -38,6 +57,16 @@ namespace BuildingBlocks.Membership
             }
 
             return value;
+        }
+
+        private static Type UnwrapNullableType(Type type)
+        {
+            return type.GetGenericArguments()[0];
+        }
+
+        private static bool IsNullable(Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof (Nullable<>);
         }
     }
 }
