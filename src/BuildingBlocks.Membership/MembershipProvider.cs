@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Specialized;
+using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Security;
 using BuildingBlocks.Membership.Contract;
 using BuildingBlocks.Membership.Entities;
@@ -13,6 +17,10 @@ namespace BuildingBlocks.Membership
         private string _applicationName;
         private const int TokenSizeInBytes = 16;
         private readonly Lazy<IUserRepository> _userRepository;
+        private int? _minRequiredPasswordLength;
+        private int? _minRequiredNonAlphanumericCharacters;
+        private int? _maxInvalidPasswordAttempts;
+        private int? _passwordAttemptWindow;
 
         public MembershipProvider()
         {
@@ -28,7 +36,7 @@ namespace BuildingBlocks.Membership
         {
             get
             {
-                return _applicationName ?? (_applicationName = GetType().Assembly.GetName().Name);
+                return _applicationName ?? (_applicationName = GetType().Namespace);
             }
             set 
             {
@@ -38,22 +46,22 @@ namespace BuildingBlocks.Membership
 
         public override int MaxInvalidPasswordAttempts
         {
-            get { return 5; }
+            get { return _maxInvalidPasswordAttempts ?? 5; }
         }
 
         public override int MinRequiredNonAlphanumericCharacters
         {
-            get { return 0; }
+            get { return _minRequiredNonAlphanumericCharacters ?? 0; }
         }
 
         public override int MinRequiredPasswordLength
         {
-            get { return 6; }
+            get { return _minRequiredPasswordLength ?? 6; }
         }
 
         public override int PasswordAttemptWindow
         {
-            get { return 0; }
+            get { return _passwordAttemptWindow ?? 0; }
         }
 
         public override MembershipPasswordFormat PasswordFormat
@@ -63,12 +71,40 @@ namespace BuildingBlocks.Membership
 
         public override string PasswordStrengthRegularExpression
         {
-            get { return String.Empty; }
+            get { return string.Empty; }
         }
 
         public override bool RequiresUniqueEmail
         {
             get { return true; }
+        }
+
+        public override void Initialize(string name, NameValueCollection config)
+        {
+            if (config == null)
+                throw new ArgumentNullException("config");
+
+            if (string.IsNullOrEmpty(name))
+            {
+                name = "BuildingBlocks.MembershipProvider";
+            }
+
+            if (string.IsNullOrEmpty(config["description"]))
+            {
+                config.Remove("description");
+                config.Add("description", "Simple membership provider");
+            }
+
+            _minRequiredPasswordLength            = GetSetting<int?>(config, "minRequiredPasswordLength", validator: ShouldBePositive);
+            _minRequiredNonAlphanumericCharacters = GetSetting<int?>(config, "minRequiredNonalphanumericCharacters", validator: ShouldBePositive);
+            _maxInvalidPasswordAttempts           = GetSetting<int?>(config, "maxInvalidPasswordAttempts", validator: ShouldBePositive);
+            _passwordAttemptWindow                = GetSetting<int?>(config, "passwordAttemptWindow", validator: ShouldBePositive);
+
+            base.Initialize(name, config);
+
+            ApplicationName = !string.IsNullOrEmpty(config["applicationName"]) 
+                ? config["applicationName"] 
+                : GetDefaultAppName();
         }
 
         public override MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out MembershipCreateStatus status)
@@ -484,6 +520,73 @@ namespace BuildingBlocks.Membership
         {
             var users = UserRepository.FindUsersByNames(ApplicationName, username);
             return users == null ? null : users.SingleOrDefault();
+        }
+
+        private string GetDefaultAppName()
+        {
+            try
+            {
+                var virtualPath = HostingEnvironment.ApplicationVirtualPath;
+
+                if (string.IsNullOrEmpty(virtualPath))
+                {
+                    virtualPath = Process.GetCurrentProcess().MainModule.ModuleName;
+                    var startIndex = virtualPath.IndexOf('.');
+                    if (startIndex > -1)
+                    {
+                        virtualPath = virtualPath.Remove(startIndex);
+                    }
+                }
+
+                return string.IsNullOrEmpty(virtualPath) ? "/" : virtualPath;
+            }
+            catch (Exception)
+            {
+                return "/";
+            }
+        }
+
+        private static T GetSetting<T>(NameValueCollection config, string sectionName, T defaultValue = default(T), Func<T, string> validator = null)
+        {
+            string settingValue;
+            try
+            {
+                settingValue = config[sectionName];
+            }
+            catch (Exception)
+            {
+                return defaultValue;
+            }
+
+            T value;
+            try
+            {
+                value = (T) Convert.ChangeType(settingValue, typeof (T));
+            }
+            catch (Exception)
+            {
+                throw new InvalidCastException(string.Format("Value \"{0}\" of membership attribute \"{1}\" can be converted to \"{2}\"", value, sectionName, typeof(T)));
+            }
+
+            if (validator != null)
+            {
+                var error = validator(value);
+                if (!string.IsNullOrEmpty(error))
+                {
+                    throw new ConfigurationErrorsException(string.Format("Value \"{0}\" of membership attribute \"{1}\" is invalid: \"{2}\"", value, sectionName, error));
+                }
+            }
+
+            return value;
+        }
+
+        private string ShouldBePositive(int? value)
+        {
+            if (value.HasValue && value.Value > -1)
+            {
+                return "value should be greater then -1";
+            }
+            return null;
         }
     }
 }
