@@ -7,10 +7,8 @@ namespace BuildingBlocks.Membership.RavenDB.DomainModel
     {
         public static Role ToRole(this RoleEntity entity)
         {
-            var role = new Role
+            var role = new Role(entity.RoleId,entity.RoleName,entity.ApplicationName)
                 {
-                    RoleId = entity.RoleId,
-                    RoleName = entity.RoleName,
                     Description = entity.Description,
                     Users = entity.Users.Select(u => u.Name).ToList()
                 };
@@ -22,8 +20,9 @@ namespace BuildingBlocks.Membership.RavenDB.DomainModel
             return new RoleEntity
                 {
                     Description = role.Description,
-                    RoleId      = role.RoleId,
-                    RoleName    = role.RoleName
+                    RoleId = role.RoleId,
+                    RoleName = role.RoleName,
+                    ApplicationName = role.ApplicationName
                 };
         }
     }

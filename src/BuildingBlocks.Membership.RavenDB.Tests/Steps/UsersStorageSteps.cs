@@ -21,6 +21,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
                 var email = row.ContainsKey("email") ? row["email"] : username + "@mail.com";
                 var user = new UserEntity
                     {
+                        ApplicationName = MembershipSettings.ApplicationName,
                         UserId = Guid.NewGuid(),
                         Username = username,
                         Email = email, 
@@ -62,6 +63,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
             user.Password                                .Should().Be((string)  data.Пароль);
             user.Username                                .Should().Be((string)  data.Имя);
             user.Email                                   .Should().Be((string)  data.Email);
+            user.ApplicationName                         .Should().Be((string)  data.ApplicationName);
             user.Comment                                 .Should().Be((string)  data.Комментарий);
             user.ConfirmationToken                       .Should().Be((string)  data.ConfirmationToken);
             user.CreateDate                              .Should().Be((DateTime)data.CreateDate);

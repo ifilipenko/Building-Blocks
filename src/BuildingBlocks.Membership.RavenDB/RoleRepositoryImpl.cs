@@ -16,20 +16,21 @@ namespace BuildingBlocks.Membership.RavenDB
             _session = session;
         }
 
-        public bool IsRoleExists(string roleName)
+        public bool IsRoleExists(string applicationName, string roleName)
         {
-            return _session.Query<RoleEntity>().Any(r => r.RoleName == roleName);
+            return _session.Query<RoleEntity>().Any(r => r.ApplicationName == applicationName && r.RoleName == roleName);
         }
 
-        public IEnumerable<Role> GetAll()
+        public IEnumerable<Role> GetAll(string applicationName)
         {
             var roles = _session.Query<RoleEntity>().OrderBy(r => r.RoleName).ToList();
             return roles.Select(r => r.ToRole()).ToList();
         }
 
-        public IEnumerable<Role> FindRolesByNames(params string[] roleNames)
+        public IEnumerable<Role> FindRolesByNames(string applicationName, params string[] roleNames)
         {
             var roles = _session.Query<RoleEntity>()
+                .Where(r => r.ApplicationName == applicationName)
                 .ContainsIn(r => r.RoleName, roleNames)
                 .OrderBy(r => r.RoleName)
                 .ToList();
@@ -40,6 +41,7 @@ namespace BuildingBlocks.Membership.RavenDB
         {
             var roleEntity = role.ToEntityWithoutUsers();
             var users = _session.Query<UserEntity>()
+                .Where(r => r.ApplicationName == role.ApplicationName)
                 .ContainsIn(r => r.Username, role.Users)
                 .ToList();
             foreach (var user in users)

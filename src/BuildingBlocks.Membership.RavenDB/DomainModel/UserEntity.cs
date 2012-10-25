@@ -17,6 +17,7 @@ namespace BuildingBlocks.Membership.RavenDB.DomainModel
         public Guid UserId { get; set; }
 
         public string Username { get; set; }
+        public string ApplicationName { get; set; }
         public string Email { get; set; }
 
         public string Password { get; set; }
@@ -46,6 +47,7 @@ namespace BuildingBlocks.Membership.RavenDB.DomainModel
             Username = user.Username;
             Email = user.Email;
             Password = user.Password;
+            ApplicationName = user.ApplicationName;
             Comment = user.Comment;
             ConfirmationToken = user.ConfirmationToken;
             CreateDate = user.CreateDate;

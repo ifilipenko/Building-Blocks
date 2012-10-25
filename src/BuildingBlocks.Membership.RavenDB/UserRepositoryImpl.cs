@@ -22,25 +22,25 @@ namespace BuildingBlocks.Membership.RavenDB
             _queryBuilder = queryBuilder;
         }
 
-        public bool HasUserWithName(string username)
+        public bool HasUserWithName(string applicationName, string username)
         {
             return _session.Query<UserEntity>().Any(u => u.Username == username);
         }
 
-        public bool HasUserWithEmail(string email)
+        public bool HasUserWithEmail(string applicationName, string email)
         {
             return _session.Query<UserEntity>().Any(u => u.Email == email);
         }
 
-        public IEnumerable<User> FindUsersByNames(params string[] usernames)
+        public IEnumerable<User> FindUsersByNames(string applicationName, params string[] usernames)
         {
             var users = _session.Query<UserEntity>().ContainsIn(u => u.Username, usernames).OrderBy(u => u.Username).ToList();
             return users.Select(u => u.ToUser()).ToList();
         }
 
-        public User FindUserByEmail(string email)
+        public User FindUserByEmail(string applicationName, string email)
         {
-            var user = _session.Query<UserEntity>().FirstOrDefault(u => u.Email == email);
+            var user = _session.Query<UserEntity>().FirstOrDefault(u => u.ApplicationName == applicationName && u.Email == email);
             return user == null ? null : user.ToUser();
         }
 
@@ -50,7 +50,7 @@ namespace BuildingBlocks.Membership.RavenDB
             return user == null ? null : user.ToUser();
         }
 
-        public Page<User> GetUsersPageByEmail(string emailToMatch, int pageIndex, int pageSize)
+        public Page<User> GetUsersPageByEmail(string applicationName, string emailToMatch, int pageIndex, int pageSize)
         {
             var page = _queryBuilder.For<User>()
                 .With(new FindByEmailSubstring(emailToMatch, pageIndex + 1, pageSize))
@@ -58,7 +58,7 @@ namespace BuildingBlocks.Membership.RavenDB
             return page;
         }
 
-        public Page<User> GetUsersPageByUsername(string usernameToMatch, int pageIndex, int pageSize)
+        public Page<User> GetUsersPageByUsername(string applicationName, string usernameToMatch, int pageIndex, int pageSize)
         {
             var page = _queryBuilder.For<User>()
                 .With(new FindByUsernameSubstring(usernameToMatch, pageIndex + 1, pageSize))
@@ -66,14 +66,14 @@ namespace BuildingBlocks.Membership.RavenDB
             return page;
         }
 
-        public Page<User> GetUsersPage(int pageIndex, int pageSize)
+        public Page<User> GetUsersPage(string applicationName, int pageIndex, int pageSize)
         {
             return Pagination.From(_session.Query<UserEntity>().OrderBy(u => u.Username))
                 .Page(pageIndex + 1, pageSize)
                 .GetPageWithItemsMappedBy(u => u.ToUser());
         }
 
-        public int GetUsersCountWithLastActivityDateGreaterThen(DateTime dateActive)
+        public int GetUsersCountWithLastActivityDateGreaterThen(string applicationName, DateTime dateActive)
         {
             return _session.Query<UserEntity>().Count(u => u.LastActivityDate > dateActive);
         }

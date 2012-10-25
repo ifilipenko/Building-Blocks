@@ -5,8 +5,11 @@ namespace BuildingBlocks.Membership.Entities
 {
     public class Role
     {
-        public Role()
+        public Role(Guid roleId, string roleName, string applicationName)
         {
+            RoleId = roleId;
+            RoleName = roleName;
+            ApplicationName = applicationName;
             Users = new List<string>();
         }
 

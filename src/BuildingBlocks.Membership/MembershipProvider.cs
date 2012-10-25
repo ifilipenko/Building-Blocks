@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Web;
@@ -29,7 +28,7 @@ namespace BuildingBlocks.Membership
         {
             get
             {
-                return _applicationName ?? GetType().Assembly.GetName().Name;
+                return _applicationName ?? (_applicationName = GetType().Assembly.GetName().Name);
             }
             set 
             {
@@ -100,25 +99,22 @@ namespace BuildingBlocks.Membership
             }
 
             var userRepository = RepositoryFactory.Current.CreateUserRepository();
-            if (userRepository.HasUserWithName(username))
+            if (userRepository.HasUserWithName(ApplicationName, username))
             {
                 status = MembershipCreateStatus.DuplicateUserName;
                 return null;
             }
 
-            if (userRepository.HasUserWithEmail(email))
+            if (userRepository.HasUserWithEmail(ApplicationName, email))
             {
                 status = MembershipCreateStatus.DuplicateEmail;
                 return null;
             }
 
-            var newUser = new User
+            var newUser = new User(Guid.NewGuid(), username, email, ApplicationName)
             {
-                UserId = Guid.NewGuid(),
-                Username = username,
                 Password = hashedPassword,
                 IsApproved = isApproved,
-                Email = email,
                 CreateDate = DateTime.UtcNow,
                 LastPasswordChangedDate = DateTime.UtcNow,
                 PasswordFailuresSinceLastSuccess = 0,
@@ -136,7 +132,7 @@ namespace BuildingBlocks.Membership
                 newUser.UserId,
                 newUser.Email,
                 null,
-                null,
+                newUser.Comment,
                 newUser.IsApproved,
                 newUser.IsLockedOut,
                 newUser.CreateDate.Value,
@@ -145,11 +141,6 @@ namespace BuildingBlocks.Membership
                 newUser.LastPasswordChangedDate.Value,
                 newUser.LastLockoutDate.Value
             );
-        }
-
-        public string CreateUserAndAccount(string userName, string password, bool requireConfirmation, IDictionary<string, object> values)
-        {
-            return CreateAccount(userName, password, requireConfirmation);
         }
 
         public override bool ValidateUser(string username, string password)
@@ -314,7 +305,7 @@ namespace BuildingBlocks.Membership
         {
             var userIsOnlineTimeWindow = (double) System.Web.Security.Membership.UserIsOnlineTimeWindow;
             var dateActive = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(userIsOnlineTimeWindow));
-            return UserRepository.GetUsersCountWithLastActivityDateGreaterThen(dateActive);
+            return UserRepository.GetUsersCountWithLastActivityDateGreaterThen(ApplicationName, dateActive);
         }
 
         public override bool DeleteUser(string username, bool deleteAllRelatedData)
@@ -332,13 +323,13 @@ namespace BuildingBlocks.Membership
 
         public override string GetUserNameByEmail(string email)
         {
-            var user = UserRepository.FindUserByEmail(email);
+            var user = UserRepository.FindUserByEmail(ApplicationName, email);
             return user == null ? string.Empty : user.Username;
         }
 
         public override MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords)
         {
-            var page = UserRepository.GetUsersPageByEmail(emailToMatch, pageIndex, pageSize);
+            var page = UserRepository.GetUsersPageByEmail(ApplicationName, emailToMatch, pageIndex, pageSize);
             totalRecords = (int) page.TotalItemCount;
 
             var membershipUsers = new MembershipUserCollection();
@@ -366,7 +357,7 @@ namespace BuildingBlocks.Membership
 
         public override MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords)
         {
-            var page = UserRepository.GetUsersPageByUsername(usernameToMatch, pageIndex, pageSize);
+            var page = UserRepository.GetUsersPageByUsername(ApplicationName, usernameToMatch, pageIndex, pageSize);
             totalRecords = (int) page.TotalItemCount;
 
             var membershipUsers = new MembershipUserCollection();
@@ -394,7 +385,7 @@ namespace BuildingBlocks.Membership
 
         public override MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords)
         {
-            var page = UserRepository.GetUsersPage(pageIndex, pageSize);
+            var page = UserRepository.GetUsersPage(ApplicationName, pageIndex, pageSize);
             totalRecords = (int) page.TotalItemCount;
 
             var membershipUsers = new MembershipUserCollection();
@@ -420,46 +411,6 @@ namespace BuildingBlocks.Membership
             return membershipUsers;
         }
 
-        public string CreateAccount(string userName, string password, bool requireConfirmationToken)
-        {
-            if (string.IsNullOrEmpty(userName))
-                throw new MembershipCreateUserException(MembershipCreateStatus.InvalidUserName);
-            if (string.IsNullOrEmpty(password))
-                throw new MembershipCreateUserException(MembershipCreateStatus.InvalidPassword);
-
-            var hashedPassword = Crypto.HashPassword(password);
-            if (hashedPassword.Length > 128)
-                throw new MembershipCreateUserException(MembershipCreateStatus.InvalidPassword);
-            if (UserRepository.HasUserWithName(userName))
-                throw new MembershipCreateUserException(MembershipCreateStatus.DuplicateUserName);
-
-            var token = string.Empty;
-            if (requireConfirmationToken)
-            {
-                token = GenerateToken();
-            }
-
-            var newUser = new User
-            {
-                UserId = Guid.NewGuid(),
-                Username = userName,
-                Password = hashedPassword,
-                IsApproved = !requireConfirmationToken,
-                Email = string.Empty,
-                CreateDate = DateTime.UtcNow,
-                LastPasswordChangedDate = DateTime.UtcNow,
-                PasswordFailuresSinceLastSuccess = 0,
-                LastLoginDate = DateTime.UtcNow,
-                LastActivityDate = DateTime.UtcNow,
-                LastLockoutDate = DateTime.UtcNow,
-                IsLockedOut = false,
-                LastPasswordFailureDate = DateTime.UtcNow,
-                ConfirmationToken = token
-            };
-            UserRepository.AddUser(newUser);
-            return token;
-        }
-
         private static string GenerateToken()
         {
             using (var cryptoServiceProvider = new RNGCryptoServiceProvider())
@@ -482,7 +433,7 @@ namespace BuildingBlocks.Membership
 
         public override string GetPassword(string username, string answer)
         {
-            throw new NotSupportedException("Consider using methods from WebSecurity module.");
+            throw new NotSupportedException("Can not retrieve password");
         }
 
         public override bool EnablePasswordReset
@@ -492,7 +443,7 @@ namespace BuildingBlocks.Membership
 
         public override string ResetPassword(string username, string answer)
         {
-            throw new NotSupportedException("Consider using methods from WebSecurity module.");
+            throw new NotSupportedException("Can not reset password.");
         }
 
         public override bool RequiresQuestionAndAnswer
@@ -502,17 +453,36 @@ namespace BuildingBlocks.Membership
 
         public override bool ChangePasswordQuestionAndAnswer(string username, string password, string newPasswordQuestion, string newPasswordAnswer)
         {
-            throw new NotSupportedException("Consider using methods from WebSecurity module.");
+            throw new NotSupportedException("Can not change password querstion and password.");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <exception cref="MembershipUpdateUserException">The user to update could not be found.</exception>
         public override void UpdateUser(MembershipUser user)
         {
-            throw new NotSupportedException();
+            var existUser = UserRepository.FindUserById((Guid) user.ProviderUserKey);
+            if (existUser == null)
+                throw new MembershipUpdateUserException("The user to update could not be found.");
+
+            existUser.Username = user.UserName;
+            existUser.Email = user.Email;
+            existUser.Comment = user.Comment;
+            existUser.CreateDate = user.CreationDate;
+            existUser.IsApproved = user.IsApproved;
+            existUser.IsLockedOut = user.IsLockedOut;
+            existUser.LastActivityDate = user.LastActivityDate;
+            existUser.LastLockoutDate = user.LastLockoutDate;
+            existUser.LastLoginDate = user.LastLoginDate;
+            existUser.LastPasswordChangedDate = user.LastPasswordChangedDate;
+            UserRepository.SaveUser(existUser);
         }
 
         private User FindUserByName(string username)
         {
-            var users = UserRepository.FindUsersByNames(username);
+            var users = UserRepository.FindUsersByNames(ApplicationName, username);
             return users == null ? null : users.SingleOrDefault();
         }
     }

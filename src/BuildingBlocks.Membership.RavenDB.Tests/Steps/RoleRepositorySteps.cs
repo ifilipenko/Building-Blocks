@@ -29,14 +29,14 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         public void ≈слиѕровер€ют„то–оль—уществует(string roleName)
         {
             var roleRepository = new RoleRepositoryImpl(RavenDb.CurrentStorageSession);
-            RoleExistsResult = roleRepository.IsRoleExists(roleName);
+            RoleExistsResult = roleRepository.IsRoleExists(MembershipSettings.ApplicationName, roleName);
         }
 
         [When(@"получают список ролей")]
         public void ≈слиѕолучают—писок–олей()
         {
             var roleRepository = new RoleRepositoryImpl(RavenDb.CurrentStorageSession);
-            RolesResult = roleRepository.GetAll();
+            RolesResult = roleRepository.GetAll(MembershipSettings.ApplicationName);
         }
 
         [When(@"получают список ролей содержащих имена")]
@@ -44,17 +44,15 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         {
             var namesList = table.Rows.Select(r => r["им€"]).ToArray();
             var roleRepository = new RoleRepositoryImpl(RavenDb.CurrentStorageSession);
-            RolesResult = roleRepository.FindRolesByNames(namesList);
+            RolesResult = roleRepository.FindRolesByNames(MembershipSettings.ApplicationName, namesList);
         }
 
         [When(@"создают роль ""(.*)""")]
         public void ≈сли—оздают–оль(string roleName)
         {
             var roleRepository = new RoleRepositoryImpl(RavenDb.CurrentStorageSession);
-            roleRepository.CreateRole(new Role
+            roleRepository.CreateRole(new Role(Guid.NewGuid(), roleName, MembershipSettings.ApplicationName)
                 {
-                    RoleId = Guid.NewGuid(),
-                    RoleName = roleName,
                     Description = roleName,
                 });
         }
@@ -63,13 +61,11 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         public void ≈сли—оздают–оль—о—пискомѕользователей(string roleName, Table table)
         {
             var roleRepository = new RoleRepositoryImpl(RavenDb.CurrentStorageSession);
-            roleRepository.CreateRole(new Role
-            {
-                RoleId = Guid.NewGuid(),
-                RoleName = roleName,
-                Description = roleName,
-                Users = table.Rows.Select(r => r["им€"]).ToList()
-            });
+            roleRepository.CreateRole(new Role(Guid.NewGuid(), roleName, MembershipSettings.ApplicationName)
+                {
+                    Description = roleName,
+                    Users = table.Rows.Select(r => r["им€"]).ToList()
+                });
         }
 
         [When(@"удал€ют роль ""(.*)""")]

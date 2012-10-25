@@ -12,11 +12,12 @@ namespace BuildingBlocks.Membership.RavenDB.DomainModel
             Users = new List<UserReference>(0);
         }
 
-        public virtual string Id { get; set; }
-        public virtual Guid RoleId { get; set; }
-        public virtual string RoleName { get; set; }
-        public virtual string Description { get; set; }
-        public virtual IList<UserReference> Users { get; set; }
+        public string Id { get; set; }
+        public Guid RoleId { get; set; }
+        public string RoleName { get; set; }
+        public string ApplicationName { get; set; }
+        public string Description { get; set; }
+        public IList<UserReference> Users { get; set; }
 
         public void RemoveUser(UserEntity user)
         {

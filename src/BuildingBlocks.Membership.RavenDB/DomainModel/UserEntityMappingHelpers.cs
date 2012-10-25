@@ -7,11 +7,8 @@ namespace BuildingBlocks.Membership.RavenDB.DomainModel
     {
         public static User ToUser(this UserEntity entity)
         {
-            var user = new User
+            var user = new User(entity.UserId, entity.Username, entity.Email, entity.ApplicationName)
                 {
-                    UserId   = entity.UserId,
-                    Username = entity.Username,
-                    Email = entity.Email,
                     Password = entity.Password,
                     Roles    = entity.Roles.Select(u => u.Name).ToList(),
                     Comment = entity.Comment,
@@ -37,6 +34,7 @@ namespace BuildingBlocks.Membership.RavenDB.DomainModel
                 {
                     UserId = user.UserId,
                     Username = user.Username,
+                    ApplicationName = user.ApplicationName,
                     Email = user.Email,
                     Password = user.Password,
                     Comment = user.Comment,

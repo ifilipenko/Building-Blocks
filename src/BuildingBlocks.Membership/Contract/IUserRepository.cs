@@ -7,18 +7,18 @@ namespace BuildingBlocks.Membership.Contract
 {
     public interface IUserRepository
     {
-        bool HasUserWithName(string username);
-        bool HasUserWithEmail(string email);
+        bool HasUserWithName(string applicationName, string username);
+        bool HasUserWithEmail(string applicationName, string email);
 
-        IEnumerable<User> FindUsersByNames(params string[] usernames);
-        User FindUserByEmail(string email);
+        IEnumerable<User> FindUsersByNames(string applicationName, params string[] usernames);
+        User FindUserByEmail(string applicationName, string email);
         User FindUserById(Guid userId);
 
-        Page<User> GetUsersPageByEmail(string emailToMatch, int pageIndex, int pageSize);
-        Page<User> GetUsersPageByUsername(string usernameToMatch, int pageIndex, int pageSize);
-        Page<User> GetUsersPage(int pageIndex, int pageSize);
+        Page<User> GetUsersPageByEmail(string applicationName, string emailToMatch, int pageIndex, int pageSize);
+        Page<User> GetUsersPageByUsername(string applicationName, string usernameToMatch, int pageIndex, int pageSize);
+        Page<User> GetUsersPage(string applicationName, int pageIndex, int pageSize);
 
-        int GetUsersCountWithLastActivityDateGreaterThen(DateTime dateActive);
+        int GetUsersCountWithLastActivityDateGreaterThen(string applicationName, DateTime dateActive);
 
         void AddUser(User newUser);
         void SaveUser(User user);
