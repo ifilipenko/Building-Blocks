@@ -38,6 +38,14 @@ namespace BuildingBlocks.Membership
             }
         }
 
+        public static void RoleNotFoundByName(this ILog log, string roleName)
+        {
+            if (log.IsDebugEnabled)
+            {
+                log.DebugFormat("Role not found by name \"{0}\"", roleName);
+            }
+        }
+
         public static void FoundedUsersCont(this ILog log, int count)
         {
             if (log.IsDebugEnabled)

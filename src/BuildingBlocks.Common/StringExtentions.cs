@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace BuildingBlocks.Common
 {
@@ -24,6 +25,11 @@ namespace BuildingBlocks.Common
                 return value;
 
             return value.Substring(0, limitString - elipsis.Length) + elipsis;
+        }
+
+        public static string JoinToString(this IEnumerable<string> strings, string separator = ",")
+        {
+            return string.Join(separator, strings);
         }
     }
 }
