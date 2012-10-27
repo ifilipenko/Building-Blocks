@@ -18,7 +18,7 @@ namespace BuildingBlocks.Membership
         {
             if (log.IsDebugEnabled)
             {
-                log.DebugFormat("Password failures attemps for user \"{0}\" was set to {1}", user.Username, user.PasswordFailuresSinceLastSuccess));
+                log.DebugFormat("Password failures attemps for user \"{0}\" was set to {1}", user.Username, user.PasswordFailuresSinceLastSuccess);
             }
         }
 
