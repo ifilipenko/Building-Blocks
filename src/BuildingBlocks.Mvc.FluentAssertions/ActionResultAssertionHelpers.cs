@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Linq.Expressions;
+using System.Web.Mvc;
 using FluentAssertions;
 using FluentAssertions.Primitives;
 
@@ -6,25 +8,75 @@ namespace BuildingBlocks.Mvc.FluentAssertions
 {
     public static class ActionResultAssertionHelpers
     {
-        public static TResult GetModelOf<TResult>(this ActionResult actionResult)
+        public static AndConstraint<ObjectAssertions> BeRedirectToAction(this ObjectAssertions assertions, string actionName, string controllerName = null)
         {
-            var model = (TResult)((ViewResult)actionResult).Model;
-            return model;
+            var result = assertions.BeOfType<RedirectToRouteResult>();
+            var actionResult = (RedirectToRouteResult)assertions.Subject;
+            actionResult.RouteValues.Should().ContainKey("action");
+            actionResult.RouteValues["action"].Should().Be(actionName);
+            if (controllerName != null)
+            {
+                actionResult.RouteValues.Should().ContainKey("controller");
+                actionResult.RouteValues["controller"].Should().Be(controllerName);
+            }
+            return result;
         }
 
-        public static AndConstraint<TAssertions> BeViewResult<TSubject, TAssertions>(this ReferenceTypeAssertions<TSubject, TAssertions> assertions)
-            where TAssertions : ReferenceTypeAssertions<TSubject, TAssertions>
+        public static AndConstraint<ObjectAssertions> BeRedirectToResult(this ObjectAssertions assertions, string redirect)
         {
-            return assertions.BeOfType<ViewResult>();
+            var result = assertions.BeOfType<RedirectResult>();
+            var actionResult = (RedirectResult)assertions.Subject;
+            actionResult.Url.Should().Be(redirect);
+            return result;
         }
 
-        public static AndConstraint<TAssertions> BeViewResultWithEmptyName<TSubject, TAssertions>(this ReferenceTypeAssertions<TSubject, TAssertions> assertions)
-            where TAssertions : ReferenceTypeAssertions<TSubject, TAssertions>
+        public static AndConstraint<ObjectAssertions> BeView(this ObjectAssertions assertions, Expression<Func<ViewResult, bool>> predicate = null)
         {
             var result = assertions.BeOfType<ViewResult>();
-            var viewResult = assertions.Subject as ViewResult;
-            viewResult.ViewName.Should().BeNullOrEmpty();
+            AssertViewResult(assertions, predicate);
             return result;
+        }
+
+        public static AndConstraint<ObjectAssertions> BeViewWithName(this ObjectAssertions assertions, string viewName)
+        {
+            return assertions.BeView(vr => vr.ViewName == viewName);
+        }
+
+        public static AndConstraint<ObjectAssertions> BeViewWithDefaultName(this ObjectAssertions assertions)
+        {
+            return assertions.BeView(vr => string.IsNullOrWhiteSpace(vr.ViewName));
+        }
+
+        public static AndConstraint<ObjectAssertions> AssertViewDataType(this ObjectAssertions assertions, Func<ViewDataDictionary, bool> viewDataAssert)
+        {
+            var result = assertions.BeOfType<ViewResult>();
+            var actionResult = (ViewResult)assertions.Subject;
+            viewDataAssert(actionResult.ViewData).Should().BeTrue();
+            return result;
+        }
+
+        public static AndConstraint<ObjectAssertions> HaveModelTypeOf<T>(this ObjectAssertions assertions)
+        {
+            var result = assertions.BeOfType<ViewResult>();
+            var actionResult = (ViewResult)assertions.Subject;
+            actionResult.Model.Should().BeOfType<T>();
+            return result;
+        }
+
+        public static object Model(this ObjectAssertions assertions)
+        {
+            assertions.BeOfType<ViewResult>();
+            var actionResult = (ViewResult)assertions.Subject;
+            return actionResult.Model;
+        }
+
+        private static void AssertViewResult(ObjectAssertions assertions, Expression<Func<ViewResult, bool>> predicate)
+        {
+            var actionResult = (ViewResult)assertions.Subject;
+            if (predicate != null)
+            {
+                actionResult.Should().Match(predicate);
+            }
         }
     }
 }
