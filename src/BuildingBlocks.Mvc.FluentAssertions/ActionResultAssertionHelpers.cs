@@ -66,13 +66,13 @@ namespace BuildingBlocks.Mvc.FluentAssertions
         public static object Model(this ObjectAssertions assertions)
         {
             assertions.BeOfType<ViewResult>();
-            var actionResult = (ViewResult)assertions.Subject;
+            var actionResult = (ViewResult) assertions.Subject;
             return actionResult.Model;
         }
 
         private static void AssertViewResult(ObjectAssertions assertions, Expression<Func<ViewResult, bool>> predicate)
         {
-            var actionResult = (ViewResult)assertions.Subject;
+            var actionResult = (ViewResult) assertions.Subject;
             if (predicate != null)
             {
                 actionResult.Should().Match(predicate);
