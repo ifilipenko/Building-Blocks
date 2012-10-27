@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Common.Logging;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Linq;
@@ -9,9 +10,9 @@ namespace BuildingBlocks.Store.RavenDB
 {
     public class RavenDbSession : IStorageSession
     {
+        private readonly ILog _log = LogManager.GetLogger<RavenDbSession>();
         private readonly IDocumentStore _documentStore;
         private Lazy<IDocumentSession> _session;
-
         public readonly Guid Id = Guid.NewGuid();
 
         public RavenDbSession(IDocumentStore documentStore)
@@ -32,7 +33,7 @@ namespace BuildingBlocks.Store.RavenDB
             {
                 if (_session == null)
                 {
-                    _session = CreateSessionValue(_documentStore);
+                    _session = CreateSessionValue();
                 }
                 return _session.Value;
             }
@@ -44,6 +45,11 @@ namespace BuildingBlocks.Store.RavenDB
             {
                 _session.Value.Dispose();
                 _session = null;
+                _log.Debug(m => m("Session with id {0} disposed", Id));
+            }
+            else
+            {
+                _log.Debug(m => m("Session is not initialized, disposing ignored"));
             }
         }
 
@@ -105,13 +111,25 @@ namespace BuildingBlocks.Store.RavenDB
         public void SumbitChanges()
         {
             if (!IsInitialized)
+            {
+                _log.Debug(m => m("Session is not initialized, submit changes ignored"));
                 return;
+            }
+
             Session.SaveChanges();
+            _log.Debug(m => m("All changes saved to RavenDB"));
         }
 
-        private static Lazy<IDocumentSession> CreateSessionValue(IDocumentStore documentStore)
+        private Lazy<IDocumentSession> CreateSessionValue()
         {
-            return new Lazy<IDocumentSession>(documentStore.OpenSession, true);
+            return new Lazy<IDocumentSession>(OpenSession, true);
+        }
+
+        private IDocumentSession OpenSession()
+        {
+            var documentSession = _documentStore.OpenSession();
+            _log.Debug(m => m("Session with id {0} opened", Id));
+            return documentSession;
         }
 
         private static ILoaderWithInclude<T> ApplyLoadingStrategyToSession<T>(IDocumentSession session, ILoadingStrategy<T> strategy)
@@ -151,7 +169,7 @@ namespace BuildingBlocks.Store.RavenDB
 
         public void ForcedInitialize()
         {
-            Query<object>(null);
+            Query<object>();
         }
     }
 }
