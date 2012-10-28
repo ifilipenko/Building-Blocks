@@ -39,8 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\KeyValueConfiguraion.cs" />
-    <Compile Include="Configuration\IConfiguraion.cs" />
+    <Compile Include="Configuration\KeyValueConfiguration.cs" />
+    <Compile Include="Configuration\IConfiguration.cs" />
     <Compile Include="IIocContainer.cs" />
     <Compile Include="ObjectHelpers.cs" />
     <Compile Include="Page.cs" />

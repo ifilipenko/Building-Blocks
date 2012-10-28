@@ -5,25 +5,25 @@ using System.Reflection;
 
 namespace BuildingBlocks.Common.Configuration
 {
-    public class KeyValueConfiguraion : IConfiguraion
+    public class KeyValueConfiguration : IConfiguration
     {
         private readonly Func<string, string> _configItemReader;
 
-        public KeyValueConfiguraion(Func<string, string> configItemReader)
+        public KeyValueConfiguration(Func<string, string> configItemReader)
         {
             if (configItemReader == null)
                 throw new ArgumentNullException("configItemReader");
             _configItemReader = configItemReader;
         }
 
-        public KeyValueConfiguraion(Func<NameValueCollection> configurationItemSource)
+        public KeyValueConfiguration(Func<NameValueCollection> configurationItemSource)
             : this(x => ReadFromNameValueCollection(configurationItemSource(), x))
         {
             if (configurationItemSource == null)
                 throw new ArgumentNullException("configurationItemSource");
         }
 
-        public KeyValueConfiguraion(Func<IDictionary> configurationItemSource)
+        public KeyValueConfiguration(Func<IDictionary> configurationItemSource)
             : this(x => ReadFromDictionary(configurationItemSource(), x))
         {
             if (configurationItemSource == null)

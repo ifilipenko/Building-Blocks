@@ -1,6 +1,6 @@
 namespace BuildingBlocks.Common.Configuration
 {
-    public interface IConfiguraion
+    public interface IConfiguration
     {
         string GetSetting(string name);
         T LoadTo<T>()
