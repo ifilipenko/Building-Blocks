@@ -13,17 +13,17 @@ namespace BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow
         private static readonly ILog _log = LogManager.GetLogger<RavenDbManagement>();
         private static IDocumentStore _store;
 
-        [BeforeScenario()]
+        [BeforeScenario]
         public void CreateRavenDb()
         {
-            RavenDb.Store = CreateStorage();
+            RavenDb.InitializeStorage();
         }
 
         [AfterScenario]
         public void DisposeRavenDb()
         {
             RavenDb.DisposeSessions();
-            RavenDb.Store.Dispose();
+            RavenDb.DisposeStorage();
             _log.Debug(m => m("Document store disposed"));
         }
 
@@ -65,23 +65,7 @@ namespace BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow
                 return
                     featureInfo.Tags.Any(t => ravenDbTags.Contains(t.Trim())) ||
                     scenarioInfo.Tags.Any(t => ravenDbTags.Contains(t.Trim()));
-
             }
-        }
-
-        private static IDocumentStore CreateStorage()
-        {
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-            var store = new EmbeddableDocumentStore
-                {
-                    RunInMemory = true
-                };
-            store.Initialize();
-            stopWatch.Stop();
-
-            _log.Debug(m => m("Document store initilized ({0:F2}s)", stopWatch.Elapsed.TotalSeconds));
-            return store;
         }
 
         private static object GetCurrentSessionId()

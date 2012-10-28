@@ -53,6 +53,7 @@
   <ItemGroup>
     <None Include="BuildingBlocks.Mvc.FluentAssertions.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
