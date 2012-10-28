@@ -6,6 +6,7 @@ using BuildingBlocks.Membership.RavenDB.Queries.Criteria;
 using BuildingBlocks.Query;
 using BuildingBlocks.Store;
 using BuildingBlocks.Store.RavenDB;
+using Raven.Client;
 
 namespace BuildingBlocks.Membership.RavenDB.Queries
 {
@@ -20,27 +21,42 @@ namespace BuildingBlocks.Membership.RavenDB.Queries
 
         Page<User> IQuery<FindByEmailSubstring, Page<User>>.Execute(FindByEmailSubstring criteria)
         {
-            return GetPageOfUsersMatchedToTerm("Email", criteria.EmailSubstring, criteria);
+            return GetPageOfUsersMatchedToTerm("Email", criteria.EmailSubstring, criteria.ApplicationName, criteria);
         }
 
         Page<User> IQuery<FindByUsernameSubstring, Page<User>>.Execute(FindByUsernameSubstring criteria)
         {
-            return GetPageOfUsersMatchedToTerm("Username", criteria.UsernameSubstring, criteria);
+            return GetPageOfUsersMatchedToTerm("Username", criteria.UsernameSubstring, criteria.ApplicationName, criteria);
         }
 
-        private Page<User> GetPageOfUsersMatchedToTerm(string column, string term, PageCriteria pageCriteria)
+        private Page<User> GetPageOfUsersMatchedToTerm(string column, string term, string applicationName, PageCriteria pageCriteria)
         {
             if (string.IsNullOrWhiteSpace(term))
             {
+                var usersQuery = _session.Query<UserEntity>();
+                if (!string.IsNullOrWhiteSpace(applicationName))
+                {
+                    usersQuery = usersQuery.Where(u => u.ApplicationName == applicationName);
+                }
                 return Pagination
-                    .From(_session.Query<UserEntity>().OrderBy(u => u.Username))
+                    .From(usersQuery.OrderBy(u => u.Username))
                     .Page(pageCriteria.PageNumber, pageCriteria.PageSize)
                     .GetPageWithItemsMappedBy(u => u.ToUser());
             }
 
             var session = ((RavenDbSession) _session).Session;
-            var allMatchedUsers = session.Advanced.LuceneQuery<UserEntity>()
-                .Where(string.Format("{0}: *{1}*", column, term))
+            var query = session.Advanced.LuceneQuery<UserEntity>();
+            if (string.IsNullOrWhiteSpace(applicationName))
+            {
+                query = session.Advanced.LuceneQuery<UserEntity>()
+                    .Where(string.Format("{0}:*{1}*", column, term));
+            }
+            else
+            {
+                query = session.Advanced.LuceneQuery<UserEntity>()
+                    .Where(string.Format("{0}:*{1}* AND ApplicationName:{2}", column, term, applicationName));
+            }
+            var allMatchedUsers = query
                 .OrderBy(u => u.Username)
                 .WaitForNonStaleResultsAsOfLastWrite()
                 .ToList();

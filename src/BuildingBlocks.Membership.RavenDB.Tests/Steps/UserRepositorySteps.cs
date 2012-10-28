@@ -56,14 +56,14 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         public void ≈слиѕровер€ют„тоѕользователь—уществует(string userName)
         {
             var userRepository = new UserRepositoryImpl(RavenDb.Storage);
-            UserExistsResult = userRepository.HasUserWithName(MembershipSettings.ApplicationName, userName);
+            UserExistsResult = userRepository.HasUserWithName(MembershipSettings.DefaultApplicationName, userName);
         }
 
         [When(@"провер€ют что пользователь с email ""(.*)"" существует")]
         public void ≈слиѕровер€ют„тоѕользовательByEmail—уществует(string email)
         {
             var userRepository = new UserRepositoryImpl(RavenDb.Storage);
-            UserExistsResult = userRepository.HasUserWithEmail(MembershipSettings.ApplicationName, email);
+            UserExistsResult = userRepository.HasUserWithEmail(MembershipSettings.DefaultApplicationName, email);
         }
 
         [When(@"получают список пользователей содержащих имена")]
@@ -71,14 +71,14 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         {
             var namesList = table.Rows.Select(r => r["им€"]).ToArray();
             var userRepository = new UserRepositoryImpl(RavenDb.Storage);
-            UsersResult = userRepository.FindUsersByNames(MembershipSettings.ApplicationName, namesList);
+            UsersResult = userRepository.FindUsersByNames(MembershipSettings.DefaultApplicationName, namesList);
         }
 
         [When(@"ищут пользовател€ с email ""(.*)""")]
         public void ≈сли»щутѕользовател€—Email(string email)
         {
             var userRepository = new UserRepositoryImpl(RavenDb.Storage);
-            UsersResult = userRepository.FindUserByEmail(MembershipSettings.ApplicationName, email).ToEnumerableOrEmpty();
+            UsersResult = userRepository.FindUserByEmail(MembershipSettings.DefaultApplicationName, email).ToEnumerableOrEmpty();
         }
 
         [When(@"ищут пользовател€ с Id ""(.*)""")]
@@ -88,39 +88,61 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
             UsersResult = userRepository.FindUserById(new Guid(id)).ToEnumerableOrEmpty();
         }
 
-        [When(@"загружают (.*) страницу пользоватлей по (.*) пользовател€ с фильтром по email ""(.*)""")]
-        public void ≈сли«агружают—траницуѕользоватлейѕоѕользовател€—‘ильтромѕоEmail(int pageNumber, int pageSize, string emailToMatch)
+        [When(@"загружают (.*) страницу пользоватлей по (.*) пользовател€, по приложению ""(.*)"" и части email ""(.*)""")]
+        public void ≈сли«агружают—траницуѕользоватлейѕоѕользовател€—‘ильтромѕоEmail»ѕриложению(int pageNumber, int pageSize, string applicationName, string emailToMatch)
         {
             Mock.Get(QueryFactory)
                 .Setup(f => f.Create<FindByEmailSubstring, Page<User>>())
                 .Returns(new UsersColumnMatchedToSubstring(RavenDb.CurrentStorageSession));
 
             var userRepository = new UserRepositoryImpl(RavenDb.Storage);
-            UserPageResult = userRepository.GetUsersPageByEmail(MembershipSettings.ApplicationName, emailToMatch, pageNumber - 1, pageSize);
+            UserPageResult = userRepository.GetUsersPageByEmail(emailToMatch, applicationName, pageNumber - 1, pageSize);
         }
 
-        [When(@"загружают (.*) страницу пользоватлей по (.*) пользовател€ с фильтром по имени ""(.*)""")]
-        public void ≈сли«агружают—траницуѕользоватлейѕоѕользовател€—‘ильтромѕо»мени(int pageNumber, int pageSize, string usernameToMatch)
+        [When(@"загружают (.*) страницу пользоватлей по (.*) пользовател€ с фильтром по email ""(.*)""")]
+        public void ≈сли«агружают—траницуѕользоватлейѕоѕользовател€—‘ильтромѕоEmail(int pageNumber, int pageSize, string emailToMatch)
+        {
+            ≈сли«агружают—траницуѕользоватлейѕоѕользовател€—‘ильтромѕоEmail»ѕриложению(
+                pageNumber, 
+                pageSize, 
+                MembershipSettings.DefaultApplicationName,
+                emailToMatch
+            );
+        }
+
+        [When(@"загружают (.*) страницу пользоватлей по (.*) пользовател€, по приложению ""(.*)"" и части имени ""(.*)""")]
+        public void ≈сли«агружают—траницуѕользоватлейѕоѕользовател€—‘ильтромѕо»мени»ѕриложению(int pageNumber, int pageSize, string applicationName, string usernameToMatch)
         {
             Mock.Get(QueryFactory)
                 .Setup(f => f.Create<FindByUsernameSubstring, Page<User>>())
                 .Returns(new UsersColumnMatchedToSubstring(RavenDb.CurrentStorageSession));
 
             var userRepository = new UserRepositoryImpl(RavenDb.Storage);
-            UserPageResult = userRepository.GetUsersPageByUsername(MembershipSettings.ApplicationName, usernameToMatch, pageNumber - 1, pageSize);
+            UserPageResult = userRepository.GetUsersPageByUsername(usernameToMatch, applicationName, pageNumber - 1, pageSize);
+        }
+        
+        [When(@"загружают (.*) страницу пользоватлей по (.*) пользовател€ с фильтром по имени ""(.*)""")]
+        public void ≈сли«агружают—траницуѕользоватлейѕоѕользовател€—‘ильтромѕо»мени(int pageNumber, int pageSize, string usernameToMatch)
+        {
+            ≈сли«агружают—траницуѕользоватлейѕоѕользовател€—‘ильтромѕо»мени»ѕриложению(
+                pageNumber,
+                pageSize,
+                MembershipSettings.DefaultApplicationName,
+                usernameToMatch
+            );
         }
 
         [When(@"загружают (.*) страницу пользоватлей по (.*) пользовател€")]
         public void ≈сли«агружают—траницуѕользоватлейѕоѕользовател€(int pageNumber, int pageSize)
         {
             var userRepository = new UserRepositoryImpl(RavenDb.Storage);
-            UserPageResult = userRepository.GetUsersPage(MembershipSettings.ApplicationName, pageNumber - 1, pageSize);
+            UserPageResult = userRepository.GetUsersPage(MembershipSettings.DefaultApplicationName, pageNumber - 1, pageSize);
         }
 
         [When(@"создают нового пользовател€ ""(.*)""")]
         public void ≈сли—оздаютЌовогоѕользовател€(string username)
         {
-            var user = new User(Guid.NewGuid(), username, username + "@mail.ru", MembershipSettings.ApplicationName)
+            var user = new User(Guid.NewGuid(), username, username + "@mail.ru", MembershipSettings.DefaultApplicationName)
             {
                 Password = "123"
             };
@@ -131,7 +153,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         [When(@"создают нового пользовател€ ""(.*)"" с назначенными рол€ми")]
         public void ≈сли—оздаютЌовогоѕользовател€—Ќазначенными–ол€ми(string username, Table table)
         {
-            var user = new User(Guid.NewGuid(), username, username + "@mail.ru", MembershipSettings.ApplicationName)
+            var user = new User(Guid.NewGuid(), username, username + "@mail.ru", MembershipSettings.DefaultApplicationName)
             {
                 Password = "123"
             };
@@ -150,7 +172,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         public void ≈слиѕолучают оличествоѕользователей—ѕоследнейјктивностьюќт(DateTime dateTime)
         {
             var userRepository = new UserRepositoryImpl(RavenDb.Storage);
-            UsersCountResult = userRepository.GetUsersCountWithLastActivityDateGreaterThen(MembershipSettings.ApplicationName, dateTime);
+            UsersCountResult = userRepository.GetUsersCountWithLastActivityDateGreaterThen(MembershipSettings.DefaultApplicationName, dateTime);
         }
 
         [When(@"дл€ пользовател€ с Id ""(.*)"" обновл€ют пол€")]

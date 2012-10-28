@@ -7,7 +7,7 @@ namespace BuildingBlocks.Membership.Entities
     {
         private IList<string> _roles;
 
-        public User(Guid userId, string userName, string applicationName, string email)
+        public User(Guid userId, string userName, string email, string applicationName)
         {
             UserId = userId;
             Username = userName;

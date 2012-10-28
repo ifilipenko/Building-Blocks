@@ -16,7 +16,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
             {
                 var role = new RoleEntity
                     {
-                        ApplicationName = MembershipSettings.ApplicationName,
+                        ApplicationName = MembershipSettings.DefaultApplicationName,
                         RoleId = Guid.NewGuid(),
                         RoleName = roleName,
                         Description = roleName

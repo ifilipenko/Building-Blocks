@@ -65,22 +65,22 @@ namespace BuildingBlocks.Membership.RavenDB
             }
         }
 
-        public Page<User> GetUsersPageByEmail(string applicationName, string emailToMatch, int pageIndex, int pageSize)
+        public Page<User> GetUsersPageByEmail(string emailToMatch, string applicationName, int pageIndex, int pageSize)
         {
             using (var session = _storage.OpenSesion())
             {
                 IQuery<FindByEmailSubstring, Page<User>> query = new UsersColumnMatchedToSubstring(session);
-                var page = query.Execute(new FindByEmailSubstring(emailToMatch, pageIndex + 1, pageSize));
+                var page = query.Execute(new FindByEmailSubstring(emailToMatch, applicationName, pageIndex + 1, pageSize));
                 return page;
             }
         }
 
-        public Page<User> GetUsersPageByUsername(string applicationName, string usernameToMatch, int pageIndex, int pageSize)
+        public Page<User> GetUsersPageByUsername(string usernameToMatch, string applicationName, int pageIndex, int pageSize)
         {
             using (var session = _storage.OpenSesion())
             {
                 IQuery<FindByUsernameSubstring, Page<User>> query = new UsersColumnMatchedToSubstring(session);
-                var page = query.Execute(new FindByUsernameSubstring(usernameToMatch, pageIndex + 1, pageSize));
+                var page = query.Execute(new FindByUsernameSubstring(usernameToMatch, applicationName, pageIndex + 1, pageSize));
                 return page;
             }
         }

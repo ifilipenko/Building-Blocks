@@ -467,7 +467,7 @@ namespace BuildingBlocks.Membership
         {
             _log.Trace(m => m("Finding users by email part \"{0}\"", emailToMatch));
 
-            var page = UserRepository.GetUsersPageByEmail(ApplicationName, emailToMatch, pageIndex, pageSize);
+            var page = UserRepository.GetUsersPageByEmail(emailToMatch, ApplicationName, pageIndex, pageSize);
             totalRecords = (int) page.TotalItemCount;
 
             var membershipUsers = new MembershipUserCollection();
@@ -500,7 +500,7 @@ namespace BuildingBlocks.Membership
         {
             _log.Trace(m => m("Finding users by username part \"{0}\"", usernameToMatch));
 
-            var page = UserRepository.GetUsersPageByUsername(ApplicationName, usernameToMatch, pageIndex, pageSize);
+            var page = UserRepository.GetUsersPageByUsername(usernameToMatch, ApplicationName, pageIndex, pageSize);
             totalRecords = (int) page.TotalItemCount;
 
             var membershipUsers = new MembershipUserCollection();

@@ -29,14 +29,14 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         public void ≈слиѕровер€ют„то–оль—уществует(string roleName)
         {
             var roleRepository = new RoleRepositoryImpl(RavenDb.Storage);
-            RoleExistsResult = roleRepository.IsRoleExists(MembershipSettings.ApplicationName, roleName);
+            RoleExistsResult = roleRepository.IsRoleExists(MembershipSettings.DefaultApplicationName, roleName);
         }
 
         [When(@"получают список ролей")]
         public void ≈слиѕолучают—писок–олей()
         {
             var roleRepository = new RoleRepositoryImpl(RavenDb.Storage);
-            RolesResult = roleRepository.GetAll(MembershipSettings.ApplicationName);
+            RolesResult = roleRepository.GetAll(MembershipSettings.DefaultApplicationName);
         }
 
         [When(@"получают список ролей содержащих имена")]
@@ -44,14 +44,14 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         {
             var namesList = table.Rows.Select(r => r["им€"]).ToArray();
             var roleRepository = new RoleRepositoryImpl(RavenDb.Storage);
-            RolesResult = roleRepository.FindRolesByNames(MembershipSettings.ApplicationName, namesList);
+            RolesResult = roleRepository.FindRolesByNames(MembershipSettings.DefaultApplicationName, namesList);
         }
 
         [When(@"создают роль ""(.*)""")]
         public void ≈сли—оздают–оль(string roleName)
         {
             var roleRepository = new RoleRepositoryImpl(RavenDb.Storage);
-            roleRepository.CreateRole(new Role(Guid.NewGuid(), roleName, MembershipSettings.ApplicationName)
+            roleRepository.CreateRole(new Role(Guid.NewGuid(), roleName, MembershipSettings.DefaultApplicationName)
                 {
                     Description = roleName,
                 });
@@ -61,7 +61,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         public void ≈сли—оздают–оль—о—пискомѕользователей(string roleName, Table table)
         {
             var roleRepository = new RoleRepositoryImpl(RavenDb.Storage);
-            roleRepository.CreateRole(new Role(Guid.NewGuid(), roleName, MembershipSettings.ApplicationName)
+            roleRepository.CreateRole(new Role(Guid.NewGuid(), roleName, MembershipSettings.DefaultApplicationName)
                 {
                     Description = roleName,
                     Users = table.Rows.Select(r => r["им€"]).ToList()

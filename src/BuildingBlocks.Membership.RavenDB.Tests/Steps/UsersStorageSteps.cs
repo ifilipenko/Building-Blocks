@@ -19,9 +19,10 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
             {
                 var username = row["имя"];
                 var email = row.ContainsKey("email") ? row["email"] : username + "@mail.com";
+                var applicationName = row.ContainsKey("приложение") ? row["приложение"] : MembershipSettings.DefaultApplicationName;
                 var user = new UserEntity
                     {
-                        ApplicationName = MembershipSettings.ApplicationName,
+                        ApplicationName = applicationName,
                         UserId = Guid.NewGuid(),
                         Username = username,
                         Email = email, 
