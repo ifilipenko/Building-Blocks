@@ -50,6 +50,7 @@
     </Compile>
     <Compile Include="IEntity.cs" />
     <Compile Include="ILoadingStrategy.cs" />
+    <Compile Include="IStorage.cs" />
     <Compile Include="IStorageSession.cs" />
     <Compile Include="ItemStorage.cs" />
     <Compile Include="LoadingStrategy.cs" />
