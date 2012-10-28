@@ -9,69 +9,86 @@ namespace BuildingBlocks.Membership.RavenDB
 {
     public class RoleRepositoryImpl : IRoleRepository
     {
-        private readonly IStorageSession _session;
-        
-        public RoleRepositoryImpl(IStorageSession session)
+        private readonly IStorage _storage;
+
+        public RoleRepositoryImpl(IStorage storage)
         {
-            _session = session;
+            _storage = storage;
         }
 
         public bool IsRoleExists(string applicationName, string roleName)
         {
-            return _session.Query<RoleEntity>().Any(r => r.ApplicationName == applicationName && r.RoleName == roleName);
+            using (var session = _storage.OpenSesion())
+            {
+                return session.Query<RoleEntity>().Any(r => r.ApplicationName == applicationName && r.RoleName == roleName);
+            }
         }
 
         public IEnumerable<Role> GetAll(string applicationName)
         {
-            var roles = _session.Query<RoleEntity>().OrderBy(r => r.RoleName).ToList();
-            return roles.Select(r => r.ToRole()).ToList();
+            using (var session = _storage.OpenSesion())
+            {
+                var roles = session.Query<RoleEntity>().OrderBy(r => r.RoleName).ToList();
+                return roles.Select(r => r.ToRole()).ToList();
+            }
         }
 
         public IEnumerable<Role> FindRolesByNames(string applicationName, params string[] roleNames)
         {
-            var roles = _session.Query<RoleEntity>()
-                .Where(r => r.ApplicationName == applicationName)
-                .ContainsIn(r => r.RoleName, roleNames)
-                .OrderBy(r => r.RoleName)
-                .ToList();
-            return roles.Select(r => r.ToRole()).ToList();
+            using (var session = _storage.OpenSesion())
+            {
+                var roles = session.Query<RoleEntity>()
+                    .Where(r => r.ApplicationName == applicationName)
+                    .ContainsIn(r => r.RoleName, roleNames)
+                    .OrderBy(r => r.RoleName)
+                    .ToList();
+                return roles.Select(r => r.ToRole()).ToList();
+            }
         }
 
         public void CreateRole(Role role)
         {
-            var roleEntity = role.ToEntityWithoutUsers();
-            var users = _session.Query<UserEntity>()
-                .Where(r => r.ApplicationName == role.ApplicationName)
-                .ContainsIn(r => r.Username, role.Users)
-                .ToList();
-            foreach (var user in users)
+            using (var session = _storage.OpenSesion())
             {
-                roleEntity.AddUserOrUpdate(user);
-            }
-            _session.Save(roleEntity);
+                var roleEntity = role.ToEntityWithoutUsers();
+                var users = session.Query<UserEntity>()
+                    .Where(r => r.ApplicationName == role.ApplicationName)
+                    .ContainsIn(r => r.Username, role.Users)
+                    .ToList();
+                foreach (var user in users)
+                {
+                    roleEntity.AddUserOrUpdate(user);
+                }
+                session.Save(roleEntity);
 
-            foreach (var user in users)
-            {
-                user.AddRoleOrUpdate(roleEntity);
-                _session.Save(user);
+                foreach (var user in users)
+                {
+                    user.AddRoleOrUpdate(roleEntity);
+                    session.Save(user);
+                }
+                session.SumbitChanges();
             }
         }
 
         public void DeleteRole(Role role)
         {
-            var rolesToDelete = _session.Query<RoleEntity>().Where(r => r.RoleName == role.RoleName).ToList();
-            foreach (var roleToDelete in rolesToDelete)
+            using (var session = _storage.OpenSesion())
             {
-                foreach (var userReference in roleToDelete.Users)
+                var rolesToDelete = session.Query<RoleEntity>().Where(r => r.RoleName == role.RoleName).ToList();
+                foreach (var roleToDelete in rolesToDelete)
                 {
-                    var user = _session.GetById<UserEntity>(userReference.Id);
-                    if (user != null)
+                    foreach (var userReference in roleToDelete.Users)
                     {
-                        user.RemoveRole(roleToDelete);
-                        _session.Save(user);
+                        var user = session.GetById<UserEntity>(userReference.Id);
+                        if (user != null)
+                        {
+                            user.RemoveRole(roleToDelete);
+                            session.Save(user);
+                        }
                     }
+                    session.Delete(roleToDelete);
                 }
-                _session.Delete(roleToDelete);
+                session.SumbitChanges();
             }
         }
     }

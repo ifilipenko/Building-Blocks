@@ -28,14 +28,14 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         [When(@"провер€ют что роль ""(.*)"" существует")]
         public void ≈слиѕровер€ют„то–оль—уществует(string roleName)
         {
-            var roleRepository = new RoleRepositoryImpl(RavenDb.CurrentStorageSession);
+            var roleRepository = new RoleRepositoryImpl(RavenDb.Storage);
             RoleExistsResult = roleRepository.IsRoleExists(MembershipSettings.ApplicationName, roleName);
         }
 
         [When(@"получают список ролей")]
         public void ≈слиѕолучают—писок–олей()
         {
-            var roleRepository = new RoleRepositoryImpl(RavenDb.CurrentStorageSession);
+            var roleRepository = new RoleRepositoryImpl(RavenDb.Storage);
             RolesResult = roleRepository.GetAll(MembershipSettings.ApplicationName);
         }
 
@@ -43,14 +43,14 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         public void ≈слиѕолучают—писок–олей—одержащих»мена(Table table)
         {
             var namesList = table.Rows.Select(r => r["им€"]).ToArray();
-            var roleRepository = new RoleRepositoryImpl(RavenDb.CurrentStorageSession);
+            var roleRepository = new RoleRepositoryImpl(RavenDb.Storage);
             RolesResult = roleRepository.FindRolesByNames(MembershipSettings.ApplicationName, namesList);
         }
 
         [When(@"создают роль ""(.*)""")]
         public void ≈сли—оздают–оль(string roleName)
         {
-            var roleRepository = new RoleRepositoryImpl(RavenDb.CurrentStorageSession);
+            var roleRepository = new RoleRepositoryImpl(RavenDb.Storage);
             roleRepository.CreateRole(new Role(Guid.NewGuid(), roleName, MembershipSettings.ApplicationName)
                 {
                     Description = roleName,
@@ -60,7 +60,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         [When(@"создают роль ""(.*)"" со списком пользователей")]
         public void ≈сли—оздают–оль—о—пискомѕользователей(string roleName, Table table)
         {
-            var roleRepository = new RoleRepositoryImpl(RavenDb.CurrentStorageSession);
+            var roleRepository = new RoleRepositoryImpl(RavenDb.Storage);
             roleRepository.CreateRole(new Role(Guid.NewGuid(), roleName, MembershipSettings.ApplicationName)
                 {
                     Description = roleName,
@@ -72,7 +72,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         public void ≈сли”дал€ют–оль(string roleName)
         {
             var role = RavenDb.CurrentStorageSession.Query<RoleEntity>().Single(r => r.RoleName == roleName).ToRole();
-            var roleRepository = new RoleRepositoryImpl(RavenDb.CurrentStorageSession);
+            var roleRepository = new RoleRepositoryImpl(RavenDb.Storage);
             roleRepository.DeleteRole(role);
         }
 
