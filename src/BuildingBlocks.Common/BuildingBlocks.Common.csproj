@@ -39,6 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\ApplicationConfiguraion.cs" />
+    <Compile Include="Configuration\IApplicationConfiguraion.cs" />
     <Compile Include="IIocContainer.cs" />
     <Compile Include="ObjectHelpers.cs" />
     <Compile Include="Page.cs" />
