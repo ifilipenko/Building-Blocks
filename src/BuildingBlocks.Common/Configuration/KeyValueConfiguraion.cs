@@ -1,32 +1,29 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace BuildingBlocks.Common.Configuration
 {
-    public class ApplicationConfiguraion : IApplicationConfiguraion
+    public class KeyValueConfiguraion : IConfiguraion
     {
         private readonly Func<string, string> _configItemReader;
 
-        public ApplicationConfiguraion(Func<string, string> configItemReader)
+        public KeyValueConfiguraion(Func<string, string> configItemReader)
         {
             if (configItemReader == null)
                 throw new ArgumentNullException("configItemReader");
             _configItemReader = configItemReader;
         }
 
-        public ApplicationConfiguraion(Func<NameValueCollection> configurationItemSource)
+        public KeyValueConfiguraion(Func<NameValueCollection> configurationItemSource)
             : this(x => ReadFromNameValueCollection(configurationItemSource(), x))
         {
             if (configurationItemSource == null)
                 throw new ArgumentNullException("configurationItemSource");
         }
 
-        public ApplicationConfiguraion(Func<IDictionary> configurationItemSource)
+        public KeyValueConfiguraion(Func<IDictionary> configurationItemSource)
             : this(x => ReadFromDictionary(configurationItemSource(), x))
         {
             if (configurationItemSource == null)
@@ -38,7 +35,7 @@ namespace BuildingBlocks.Common.Configuration
             return _configItemReader(name);
         }
 
-        public T DeserializeTo<T>()
+        public T LoadTo<T>()
             where T : new()
         {
             var result = new T();

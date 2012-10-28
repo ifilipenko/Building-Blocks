@@ -1,8 +1,9 @@
 namespace BuildingBlocks.Common.Configuration
 {
-    public interface IApplicationConfiguraion
+    public interface IConfiguraion
     {
         string GetSetting(string name);
-        T DeserializeTo<T>() where T : new();
+        T LoadTo<T>()
+            where T : new();
     }
 }
