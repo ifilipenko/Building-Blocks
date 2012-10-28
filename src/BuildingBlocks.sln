@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Membership.R
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Mvc.FluentAssertions", "BuildingBlocks.Mvc.FluentAssertions\BuildingBlocks.Mvc.FluentAssertions.csproj", "{419CC8F9-221C-41E2-A22D-44BD50029290}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.SystemInfo", "BuildingBlocks.SystemInfo\BuildingBlocks.SystemInfo.csproj", "{0D185AB7-F422-4FEF-89F0-295A09472167}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,10 @@ Global
 		{419CC8F9-221C-41E2-A22D-44BD50029290}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{419CC8F9-221C-41E2-A22D-44BD50029290}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{419CC8F9-221C-41E2-A22D-44BD50029290}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D185AB7-F422-4FEF-89F0-295A09472167}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D185AB7-F422-4FEF-89F0-295A09472167}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D185AB7-F422-4FEF-89F0-295A09472167}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D185AB7-F422-4FEF-89F0-295A09472167}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

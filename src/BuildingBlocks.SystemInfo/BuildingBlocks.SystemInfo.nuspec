@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>BuildingBlocks.SystemInfo</id>
+    <version>1.0.0.0</version>
+    <authors>Innokentiy Filipenko</authors>
+    <owners>Building-Blocks</owners>
+    <licenseUrl>https://raw.github.com/ifilipenko/Building-Blocks/master/License.txt</licenseUrl>
+    <projectUrl>https://github.com/ifilipenko/Building-Blocks</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Helpers classes for collecting information about system</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2012</copyright>
+    <dependencies>
+    </dependencies>
+  </metadata>
+</package>
