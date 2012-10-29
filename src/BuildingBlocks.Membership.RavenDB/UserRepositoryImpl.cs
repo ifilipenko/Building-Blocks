@@ -9,11 +9,13 @@ using BuildingBlocks.Membership.RavenDB.Queries;
 using BuildingBlocks.Membership.RavenDB.Queries.Criteria;
 using BuildingBlocks.Query;
 using BuildingBlocks.Store;
+using Common.Logging;
 
 namespace BuildingBlocks.Membership.RavenDB
 {
     public class UserRepositoryImpl : IUserRepository
     {
+        private static readonly ILog _log = LogManager.GetLogger<UserRepositoryImpl>();
         private readonly IStorage _storage;
 
         public UserRepositoryImpl(IStorage storage)
@@ -105,10 +107,13 @@ namespace BuildingBlocks.Membership.RavenDB
 
         public void AddUser(User newUser)
         {
+            _log.Trace(m => m("Adding user started"));
             using (var session = _storage.OpenSesion())
             {
                 var userEntity = newUser.ToEntityWithoutRoles();
                 var roles = session.Query<RoleEntity>().ContainsIn(r => r.RoleName, newUser.Roles).ToList();
+                _log.FoundedRolesByParameters(roles, newUser.Roles);
+
                 foreach (var role in roles)
                 {
                     userEntity.Roles.Add(new RoleReference(role));
@@ -122,6 +127,7 @@ namespace BuildingBlocks.Membership.RavenDB
                 }
                 session.SumbitChanges();
             }
+            _log.Trace(m => m("User successfully added"));
         }
 
         public void SaveUser(User user)
