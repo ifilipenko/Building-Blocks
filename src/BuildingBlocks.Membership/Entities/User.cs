@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BuildingBlocks.Membership.Entities
 {
@@ -38,7 +39,12 @@ namespace BuildingBlocks.Membership.Entities
         public string PasswordVerificationToken { get; set; }
         public DateTime? PasswordVerificationTokenExpirationDate { get; set; }
 
-        public virtual IEnumerable<string> Roles
+        public bool HasRoles
+        {
+            get { return Roles != null && Roles.Any(); }
+        }
+
+        public IEnumerable<string> Roles
         {
             get { return _roles; }
             set { _roles = (IList<string>) value; }
