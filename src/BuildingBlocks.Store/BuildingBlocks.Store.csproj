@@ -53,6 +53,7 @@
     <Compile Include="IStorage.cs" />
     <Compile Include="IStorageSession.cs" />
     <Compile Include="ItemStorage.cs" />
+    <Compile Include="ITransaction.cs" />
     <Compile Include="LoadingStrategy.cs" />
     <Compile Include="LoadingStrategyActionHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

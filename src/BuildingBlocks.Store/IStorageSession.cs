@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace BuildingBlocks.Store
 {
-    public interface IStorageSession : IDisposable
+    public interface IStorageSession : ITransaction, IDisposable
     {
         bool IsInitialized { get; }
 
@@ -24,7 +24,5 @@ namespace BuildingBlocks.Store
             where TId : struct;
 
         void Delete<T>(T entity);
-
-        void SumbitChanges();
     }
 }
