@@ -4,6 +4,7 @@ using BuildingBlocks.Membership.Contract;
 using BuildingBlocks.Membership.Entities;
 using BuildingBlocks.Membership.RavenDB.DomainModel;
 using BuildingBlocks.Store;
+using BuildingBlocks.Store.RavenDB;
 
 namespace BuildingBlocks.Membership.RavenDB
 {
@@ -38,6 +39,7 @@ namespace BuildingBlocks.Membership.RavenDB
             using (var session = _storage.OpenSesion())
             {
                 var roles = session.Query<RoleEntity>()
+                    .WaitForNonStaleResultsAsOfLastWrite()
                     .Where(r => r.ApplicationName == applicationName)
                     .ContainsIn(r => r.RoleName, roleNames)
                     .OrderBy(r => r.RoleName)
@@ -52,6 +54,7 @@ namespace BuildingBlocks.Membership.RavenDB
             {
                 var roleEntity = role.ToEntityWithoutUsers();
                 var users = session.Query<UserEntity>()
+                    .WaitForNonStaleResultsAsOfLastWrite()
                     .Where(r => r.ApplicationName == role.ApplicationName)
                     .ContainsIn(r => r.Username, role.Users)
                     .ToList();

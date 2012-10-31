@@ -9,6 +9,7 @@ using BuildingBlocks.Membership.RavenDB.Queries;
 using BuildingBlocks.Membership.RavenDB.Queries.Criteria;
 using BuildingBlocks.Query;
 using BuildingBlocks.Store;
+using BuildingBlocks.Store.RavenDB;
 using Common.Logging;
 
 namespace BuildingBlocks.Membership.RavenDB
@@ -162,7 +163,10 @@ namespace BuildingBlocks.Membership.RavenDB
 
         private void UpdateUsersRolesList(IStorageSession session, UserEntity userEntity, IEnumerable<string> newRoles)
         {
-            var newRolesList = session.Query<RoleEntity>().ContainsIn(r => r.RoleName, newRoles).ToList();
+            var newRolesList = session.Query<RoleEntity>()
+                .WaitForNonStaleResultsAsOfLastWrite()
+                .ContainsIn(r => r.RoleName, newRoles)
+                .ToList();
             var roleIdsToRemove = userEntity.GetRoleIdsToRemove(newRolesList);
 
             foreach (var roleId in roleIdsToRemove)
