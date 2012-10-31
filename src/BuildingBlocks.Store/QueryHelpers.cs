@@ -38,6 +38,9 @@ namespace BuildingBlocks.Store
         /// <exception cref="ArgumentException">Expected property or field getter</exception>
         public static IQueryable<T> ContainsIn<T>(this IQueryable<T> queryable, Expression<Func<T, string>> property, IEnumerable<string> values)
         {
+            if (values == null || !values.Any())
+                return queryable.Where(_ => false);
+
             var memberExpression = GetMemberExpression(property);
             return ContainsIn(queryable, memberExpression.Member.Name, values);
         }
