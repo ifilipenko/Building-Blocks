@@ -225,6 +225,7 @@ namespace BuildingBlocks.Membership
             }
 
             UserRepository.SaveUser(user);
+            _log.Trace(m => m("User with name \"{0}\" validation successfully completed with result {1}", username, verificationSucceeded));
             return verificationSucceeded;
         }
 
