@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BuildingBlocks.Common;
+using Common.Logging;
 
 namespace BuildingBlocks.Membership.Entities
 {
     public class User
     {
+        private readonly ILog _log = LogManager.GetLogger<User>();
         private IList<string> _roles;
 
         public User(Guid userId, string userName, string email, string applicationName)
@@ -57,10 +60,14 @@ namespace BuildingBlocks.Membership.Entities
 
         public void AddRole(string roleName)
         {
-            if (_roles.Contains(roleName)) 
+            if (_roles.Contains(roleName))
+            {
+                _log.Debug(m => m("User already contains role with name \"{0}\"", roleName));
                 return;
+            }
 
             _roles.Add(roleName);
+            _log.Debug(m => m("Role \"{0}\" sucessfully added to user, user has following roles [{1}]", roleName, _roles.JoinToString()));
         }
     }
 }

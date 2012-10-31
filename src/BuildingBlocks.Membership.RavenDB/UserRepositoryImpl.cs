@@ -139,7 +139,7 @@ namespace BuildingBlocks.Membership.RavenDB
                 var userEntity = session.Query<UserEntity>().Single(u => u.UserId == user.UserId);
                 userEntity.UpdateUser(user);
 
-                UpdateUsersRolesList(userEntity, user.Roles);
+                UpdateUsersRolesList(session, userEntity, user.Roles);
 
                 session.Save(userEntity);
                 session.SumbitChanges();
@@ -162,35 +162,36 @@ namespace BuildingBlocks.Membership.RavenDB
             }
         }
 
-        private void UpdateUsersRolesList(UserEntity userEntity, IEnumerable<string> newRoles)
+        private void UpdateUsersRolesList(IStorageSession session, UserEntity userEntity, IEnumerable<string> newRoles)
         {
-            using (var session = _storage.OpenSesion())
+            var newRolesList = session.Query<RoleEntity>().ContainsIn(r => r.RoleName, newRoles).ToList();
+            var roleIdsToRemove = userEntity.GetRoleIdsToRemove(newRolesList);
+
+            foreach (var roleId in roleIdsToRemove)
             {
-                var newRolesList = session.Query<RoleEntity>().ContainsIn(r => r.RoleName, newRoles).ToList();
-                var roleIdsToRemove = userEntity.GetRoleIdsToRemove(newRolesList);
-
-                foreach (var roleId in roleIdsToRemove)
+                var roleEntity = session.GetById<RoleEntity>(roleId);
+                if (roleEntity == null)
                 {
-                    var roleEntity = session.GetById<RoleEntity>(roleId);
-                    if (roleEntity == null)
-                    {
-                        userEntity.RemoveRoleWithId(roleId);
-                    }
-                    else
-                    {
-                        userEntity.RemoveRole(roleEntity);
-                        roleEntity.RemoveUser(userEntity);
-                        session.Save(roleEntity);
-                    }
+                    userEntity.RemoveRoleWithId(roleId);
+                    _log.Debug(m => m("remove role by id {0}", roleId));
                 }
-
-                foreach (var roleEntity in newRolesList)
+                else
                 {
-                    userEntity.AddRoleOrUpdate(roleEntity);
-                    roleEntity.AddUserOrUpdate(userEntity);
+                    userEntity.RemoveRole(roleEntity);
+                    roleEntity.RemoveUser(userEntity);
+                    _log.Debug(m => m("removed role {0} from user {1}", roleEntity, userEntity));
+                    _log.Debug(m => m("removed user {0} from role {1}", userEntity, roleEntity));
                     session.Save(roleEntity);
                 }
-                session.SumbitChanges();
+            }
+
+            foreach (var roleEntity in newRolesList)
+            {
+                userEntity.AddRoleOrUpdate(roleEntity);
+                roleEntity.AddUserOrUpdate(userEntity);
+                _log.Debug(m => m("Added role {0} to user {1}", roleEntity, userEntity));
+                _log.Debug(m => m("Added user {0} to role {1}", userEntity, roleEntity));
+                session.Save(roleEntity);
             }
         }
     }

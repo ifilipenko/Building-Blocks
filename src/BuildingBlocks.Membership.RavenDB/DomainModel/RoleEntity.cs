@@ -42,5 +42,10 @@ namespace BuildingBlocks.Membership.RavenDB.DomainModel
                 Users.Add(new UserReference(user));
             }
         }
+
+        public override string ToString()
+        {
+            return string.Format("RoleName: {0}", RoleName);
+        }
     }
 }

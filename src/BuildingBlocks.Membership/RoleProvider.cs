@@ -274,8 +274,8 @@ namespace BuildingBlocks.Membership
 
             var users = UserRepository.FindUsersByNames(ApplicationName, usernames).Where(u => u != null).ToList();
             var roles = RoleRepository.FindRolesByNames(ApplicationName, roleNames).Where(r => r != null).ToList();
-            _log.Debug(m => m("Founded {0} users by {1} names", usernames.Length, users.Count));
-            _log.Debug(m => m("Founded {0} roles by {1} names", roleNames.Length, roles.Count));
+            _log.Debug(m => m("Founded [{0}] users by [{1}] names", users.Select(u => u.Username).JoinToString(), usernames.JoinToString()));
+            _log.Debug(m => m("Founded [{0}] roles by [{1}] names", roles.Select(u => u.RoleName).JoinToString(), roleNames.JoinToString()));
 
             foreach (var user in users)
             {
@@ -286,7 +286,7 @@ namespace BuildingBlocks.Membership
                 }
             }
 
-            _log.Trace(m => m("Adding users {0} to roles {1} succedded", usernames.JoinToString(), roleNames.JoinToString()));
+            _log.Trace(m => m("Adding users [{0}] to roles [{1}] succedded", usernames.JoinToString(), roleNames.JoinToString()));
         }
 
         public override void RemoveUsersFromRoles(string[] usernames, string[] roleNames)

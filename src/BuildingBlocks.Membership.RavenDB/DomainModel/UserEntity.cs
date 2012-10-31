@@ -102,5 +102,10 @@ namespace BuildingBlocks.Membership.RavenDB.DomainModel
                 Roles.Remove(roleReference);
             }
         }
+
+        public override string ToString()
+        {
+            return string.Format("Username: {0}", Username);
+        }
     }
 }
