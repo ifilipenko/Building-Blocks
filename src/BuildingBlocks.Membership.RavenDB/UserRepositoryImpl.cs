@@ -111,9 +111,7 @@ namespace BuildingBlocks.Membership.RavenDB
             using (var session = _storage.OpenSesion())
             {
                 var userEntity = newUser.ToEntityWithoutRoles();
-                var roles = newUser.HasRoles
-                                ? session.Query<RoleEntity>().ContainsIn(r => r.RoleName, newUser.Roles).ToList()
-                                : Enumerable.Empty<RoleEntity>();
+                var roles = session.Query<RoleEntity>().ContainsIn(r => r.RoleName, newUser.Roles).ToList();
                 _log.FoundedRolesByParameters(roles, newUser.Roles);
 
                 foreach (var role in roles)

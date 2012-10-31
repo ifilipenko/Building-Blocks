@@ -38,9 +38,6 @@ namespace BuildingBlocks.Store
         /// <exception cref="ArgumentException">Expected property or field getter</exception>
         public static IQueryable<T> ContainsIn<T>(this IQueryable<T> queryable, Expression<Func<T, string>> property, IEnumerable<string> values)
         {
-            if (values == null || !values.Any())
-                return queryable.Where(_ => false);
-
             var memberExpression = GetMemberExpression(property);
             return ContainsIn(queryable, memberExpression.Member.Name, values);
         }
@@ -58,11 +55,13 @@ namespace BuildingBlocks.Store
 
         private static IQueryable<T> PropertyContainsCore<T, TValue>(IQueryable<T> queryable, string property, IEnumerable<TValue> values)
         {
-            if (!values.Any())
-                return queryable;
-
             var wrapper = typeof(TValue) == typeof(string) ? "\"" : string.Empty;
-            var criterions = values.Select(name => property + " = " + wrapper + name + wrapper);
+            if (values == null || !values.Any())
+            {
+                return queryable.Where(property + " == " + wrapper + Guid.NewGuid() + wrapper);
+            }
+
+            var criterions = values.Select(v => property + " == " + wrapper + v + wrapper);
             var expression = string.Join(" || ", criterions);
             return queryable.Where(expression);
         }
