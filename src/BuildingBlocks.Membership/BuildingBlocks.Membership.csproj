@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigHelper.cs" />
+    <Compile Include="IForcedPasswordChangeProvider.cs" />
     <Compile Include="LogExtentions.cs" />
     <Compile Include="MembershipProvider.cs" />
     <Compile Include="MembershipUpdateUserException.cs" />

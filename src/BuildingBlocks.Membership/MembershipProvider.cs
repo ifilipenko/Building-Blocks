@@ -10,7 +10,7 @@ using Common.Logging;
 
 namespace BuildingBlocks.Membership
 {
-    public class MembershipProvider : System.Web.Security.MembershipProvider
+    public class MembershipProvider : System.Web.Security.MembershipProvider, IForcedPasswordChangeProvider
     {
         private static readonly ILog _log = LogManager.GetLogger<MembershipProvider>();
         private string _applicationName;
@@ -305,6 +305,36 @@ namespace BuildingBlocks.Membership
                 user.LastPasswordChangedDate.Value,
                 user.LastLockoutDate.Value
             );
+        }
+
+        bool IForcedPasswordChangeProvider.ChangePassword(string username, string newPassword)
+        {
+            _log.Trace(m => m("Started password changing for user \"{0}\"", username));
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(newPassword))
+            {
+                _log.Debug(m => m("Invalid parameters"));
+                return false;
+            }
+            var user = FindUserByName(username);
+            if (user == null)
+            {
+                _log.Debug(m => m("User is not found"));
+                return false;
+            }
+
+            var newHashedPassword = Crypto.HashPassword(newPassword);
+            if (newHashedPassword.Length > 128)
+            {
+                _log.Debug(m => m("New password hash has invalid lenght"));
+                return false;
+            }
+
+            user.Password = newHashedPassword;
+            user.LastPasswordChangedDate = DateTime.UtcNow;
+            UserRepository.SaveUser(user);
+
+            _log.Trace(m => m("Password sucessfully changed for user \"{0}\"", username));
+            return true;
         }
 
         public override bool ChangePassword(string username, string oldPassword, string newPassword)
