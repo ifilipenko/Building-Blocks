@@ -87,10 +87,15 @@ namespace BuildingBlocks.Store.RavenDB
             return loader == null ? Session.Load<T>(id) : loader.Load(id);
         }
 
-        public IQueryable<T> Query<T>(ILoadingStrategy<T> loadingStrategy = null)
+        public IQueryable<T> Query<T>(ILoadingStrategy<T> loadingStrategy = null, StaleResultsMode staleResults = StaleResultsMode.AllowStaleResultsMode)
         {
             var query = Session.Query<T>();
             ApplyLoadingStrategyToQuery(query, loadingStrategy);
+            if (staleResults == StaleResultsMode.WaitForNonStaleResults)
+            {
+                query = query
+                    .Customize(x => x.WaitForNonStaleResultsAsOfLastWrite(TimeSpan.FromSeconds(5)));
+            }
             return query;
         }
 
@@ -112,6 +117,11 @@ namespace BuildingBlocks.Store.RavenDB
         public void Delete<T>(T entity)
         {
             Session.Delete(entity);
+        }
+
+        public void UseOptimisticConcurrency()
+        {
+            Session.Advanced.UseOptimisticConcurrency = true;
         }
 
         public void SumbitChanges()

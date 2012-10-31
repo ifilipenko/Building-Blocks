@@ -111,6 +111,8 @@ namespace BuildingBlocks.Membership.RavenDB
             _log.Trace(m => m("Adding user started"));
             using (var session = _storage.OpenSesion())
             {
+                session.UseOptimisticConcurrency();
+
                 var userEntity = newUser.ToEntityWithoutRoles();
                 var roles = newUser.HasRoles 
                     ? session.Query<RoleEntity>().ContainsIn(r => r.RoleName, newUser.Roles).ToList()
@@ -137,6 +139,8 @@ namespace BuildingBlocks.Membership.RavenDB
         {
             using (var session = _storage.OpenSesion())
             {
+                session.UseOptimisticConcurrency();
+
                 var userEntity = session.Query<UserEntity>().Single(u => u.UserId == user.UserId);
                 userEntity.UpdateUser(user);
 

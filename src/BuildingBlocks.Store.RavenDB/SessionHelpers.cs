@@ -6,6 +6,7 @@ namespace BuildingBlocks.Store.RavenDB
 {
     public static class SessionHelpers
     {
+        [Obsolete("Use Query method parameter \"staleMode\"")]
         public static IQueryable<T> WaitForNonStaleResultsAsOfLastWrite<T>(this IQueryable<T> queryable)
         {
             var ravenQueryable = queryable as IRavenQueryable<T>;

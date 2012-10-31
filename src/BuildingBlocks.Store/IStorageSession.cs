@@ -16,7 +16,7 @@ namespace BuildingBlocks.Store
 
         T GetById<T>(ValueType id, ILoadingStrategy<T> loadingStrategy = null);
 
-        IQueryable<T> Query<T>(ILoadingStrategy<T> loadingStrategy = null);
+        IQueryable<T> Query<T>(ILoadingStrategy<T> loadingStrategy = null, StaleResultsMode staleResults = StaleResultsMode.AllowStaleResultsMode);
 
         void Save(IEntity<string> entity);
 
@@ -24,5 +24,13 @@ namespace BuildingBlocks.Store
             where TId : struct;
 
         void Delete<T>(T entity);
+
+        void UseOptimisticConcurrency();
+    }
+
+    public enum StaleResultsMode
+    {
+        AllowStaleResultsMode,
+        WaitForNonStaleResults
     }
 }
