@@ -112,7 +112,9 @@ namespace BuildingBlocks.Membership.RavenDB
             using (var session = _storage.OpenSesion())
             {
                 var userEntity = newUser.ToEntityWithoutRoles();
-                var roles = session.Query<RoleEntity>().ContainsIn(r => r.RoleName, newUser.Roles).ToList();
+                var roles = newUser.HasRoles 
+                    ? session.Query<RoleEntity>().ContainsIn(r => r.RoleName, newUser.Roles).ToList()
+                    : Enumerable.Empty<RoleEntity>();
                 _log.FoundedRolesByParameters(roles, newUser.Roles);
 
                 foreach (var role in roles)
@@ -163,10 +165,11 @@ namespace BuildingBlocks.Membership.RavenDB
 
         private void UpdateUsersRolesList(IStorageSession session, UserEntity userEntity, IEnumerable<string> newRoles)
         {
-            var newRolesList = session.Query<RoleEntity>()
-                .WaitForNonStaleResultsAsOfLastWrite()
-                .ContainsIn(r => r.RoleName, newRoles)
-                .ToList();
+            var newRolesList = newRoles.Any()
+                                   ? session.Query<RoleEntity>()
+                                         .WaitForNonStaleResultsAsOfLastWrite()
+                                         .ContainsIn(r => r.RoleName, newRoles).ToList()
+                                   : Enumerable.Empty<RoleEntity>();
             var roleIdsToRemove = userEntity.GetRoleIdsToRemove(newRolesList);
 
             foreach (var roleId in roleIdsToRemove)

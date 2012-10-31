@@ -53,11 +53,13 @@ namespace BuildingBlocks.Membership.RavenDB
             using (var session = _storage.OpenSesion())
             {
                 var roleEntity = role.ToEntityWithoutUsers();
-                var users = session.Query<UserEntity>()
-                    .WaitForNonStaleResultsAsOfLastWrite()
-                    .Where(r => r.ApplicationName == role.ApplicationName)
-                    .ContainsIn(r => r.Username, role.Users)
-                    .ToList();
+                var users = role.Users.Any()
+                                ? session.Query<UserEntity>()
+                                      .WaitForNonStaleResultsAsOfLastWrite()
+                                      .Where(r => r.ApplicationName == role.ApplicationName)
+                                      .ContainsIn(r => r.Username, role.Users)
+                                      .ToList()
+                                : Enumerable.Empty<UserEntity>();
                 foreach (var user in users)
                 {
                     roleEntity.AddUserOrUpdate(user);
