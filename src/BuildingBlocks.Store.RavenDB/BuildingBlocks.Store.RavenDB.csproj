@@ -63,6 +63,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="RavenDbSession.cs" />
+    <Compile Include="RavenDbSessionSettings.cs" />
     <Compile Include="RavenDbStorage.cs" />
     <Compile Include="SessionHelpers.cs" />
     <Compile Include="StaleResultsStrategy.cs" />

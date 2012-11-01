@@ -44,7 +44,10 @@ namespace BuildingBlocks.Membership.RavenDB
         {
             using (var session = _storage.OpenSesion())
             {
-                var users = session.Query<UserEntity>().ContainsIn(u => u.Username, usernames).OrderBy(u => u.Username).ToList();
+                var users = session.Query<UserEntity>(staleResults: StaleResultsMode.WaitForNonStaleResults)
+                    .ContainsIn(u => u.Username, usernames)
+                    .OrderBy(u => u.Username)
+                    .ToList();
                 return users.Select(u => u.ToUser()).ToList();
             }
         }

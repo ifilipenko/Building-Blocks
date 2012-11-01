@@ -12,13 +12,15 @@ namespace BuildingBlocks.Store.RavenDB
     {
         private readonly ILog _log = LogManager.GetLogger<RavenDbSession>();
         private readonly IDocumentStore _documentStore;
+        private readonly RavenDbSessionSettings _sessionSettings;
         private Lazy<IDocumentSession> _session;
         public readonly Guid Id = Guid.NewGuid();
         private bool _rolledBack;
 
-        public RavenDbSession(IDocumentStore documentStore)
+        public RavenDbSession(IDocumentStore documentStore, RavenDbSessionSettings sessionSettings = null)
         {
             _documentStore = documentStore;
+            _sessionSettings = sessionSettings ?? new RavenDbSessionSettings();
         }
 
         public RavenDbSession(IDocumentSession session)
@@ -90,12 +92,8 @@ namespace BuildingBlocks.Store.RavenDB
         public IQueryable<T> Query<T>(ILoadingStrategy<T> loadingStrategy = null, StaleResultsMode staleResults = StaleResultsMode.AllowStaleResultsMode)
         {
             var query = Session.Query<T>();
-            ApplyLoadingStrategyToQuery(query, loadingStrategy);
-            if (staleResults == StaleResultsMode.WaitForNonStaleResults)
-            {
-                query = query
-                    .Customize(x => x.WaitForNonStaleResultsAsOfLastWrite(TimeSpan.FromSeconds(5)));
-            }
+            query = ApplyLoadingStrategyToQuery(query, loadingStrategy);
+            query = ApplyNonStaleResultsStrategy(query, staleResults);
             return query;
         }
 
@@ -131,7 +129,6 @@ namespace BuildingBlocks.Store.RavenDB
                 _log.Debug(m => m("Session is not initialized, submit changes ignored"));
                 return;
             }
-
 
             if (_rolledBack)
             {
@@ -176,22 +173,49 @@ namespace BuildingBlocks.Store.RavenDB
             return loaderWithInclude;
         }
 
-        private static void ApplyLoadingStrategyToQuery<T>(IRavenQueryable<T> query, ILoadingStrategy<T> strategy)
+        private static IRavenQueryable<T> ApplyLoadingStrategyToQuery<T>(IRavenQueryable<T> query, ILoadingStrategy<T> strategy)
         {
             var loadingStrategy = (LoadingStrategy<T>) strategy;
             if (loadingStrategy == null || loadingStrategy.IsEmpty)
-                return;
+                return query;
 
-            query.Customize(x =>
+            return query.Customize(x =>
+            {
+                var property = loadingStrategy.Dequeue();
+                x.Include(property);
+                while (!loadingStrategy.IsEmpty)
                 {
-                    var property = loadingStrategy.Dequeue();
+                    property = loadingStrategy.Dequeue();
                     x.Include(property);
-                    while (!loadingStrategy.IsEmpty)
-                    {
-                        property = loadingStrategy.Dequeue();
-                        x.Include(property);
-                    }
-                });
+                }
+            });
+        }
+
+        private IRavenQueryable<T> ApplyNonStaleResultsStrategy<T>(IRavenQueryable<T> query, StaleResultsMode mode)
+        {
+            if (mode != StaleResultsMode.WaitForNonStaleResults)
+                return query;
+
+            var whait = _sessionSettings.StaleResultsWhait;
+            switch (_sessionSettings.StaleResultWhaitMode)
+            {
+                case StaleResultWhaitMode.AtNow:
+                    query = whait.HasValue
+                                ? query.Customize(x => x.WaitForNonStaleResultsAsOfNow(whait.Value))
+                                : query.Customize(x => x.WaitForNonStaleResultsAsOfNow());
+                    break;
+                case StaleResultWhaitMode.AllNonStale:
+                    query = whait.HasValue
+                                ? query.Customize(x => x.WaitForNonStaleResults(whait.Value))
+                                : query.Customize(x => x.WaitForNonStaleResults());
+                    break;
+                case StaleResultWhaitMode.AtLastWrite:
+                    query = whait.HasValue
+                                ? query.Customize(x => x.WaitForNonStaleResultsAsOfLastWrite(whait.Value))
+                                : query.Customize(x => x.WaitForNonStaleResultsAsOfLastWrite());
+                    break;
+            }
+            return query;
         }
 
         public void ForcedInitialize()

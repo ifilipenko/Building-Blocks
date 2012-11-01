@@ -1,14 +1,18 @@
 ﻿using System.Web.Security;
 using BuildingBlocks.Membership.Contract;
+using BuildingBlocks.Store.RavenDB;
 using BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow;
 using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace BuildingBlocks.Membership.RavenDB.Tests
+namespace BuildingBlocks.Membership.RavenDB.Tests.BugTests
 {
+    /// <summary>
+    /// This fixture detect problem with ContainsIn implementation and stale results
+    /// </summary>
     [TestFixture]
-    public class Bug366MembershipProvidersInComplexCreationScenarioTest
+    public class Bug366MembershipProvidersInComplexCreationScenarioTests
     {
         private RoleProvider _roleProvider;
         private MembershipProvider _membershipProvider;
@@ -17,6 +21,8 @@ namespace BuildingBlocks.Membership.RavenDB.Tests
         public void Setup()
         {
             RavenDb.InitializeStorage();
+
+            ((RavenDbStorage) RavenDb.Storage).SessionSettings.SetStaleResultsWhait(StaleResultWhaitMode.AllNonStale);
 
             var userRepository = new UserRepositoryImpl(RavenDb.Storage);
             var rolesRepository = new RoleRepositoryImpl(RavenDb.Storage);

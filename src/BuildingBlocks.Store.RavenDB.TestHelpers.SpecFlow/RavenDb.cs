@@ -12,6 +12,7 @@ namespace BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow
         private static IDocumentSession _currentSession;
         private static RavenDbSession _currentStorageSession;
         private static Lazy<IDocumentStore> _documentStore;
+        private static Lazy<IStorage> _storage;
 
         public static IDocumentStore DocumentStore
         {
@@ -20,7 +21,7 @@ namespace BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow
 
         public static IStorage Storage
         {
-            get { return new RavenDbStorage(DocumentStore); }
+            get { return _storage.Value; }
         }
 
         public static IDocumentSession CurrentSession
@@ -80,6 +81,7 @@ namespace BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow
         private static void LazyInitializeDocumentStore()
         {
             _documentStore = new Lazy<IDocumentStore>(CreateStorage, true);
+            _storage = new Lazy<IStorage>(() => new RavenDbStorage(DocumentStore), true);
         }
 
         private static IDocumentStore CreateStorage()

@@ -38,8 +38,7 @@ namespace BuildingBlocks.Membership.RavenDB
         {
             using (var session = _storage.OpenSesion())
             {
-                var roles = session.Query<RoleEntity>()
-                    .WaitForNonStaleResultsAsOfLastWrite()
+                var roles = session.Query<RoleEntity>(staleResults: StaleResultsMode.WaitForNonStaleResults)
                     .Where(r => r.ApplicationName == applicationName)
                     .ContainsIn(r => r.RoleName, roleNames)
                     .OrderBy(r => r.RoleName)
