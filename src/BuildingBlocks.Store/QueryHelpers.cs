@@ -58,7 +58,7 @@ namespace BuildingBlocks.Store
             var wrapper = typeof(TValue) == typeof(string) ? "\"" : string.Empty;
             if (values == null || !values.Any())
             {
-                return queryable;
+                //return queryable;
                 return queryable.Where(property + " == " + wrapper + Guid.NewGuid() + wrapper);
             }
 
