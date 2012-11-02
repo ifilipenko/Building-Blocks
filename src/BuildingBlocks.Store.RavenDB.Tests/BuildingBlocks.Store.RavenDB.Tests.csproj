@@ -104,6 +104,7 @@
   <ItemGroup>
     <Compile Include="RavenDbSessionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RavenDbSimpleTransactionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
