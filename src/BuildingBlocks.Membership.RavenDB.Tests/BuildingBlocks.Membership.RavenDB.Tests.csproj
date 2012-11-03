@@ -154,6 +154,9 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>UserRepository1.feature.cs</LastGenOutput>
     </None>
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
