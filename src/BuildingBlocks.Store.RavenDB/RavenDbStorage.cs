@@ -13,6 +13,11 @@ namespace BuildingBlocks.Store.RavenDB
             SessionSettings = sessionSettings;
         }
 
+        public IDocumentStore DocumentStore
+        {
+            get { return _documentStore; }
+        }
+
         public RavenDbSessionSettings SessionSettings
         {
             get { return _sessionSettings; }
