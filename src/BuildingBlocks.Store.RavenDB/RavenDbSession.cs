@@ -132,6 +132,7 @@ namespace BuildingBlocks.Store.RavenDB
 
             if (_rolledBack)
             {
+                _log.Debug(m => m("Session changes is rolled back"));
                 throw new InvalidOperationException("Session was rolled back");
             }
 
@@ -141,7 +142,9 @@ namespace BuildingBlocks.Store.RavenDB
 
         public void Rollback()
         {
+            Session.Advanced.Clear();
             _rolledBack = true;
+            _log.Debug(m => m("Session was marked as rolled back and all changes information is cleared"));
         }
 
         private Lazy<IDocumentSession> CreateSessionValue()
