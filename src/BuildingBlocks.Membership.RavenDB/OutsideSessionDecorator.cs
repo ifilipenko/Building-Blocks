@@ -27,9 +27,9 @@ namespace BuildingBlocks.Membership.RavenDB
             get { return _outsideSession; }
         }
 
-        public bool IsRolledBack
+        public bool IsCancelled
         {
-            get { return _outsideSession.IsRolledBack; }
+            get { return _outsideSession.IsCancelled; }
         }
 
         public void SumbitChanges()
@@ -37,9 +37,9 @@ namespace BuildingBlocks.Membership.RavenDB
             _log.Debug(m => m("Submit changes is session {0} ignored and need be submitted by outsisde session", _id));
         }
 
-        public void Rollback()
+        public void CancelChanges()
         {
-            _outsideSession.Rollback();
+            _outsideSession.CancelChanges();
             _log.Debug(m => m("Rollback sended to outside session from wrapper {0}", _id));
         }
 

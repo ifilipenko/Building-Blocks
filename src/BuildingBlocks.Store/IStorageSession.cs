@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace BuildingBlocks.Store
 {
-    public interface IStorageSession : ITransaction, IDisposable
+    public interface IStorageSession : IUnitOfWork, IDisposable
     {
         bool IsInitialized { get; }
 

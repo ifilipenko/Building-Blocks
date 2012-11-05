@@ -62,7 +62,7 @@ namespace BuildingBlocks.Store.RavenDB.Tests
                 session.Save(new Employee { Name = "John Smith Clone1" });
                 session.Save(new Employee { Name = "John Smith Clone2" });
 
-                session.Rollback();
+                session.CancelChanges();
                 Action action = () => session.SumbitChanges();
                 action.ShouldThrow<InvalidOperationException>();
             }
@@ -77,7 +77,7 @@ namespace BuildingBlocks.Store.RavenDB.Tests
                 session.Save(new Employee {Name = "John Smith Clone1"});
                 session.Save(new Employee {Name = "John Smith Clone2"});
 
-                session.Rollback();
+                session.CancelChanges();
                 try
                 {
                     session.SumbitChanges();
@@ -102,7 +102,7 @@ namespace BuildingBlocks.Store.RavenDB.Tests
                 session.Save(new Employee { Name = "John Smith Clone1" });
                 session.Save(new Employee { Name = "John Smith Clone2" });
 
-                session.Rollback();
+                session.CancelChanges();
             }
         }
 
@@ -115,8 +115,8 @@ namespace BuildingBlocks.Store.RavenDB.Tests
                 session.Save(new Employee { Name = "John Smith Clone1" });
                 session.Save(new Employee { Name = "John Smith Clone2" });
 
-                session.Rollback();
-                session.IsRolledBack.Should().BeTrue();
+                session.CancelChanges();
+                session.IsCancelled.Should().BeTrue();
             }
         }
 

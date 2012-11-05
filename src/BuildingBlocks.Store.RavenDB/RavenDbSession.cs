@@ -15,7 +15,7 @@ namespace BuildingBlocks.Store.RavenDB
         private readonly RavenDbSessionSettings _sessionSettings;
         private Lazy<IDocumentSession> _session;
         public readonly Guid Id = Guid.NewGuid();
-        private bool _rolledBack;
+        private bool _cancelled;
 
         public RavenDbSession(IDocumentStore documentStore, RavenDbSessionSettings sessionSettings = null)
         {
@@ -61,9 +61,9 @@ namespace BuildingBlocks.Store.RavenDB
             get { return _session != null && _session.IsValueCreated && _session.Value != null; }
         }
 
-        public bool IsRolledBack
+        public bool IsCancelled
         {
-            get { return _rolledBack; }
+            get { return _cancelled; }
         }
 
         public T GetById<T>(string id, ILoadingStrategy<T> loadingStrategy = null)
@@ -130,7 +130,7 @@ namespace BuildingBlocks.Store.RavenDB
                 return;
             }
 
-            if (_rolledBack)
+            if (_cancelled)
             {
                 _log.Debug(m => m("Session changes is rolled back"));
                 throw new InvalidOperationException("Session was rolled back");
@@ -140,10 +140,10 @@ namespace BuildingBlocks.Store.RavenDB
             _log.Debug(m => m("All changes saved to RavenDB"));
         }
 
-        public void Rollback()
+        public void CancelChanges()
         {
             Session.Advanced.Clear();
-            _rolledBack = true;
+            _cancelled = true;
             _log.Debug(m => m("Session was marked as rolled back and all changes information is cleared"));
         }
 

@@ -56,7 +56,7 @@ namespace BuildingBlocks.Store
                     return;
                 using (session)
                 {
-                    if (occuredException == null && session.IsInitialized && !session.IsRolledBack)
+                    if (occuredException == null && session.IsInitialized && !session.IsCancelled)
                     {
                         session.SumbitChanges();
                     }
