@@ -9,24 +9,27 @@ using BuildingBlocks.Membership.RavenDB.Queries;
 using BuildingBlocks.Membership.RavenDB.Queries.Criteria;
 using BuildingBlocks.Query;
 using BuildingBlocks.Store;
-using BuildingBlocks.Store.RavenDB;
 using Common.Logging;
 
 namespace BuildingBlocks.Membership.RavenDB
 {
-    public class UserRepositoryImpl : IUserRepository
+    public class UserRepositoryImpl : RepositoryBase, IUserRepository
     {
         private static readonly ILog _log = LogManager.GetLogger<UserRepositoryImpl>();
-        private readonly IStorage _storage;
 
         public UserRepositoryImpl(IStorage storage)
+            : base(storage)
         {
-            _storage = storage;
+        }
+
+        public UserRepositoryImpl(IStorageSession outsideSession)
+            : base(outsideSession)
+        {
         }
 
         public bool HasUserWithName(string applicationName, string username)
         {
-            using (var session = _storage.OpenSesion())
+            using (var session = OpenSesion())
             {
                 return session.Query<UserEntity>().Any(u => u.Username == username);
             }
@@ -34,7 +37,7 @@ namespace BuildingBlocks.Membership.RavenDB
 
         public bool HasUserWithEmail(string applicationName, string email)
         {
-            using (var session = _storage.OpenSesion())
+            using (var session = OpenSesion())
             {
                 return session.Query<UserEntity>().Any(u => u.Email == email);
             }
@@ -42,7 +45,7 @@ namespace BuildingBlocks.Membership.RavenDB
 
         public IEnumerable<User> FindUsersByNames(string applicationName, params string[] usernames)
         {
-            using (var session = _storage.OpenSesion())
+            using (var session = OpenSesion())
             {
                 var users = session.Query<UserEntity>(staleResults: StaleResultsMode.WaitForNonStaleResults)
                     .ContainsIn(u => u.Username, usernames)
@@ -54,7 +57,7 @@ namespace BuildingBlocks.Membership.RavenDB
 
         public User FindUserByEmail(string applicationName, string email)
         {
-            using (var session = _storage.OpenSesion())
+            using (var session = OpenSesion())
             {
                 var user = session.Query<UserEntity>()
                     .FirstOrDefault(u => u.ApplicationName == applicationName && u.Email == email);
@@ -64,36 +67,62 @@ namespace BuildingBlocks.Membership.RavenDB
 
         public User FindUserById(Guid userId)
         {
-            using (var session = _storage.OpenSesion())
+            using (var session = OpenSesion())
             {
                 var user = session.Query<UserEntity>().FirstOrDefault(u => u.UserId == userId);
                 return user == null ? null : user.ToUser();
             }
         }
 
+        public IEnumerable<User> FindUsersInRole(string applicationName, string roleName)
+        {
+            using (var session = OpenSesion())
+            {
+                var usernames = from u in session.Query<UserEntity>()
+                                where u.ApplicationName == applicationName && u.Roles.Any(r => r == roleName)
+                                select u;
+                return usernames.AsEnumerable().Select(u => u.ToUser());
+            }
+        }
+
+        public IEnumerable<User> FindUsersInRole(string applicationName, string roleName, string usernameToMatch)
+        {
+            using (var session = OpenSesion())
+            {
+                var usernames = from u in session.Query<UserEntity>()
+                                where u.ApplicationName == applicationName && u.Roles.Any(r => r == roleName) &&
+                                      u.Username.Contains(usernameToMatch)
+                                select u;
+                return usernames.AsEnumerable().Select(u => u.ToUser());
+            }
+        }
+
         public Page<User> GetUsersPageByEmail(string emailToMatch, string applicationName, int pageIndex, int pageSize)
         {
-            using (var session = _storage.OpenSesion())
+            using (var session = OpenSesion())
             {
                 IQuery<FindByEmailSubstring, Page<User>> query = new UsersColumnMatchedToSubstring(session);
-                var page = query.Execute(new FindByEmailSubstring(emailToMatch, applicationName, pageIndex + 1, pageSize));
+                var page =
+                    query.Execute(new FindByEmailSubstring(emailToMatch, applicationName, pageIndex + 1, pageSize));
                 return page;
             }
         }
 
-        public Page<User> GetUsersPageByUsername(string usernameToMatch, string applicationName, int pageIndex, int pageSize)
+        public Page<User> GetUsersPageByUsername(string usernameToMatch, string applicationName, int pageIndex,
+                                                 int pageSize)
         {
-            using (var session = _storage.OpenSesion())
+            using (var session = OpenSesion())
             {
                 IQuery<FindByUsernameSubstring, Page<User>> query = new UsersColumnMatchedToSubstring(session);
-                var page = query.Execute(new FindByUsernameSubstring(usernameToMatch, applicationName, pageIndex + 1, pageSize));
+                var page =
+                    query.Execute(new FindByUsernameSubstring(usernameToMatch, applicationName, pageIndex + 1, pageSize));
                 return page;
             }
         }
 
         public Page<User> GetUsersPage(string applicationName, int pageIndex, int pageSize)
         {
-            using (var session = _storage.OpenSesion())
+            using (var session = OpenSesion())
             {
                 return Pagination.From(session.Query<UserEntity>().OrderBy(u => u.Username))
                     .Page(pageIndex + 1, pageSize)
@@ -103,7 +132,7 @@ namespace BuildingBlocks.Membership.RavenDB
 
         public int GetUsersCountWithLastActivityDateGreaterThen(string applicationName, DateTime dateActive)
         {
-            using (var session = _storage.OpenSesion())
+            using (var session = OpenSesion())
             {
                 return session.Query<UserEntity>().Count(u => u.LastActivityDate > dateActive);
             }
@@ -112,27 +141,21 @@ namespace BuildingBlocks.Membership.RavenDB
         public void AddUser(User newUser)
         {
             _log.Trace(m => m("Adding user started"));
-            using (var session = _storage.OpenSesion())
+            using (var session = OpenSesion())
             {
                 session.UseOptimisticConcurrency();
 
                 var userEntity = newUser.ToEntityWithoutRoles();
-                var roles = newUser.HasRoles 
-                    ? session.Query<RoleEntity>().ContainsIn(r => r.RoleName, newUser.Roles).ToList()
-                    : Enumerable.Empty<RoleEntity>();
+                var roles = newUser.HasRoles
+                                ? session.Query<RoleEntity>().ContainsIn(r => r.RoleName, newUser.Roles).ToList()
+                                : Enumerable.Empty<RoleEntity>();
                 _log.FoundedRolesByParameters(roles, newUser.Roles);
 
                 foreach (var role in roles)
                 {
-                    userEntity.Roles.Add(new RoleReference(role));
+                    userEntity.AddRole(role.RoleName);
                 }
                 session.Save(userEntity);
-
-                foreach (var role in roles)
-                {
-                    role.Users.Add(new UserReference(userEntity));
-                    session.Save(role);
-                }
                 session.SumbitChanges();
             }
             _log.Trace(m => m("User successfully added"));
@@ -140,7 +163,7 @@ namespace BuildingBlocks.Membership.RavenDB
 
         public void SaveUser(User user)
         {
-            using (var session = _storage.OpenSesion())
+            using (var session = OpenSesion())
             {
                 session.UseOptimisticConcurrency();
 
@@ -156,15 +179,9 @@ namespace BuildingBlocks.Membership.RavenDB
 
         public void DeleteUser(User user)
         {
-            using (var session = _storage.OpenSesion())
+            using (var session = OpenSesion())
             {
                 var userEntity = session.Query<UserEntity>().Single(u => u.UserId == user.UserId);
-                var roles = session.Query<RoleEntity>().ContainsIn(r => r.RoleName, user.Roles).ToList();
-                foreach (var role in roles)
-                {
-                    role.RemoveUser(userEntity);
-                    session.Save(role);
-                }
                 session.Delete(userEntity);
                 session.SumbitChanges();
             }
@@ -173,35 +190,21 @@ namespace BuildingBlocks.Membership.RavenDB
         private void UpdateUsersRolesList(IStorageSession session, UserEntity userEntity, IEnumerable<string> newRoles)
         {
             var newRolesList = newRoles.Any()
-                                   ? session.Query<RoleEntity>()
-                                         .WaitForNonStaleResultsAsOfLastWrite()
-                                         .ContainsIn(r => r.RoleName, newRoles).ToList()
+                                   ? session.Query<RoleEntity>(staleResults: StaleResultsMode.WaitForNonStaleResults)
+                                         .ContainsIn(r => r.RoleName, newRoles)
+                                         .ToList()
                                    : Enumerable.Empty<RoleEntity>();
-            var roleIdsToRemove = userEntity.GetRoleIdsToRemove(newRolesList);
 
-            foreach (var roleId in roleIdsToRemove)
+            var roleNamesToRemove = userEntity.GetRolesToRemove(newRoles);
+            foreach (var roleName in roleNamesToRemove)
             {
-                var roleEntity = session.GetById<RoleEntity>(roleId);
-                if (roleEntity == null)
-                {
-                    userEntity.RemoveRoleWithId(roleId);
-                    _log.Debug(m => m("remove role by id {0}", roleId));
-                }
-                else
-                {
-                    userEntity.RemoveRole(roleEntity);
-                    roleEntity.RemoveUser(userEntity);
-                    _log.Debug(m => m("removed role {0} from user {1}", roleEntity, userEntity));
-                    _log.Debug(m => m("removed user {0} from role {1}", userEntity, roleEntity));
-                    session.Save(roleEntity);
-                }
+                userEntity.RemoveRole(roleName);
+                _log.Debug(m => m("remove role by name {0}", roleName));
             }
 
             foreach (var roleEntity in newRolesList)
             {
-                userEntity.AddRoleOrUpdate(roleEntity);
-                roleEntity.AddUserOrUpdate(userEntity);
-                _log.Debug(m => m("Added role {0} to user {1}", roleEntity, userEntity));
+                userEntity.AddRole(roleEntity.RoleName);
                 _log.Debug(m => m("Added user {0} to role {1}", userEntity, roleEntity));
                 session.Save(roleEntity);
             }

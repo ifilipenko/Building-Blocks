@@ -6,7 +6,6 @@ using BuildingBlocks.Membership.RavenDB.Queries.Criteria;
 using BuildingBlocks.Query;
 using BuildingBlocks.Store;
 using BuildingBlocks.Store.RavenDB;
-using Raven.Client;
 
 namespace BuildingBlocks.Membership.RavenDB.Queries
 {

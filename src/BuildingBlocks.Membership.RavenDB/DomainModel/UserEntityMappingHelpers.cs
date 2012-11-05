@@ -10,7 +10,7 @@ namespace BuildingBlocks.Membership.RavenDB.DomainModel
             var user = new User(entity.UserId, entity.Username, entity.Email, entity.ApplicationName)
                 {
                     Password = entity.Password,
-                    Roles    = entity.Roles.Select(u => u.Name).ToList(),
+                    Roles    = entity.Roles.ToList(),
                     Comment = entity.Comment,
                     ConfirmationToken = entity.ConfirmationToken,
                     CreateDate = entity.CreateDate,

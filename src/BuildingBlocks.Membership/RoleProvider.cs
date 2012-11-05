@@ -119,7 +119,7 @@ namespace BuildingBlocks.Membership
                 return false;
             }
 
-            var isUserInRole = user.Roles.Contains(role.RoleName);
+            var isUserInRole = user.Roles.Contains(role);
             _log.Trace(m => m("Successfully checked that user \"{0}\" contains in role \"{1}\"", username, roleName));
             return isUserInRole;
         }
@@ -127,7 +127,7 @@ namespace BuildingBlocks.Membership
         public override string[] GetAllRoles()
         {
             _log.Trace(m => m("Load all roles"));
-            var allRoles = RoleRepository.GetAll(ApplicationName).Select(r => r.RoleName).ToArray();
+            var allRoles = RoleRepository.GetAll(ApplicationName).ToArray();
             _log.Trace(m => m("All roles successfully loaded"));
             return allRoles;
         }
@@ -147,7 +147,8 @@ namespace BuildingBlocks.Membership
                 _log.RoleNotFoundByName(roleName);
                 return null;
             }
-            var usersInRole = role.Users.ToArray();
+
+            var usersInRole = UserRepository.FindUsersInRole(ApplicationName, roleName).Select(u => u.Username).ToArray();
             _log.Trace(m => m("Successfully loaded all users contained in role \"{0}\"", roleName));
             return usersInRole;
         }
@@ -189,10 +190,7 @@ namespace BuildingBlocks.Membership
                 return null;
             }
 
-            var usersInRole = (from r in RoleRepository.GetAll(ApplicationName)
-                               from userName in r.Users
-                               where r.RoleName == roleName && userName.Contains(usernameToMatch)
-                               select userName).ToArray();
+            var usersInRole = UserRepository.FindUsersInRole(ApplicationName, roleName, usernameToMatch).Select(u => u.Username).ToArray();
             _log.Trace(m => m("Successfully finded users contained in role\"{0}\" and with names contained \"{1}\"", roleName, usernameToMatch));
             return usersInRole;
         }
@@ -214,9 +212,7 @@ namespace BuildingBlocks.Membership
                 return;
             }
 
-            var newRole = new Role(Guid.NewGuid(), roleName, ApplicationName);
-            RoleRepository.CreateRole(newRole);
-
+            RoleRepository.CreateRole(Guid.NewGuid(), ApplicationName, roleName);
             _log.Trace(m => m("Role with name \"{0}\" successfully created", roleName));
         }
 
@@ -230,39 +226,31 @@ namespace BuildingBlocks.Membership
                 return false;
             }
 
-            var role = RoleRepository.FindRolesByNames(ApplicationName, roleName).SingleOrDefault();
-            if (role == null)
+            if (!RoleRepository.IsRoleExists(ApplicationName, roleName))
             {
                 _log.RoleNotFoundByName(roleName);
                 return false;
             }
 
+            var users = UserRepository.FindUsersInRole(ApplicationName, roleName);
             if (throwOnPopulatedRole)
             {
-                if (role.Users.Any())
+                if (users.Any())
                 {
-                    _log.Debug(m => m("Role \"{0}\" has {1} users and deprecated to delete", roleName, role.Users.Count()));
+                    _log.Debug(m => m("Role \"{0}\" has {1} users and deprecated to delete", roleName, users.Count()));
                     return false;
                 }
             }
             else
             {
-                foreach (var userName in role.Users)
+                foreach (var user in users)
                 {
-                    var user = UserRepository.FindUsersByNames(ApplicationName, userName).SingleOrDefault();
-                    if (user == null)
-                    {
-                        _log.Debug(m => m("User with name \"{0}\" is not found and ignored to delete from role", userName));
-                    }
-                    else
-                    {
-                        user.RemoveRole(role.RoleName);
-                        UserRepository.SaveUser(user);
-                        _log.Debug(m => m("User with name \"{0}\" removed from role \"{1}\"", userName, role.RoleName));
-                    }
+                    user.RemoveRole(roleName);
+                    UserRepository.SaveUser(user);
+                    _log.Debug(m => m("User with name \"{0}\" removed from role \"{1}\"", user.Username, roleName));
                 }
             }
-            RoleRepository.DeleteRole(role);
+            RoleRepository.DeleteRole(ApplicationName, roleName);
 
             _log.Trace(m => m("Role with name \"{0}\" sucessfully deleted", roleName));
             return true;
@@ -275,13 +263,13 @@ namespace BuildingBlocks.Membership
             var users = UserRepository.FindUsersByNames(ApplicationName, usernames).Where(u => u != null).ToList();
             var roles = RoleRepository.FindRolesByNames(ApplicationName, roleNames).Where(r => r != null).ToList();
             _log.Debug(m => m("Founded [{0}] users by [{1}] names", users.Select(u => u.Username).JoinToString(), usernames.JoinToString()));
-            _log.Debug(m => m("Founded [{0}] roles by [{1}] names", roles.Select(u => u.RoleName).JoinToString(), roleNames.JoinToString()));
+            _log.Debug(m => m("Founded [{0}] roles by [{1}] names", roles.JoinToString(), roleNames.JoinToString()));
 
             foreach (var user in users)
             {
                 foreach (var role in roles)
                 {
-                    user.AddRole(role.RoleName);
+                    user.AddRole(role);
                     UserRepository.SaveUser(user);
                 }
             }
@@ -302,7 +290,7 @@ namespace BuildingBlocks.Membership
             {
                 foreach (var role in roles)
                 {
-                    user.RemoveRole(role.RoleName);
+                    user.RemoveRole(role);
                     UserRepository.SaveUser(user);
                 }
             }

@@ -1,5 +1,8 @@
-﻿using System.Web.Security;
+﻿using System.Linq;
+using System.Web.Security;
 using BuildingBlocks.Membership.Contract;
+using BuildingBlocks.Membership.RavenDB.DomainModel;
+using BuildingBlocks.Store;
 using BuildingBlocks.Store.RavenDB;
 using BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow;
 using FluentAssertions;
@@ -16,6 +19,8 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.BugTests
     {
         private RoleProvider _roleProvider;
         private MembershipProvider _membershipProvider;
+        private IStorageSession _outsideSession;
+        private bool _enableOutsideSession;
 
         [SetUp]
         public void Setup()
@@ -24,12 +29,13 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.BugTests
 
             ((RavenDbStorage) RavenDb.Storage).SessionSettings.SetStaleResultsWhait(StaleResultWhaitMode.AllNonStale);
 
-            var userRepository = new UserRepositoryImpl(RavenDb.Storage);
-            var rolesRepository = new RoleRepositoryImpl(RavenDb.Storage);
-
             var repositoryFactory = Substitute.For<IRepositoryFactory>();
-            repositoryFactory.CreateUserRepository().Returns(userRepository);
-            repositoryFactory.CreateRoleRepository().Returns(rolesRepository);
+            repositoryFactory.CreateUserRepository().Returns(_ => _enableOutsideSession
+                                                                      ? new UserRepositoryImpl(_outsideSession)
+                                                                      : new UserRepositoryImpl(RavenDb.Storage));
+            repositoryFactory.CreateRoleRepository().Returns(_ => _enableOutsideSession
+                                                                      ? new RoleRepositoryImpl(_outsideSession)
+                                                                      : new RoleRepositoryImpl(RavenDb.Storage));
             
             RepositoryFactory.Initialize(repositoryFactory);
 
@@ -56,13 +62,69 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.BugTests
             status.Should().BeNull();
         }
 
+        [Test]
+        public void Should_Executed_Correctly_With_Outside_session()
+        {
+            _enableOutsideSession = true;
+            using (_outsideSession = RavenDb.Storage.OpenSesion())
+            {
+                ObtainRequiredRoles("role1", "role2", "role3");
+                _outsideSession.SumbitChanges();
+            }
+
+            using (_outsideSession = RavenDb.Storage.OpenSesion())
+            {
+                var status = ObtainUser("user", "role3");
+                _outsideSession.SumbitChanges();
+                status.Should().Be(MembershipCreateStatus.Success);
+            }
+        }
+
+        [Test]
+        public void Should_Ignore_When_Invoke_inSecond_time_With_Outside_session()
+        {
+            _enableOutsideSession = true;
+
+            using (_outsideSession = RavenDb.Storage.OpenSesion())
+            {
+                ObtainRequiredRoles("role1", "role2", "role3");
+                _outsideSession.SumbitChanges();
+
+                var status = ObtainUser("user", "role3");
+                status.Should().Be(MembershipCreateStatus.Success);
+                _outsideSession.SumbitChanges();
+            }
+
+            using (var session = RavenDb.Storage.OpenSesion())
+            {
+                session.Query<RoleEntity>().Should().HaveCount(3);
+                session.Query<RoleEntity>().Select(r => r.RoleName).Should().Contain("role1", "role2", "role3");
+
+                session.Query<UserEntity>().Should().HaveCount(1);
+                session.Query<UserEntity>().Select(u => u.Username).Should().OnlyContain(u => u == "user");
+                session.Query<UserEntity>().Single().Roles.Should().OnlyContain(r => r == "role3");
+            }
+            
+            using (_outsideSession = RavenDb.Storage.OpenSesion())
+            {
+                ObtainRequiredRoles("role1", "role2", "role3");
+                _outsideSession.SumbitChanges();
+                
+                var status = ObtainUser("user", "role3");
+                status.Should().BeNull();
+                _outsideSession.IsRolledBack.Should().BeTrue();
+            }
+        }
+
         private MembershipCreateStatus? ObtainUser(string username, string roleName)
         {
             if (_membershipProvider.GetUser(username, false) != null)
             {
-                if (_roleProvider.IsUserInRole(username, roleName))
-                    return null;
-                _roleProvider.AddUsersToRoles(new[] {username}, new[] {roleName});
+                if (!_roleProvider.IsUserInRole(username, roleName))
+                {
+                    _roleProvider.AddUsersToRoles(new[] {username}, new[] {roleName});
+                }
+                return null;
             }
 
             MembershipCreateStatus status;
@@ -76,6 +138,17 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.BugTests
                                             out status);
             _roleProvider.AddUsersToRoles(new[] {username}, new[] {roleName});
             return status;
+        }
+
+        private void ObtainUserInRole(string username, string roleName)
+        {
+            if (_membershipProvider.GetUser(username, false) != null)
+            {
+                if (!_roleProvider.IsUserInRole(username, roleName))
+                {
+                    _roleProvider.AddUsersToRoles(new[] { username }, new[] { roleName });
+                }
+            }
         }
 
         private void ObtainRequiredRoles(params string[] roles)

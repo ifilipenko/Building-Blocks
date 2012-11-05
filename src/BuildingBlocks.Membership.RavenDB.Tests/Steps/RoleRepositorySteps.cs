@@ -19,9 +19,9 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
             set { ScenarioContext.Current.Set(value, "RoleExistsResult"); }
         }
 
-        private IEnumerable<Role> RolesResult
+        private IEnumerable<string> RolesResult
         {
-            get { return ScenarioContext.Current.Get<IEnumerable<Role>>("RolesResult"); }
+            get { return ScenarioContext.Current.Get<IEnumerable<string>>("RolesResult"); }
             set { ScenarioContext.Current.Set(value, "RolesResult"); }
         }
 
@@ -51,29 +51,14 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
         public void ≈сли—оздают–оль(string roleName)
         {
             var roleRepository = new RoleRepositoryImpl(RavenDb.Storage);
-            roleRepository.CreateRole(new Role(Guid.NewGuid(), roleName, MembershipSettings.DefaultApplicationName)
-                {
-                    Description = roleName,
-                });
-        }
-
-        [When(@"создают роль ""(.*)"" со списком пользователей")]
-        public void ≈сли—оздают–оль—о—пискомѕользователей(string roleName, Table table)
-        {
-            var roleRepository = new RoleRepositoryImpl(RavenDb.Storage);
-            roleRepository.CreateRole(new Role(Guid.NewGuid(), roleName, MembershipSettings.DefaultApplicationName)
-                {
-                    Description = roleName,
-                    Users = table.Rows.Select(r => r["им€"]).ToList()
-                });
+            roleRepository.CreateRole(Guid.NewGuid(), MembershipSettings.DefaultApplicationName, roleName);
         }
 
         [When(@"удал€ют роль ""(.*)""")]
         public void ≈сли”дал€ют–оль(string roleName)
         {
-            var role = RavenDb.CurrentStorageSession.Query<RoleEntity>().Single(r => r.RoleName == roleName).ToRole();
             var roleRepository = new RoleRepositoryImpl(RavenDb.Storage);
-            roleRepository.DeleteRole(role);
+            roleRepository.DeleteRole(MembershipSettings.DefaultApplicationName, roleName);
         }
 
         [Then(@"результат проверки признает что роль ""(.*)""")]
@@ -90,7 +75,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
             {
                 var expectedRoleName = table.Rows[i]["им€"];
                 var actualRole = RolesResult.ElementAt(i);
-                actualRole.RoleName.Should().Be(expectedRoleName);
+                actualRole.Should().Be(expectedRoleName);
             }
         }
 
@@ -108,16 +93,10 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
             var allRoles = RavenDb.CurrentSession.Query<RoleEntity>().WaitForNonStaleResultsAsOfLastWrite().ToList();
             allRoles.Should().Contain(r => r.RoleName == roleName);
 
-            var role = allRoles.First(r => r.RoleName == roleName);
-            role.Users.Should().HaveCount(table.RowCount);
-            foreach (var userName in table.Rows.Select(r => r["им€"]))
+            foreach (var username in table.Rows.Select(r => r["им€"]))
             {
-                role.Users.Should().Contain(u => u.Name == userName);
-                var userReference = role.Users.Single(u => u.Name == userName);
-
-                allUsers.Should().Contain(u => u.Id == userReference.Id);
-                var user = allUsers.Single(u => u.Id == userReference.Id);
-                user.Username.Should().Be(userName);
+                var user = allUsers.Single(u => u.Username == username);
+                user.Roles.Should().Contain(roleName);
             }
         }
     }

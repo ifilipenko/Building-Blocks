@@ -28,6 +28,11 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
                         Email = email, 
                         Password = "123"
                     };
+                if (row.ContainsKey("роли"))
+                {
+                    var roles = row["роли"].Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+                    user.Roles = roles.ToList();
+                }
                 RavenDb.CurrentSession.Store(user);
             }
         }
@@ -102,9 +107,8 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
 
             foreach (var roleReference in user.Roles)
             {
-                var role = allRoles.Single(r => r.Id == roleReference.Id);
-                role.RoleName.Should().Be(roleReference.Name);
-                expectedRoles.Should().Contain(role.RoleName);
+                allRoles.Should().Contain(r => r.RoleName == roleReference);
+                expectedRoles.Should().Contain(roleReference);
             }
         }
     }

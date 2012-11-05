@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using BuildingBlocks.Membership.Entities;
 
 namespace BuildingBlocks.Membership.Contract
 {
@@ -7,10 +7,10 @@ namespace BuildingBlocks.Membership.Contract
     {
         bool IsRoleExists(string applicationName, string roleName);
 
-        IEnumerable<Role> GetAll(string applicationName);
-        IEnumerable<Role> FindRolesByNames(string applicationName, params string[] roleNames);
+        IEnumerable<string> GetAll(string applicationName);
+        IEnumerable<string> FindRolesByNames(string applicationName, params string[] roleNames);
 
-        void CreateRole(Role role);
-        void DeleteRole(Role role);
+        void CreateRole(Guid roleId, string applicationName, string roleName);
+        void DeleteRole(string applicationName, string roleName);
     }
 }

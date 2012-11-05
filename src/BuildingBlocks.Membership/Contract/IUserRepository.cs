@@ -13,6 +13,8 @@ namespace BuildingBlocks.Membership.Contract
         IEnumerable<User> FindUsersByNames(string applicationName, params string[] usernames);
         User FindUserByEmail(string applicationName, string email);
         User FindUserById(Guid userId);
+        IEnumerable<User> FindUsersInRole(string applicationName, string roleName);
+        IEnumerable<User> FindUsersInRole(string applicationName, string roleName, string usernameToMatch);
 
         Page<User> GetUsersPageByEmail(string applicationName, string emailToMatch, int pageIndex, int pageSize);
         Page<User> GetUsersPageByUsername(string applicationName, string usernameToMatch, int pageIndex, int pageSize);

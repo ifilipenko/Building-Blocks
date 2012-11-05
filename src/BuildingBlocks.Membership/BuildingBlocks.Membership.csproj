@@ -59,7 +59,6 @@
     <Compile Include="Contract\IRepositoryFactory.cs" />
     <Compile Include="RepositoryFactory.cs" />
     <Compile Include="Crypto.cs" />
-    <Compile Include="Entities\Role.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

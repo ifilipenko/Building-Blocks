@@ -243,48 +243,160 @@ this.FeatureBackground();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("постраничная загрузка пользователей соответствующих части email")]
-        [NUnit.Framework.TestCaseAttribute("kreml.uc", "4", "3", null)]
-        [NUnit.Framework.TestCaseAttribute("", "8", "3", null)]
-        public virtual void ПостраничнаяЗагрузкаПользователейСоответствующихЧастиEmail(string фильтр, string всего, string наСтранице, string[] exampleTags)
+        [NUnit.Framework.DescriptionAttribute("поиск пользователей по роли")]
+        public virtual void ПоискПользователейПоРоли()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("постраничная загрузка пользователей соответствующих части email", exampleTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("поиск пользователей по роли", ((string[])(null)));
 #line 64
 this.ScenarioSetup(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
             TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
-                        "имя",
-                        "email"});
+                        "имя"});
             table6.AddRow(new string[] {
-                        "Медведев",
-                        "Сидоров@kreml.uc"});
+                        "Врач"});
             table6.AddRow(new string[] {
-                        "Медведева",
-                        "Петров@kreml.uc"});
+                        "Медсестра"});
             table6.AddRow(new string[] {
-                        "Путин",
-                        "Путин@kreml.uc"});
-            table6.AddRow(new string[] {
-                        "Кабаева",
-                        "Кабаева@kreml.uc"});
-            table6.AddRow(new string[] {
-                        "Сабчак",
-                        "Сабчак@mail.ru"});
+                        "Админ"});
 #line 65
- testRunner.Given("существуют пользователи", ((string)(null)), table6, "Пусть ");
-#line 72
- testRunner.When(string.Format("загружают 1 страницу пользоватлей по 3 пользователя с фильтром по email \"{0}\"", фильтр), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
+ testRunner.Given("существуют роли", ((string)(null)), table6, "Пусть ");
 #line hidden
             TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
+                        "имя",
+                        "роли"});
+            table7.AddRow(new string[] {
+                        "Медведев",
+                        "Админ"});
+            table7.AddRow(new string[] {
+                        "Медведева",
+                        "Медсестра"});
+            table7.AddRow(new string[] {
+                        "Путин",
+                        "Врач,Админ"});
+            table7.AddRow(new string[] {
+                        "Кабаева",
+                        "Врач,Медсестра"});
+            table7.AddRow(new string[] {
+                        "Сабчак",
+                        "Медсестра"});
+#line 70
+ testRunner.Given("существуют пользователи", ((string)(null)), table7, "Пусть ");
+#line 77
+ testRunner.When("ищут пользователей с ролью \"Админ\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
+#line hidden
+            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+                        "имя"});
+            table8.AddRow(new string[] {
+                        "Медведев"});
+            table8.AddRow(new string[] {
+                        "Путин"});
+#line 78
+ testRunner.Then("возвращается следующий список пользователей", ((string)(null)), table8, "Тогда ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("поиск пользователей по роли и части имени")]
+        public virtual void ПоискПользователейПоРолиИЧастиИмени()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("поиск пользователей по роли и части имени", ((string[])(null)));
+#line 83
+this.ScenarioSetup(scenarioInfo);
+#line 4
+this.FeatureBackground();
+#line hidden
+            TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+                        "имя"});
+            table9.AddRow(new string[] {
+                        "Врач"});
+            table9.AddRow(new string[] {
+                        "Медсестра"});
+            table9.AddRow(new string[] {
+                        "Админ"});
+#line 84
+ testRunner.Given("существуют роли", ((string)(null)), table9, "Пусть ");
+#line hidden
+            TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+                        "имя",
+                        "роли"});
+            table10.AddRow(new string[] {
+                        "Медведев",
+                        "Админ"});
+            table10.AddRow(new string[] {
+                        "Медведева",
+                        "Медсестра, Админ"});
+            table10.AddRow(new string[] {
+                        "Путин",
+                        "Врач,Админ"});
+            table10.AddRow(new string[] {
+                        "Кабаева",
+                        "Врач,Медсестра"});
+            table10.AddRow(new string[] {
+                        "Сабчак",
+                        "Медсестра"});
+#line 89
+ testRunner.Given("существуют пользователи", ((string)(null)), table10, "Пусть ");
+#line 96
+ testRunner.When("ищут пользователей по части имени \"едведев\" и по роли \"Админ\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
+#line hidden
+            TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+                        "имя"});
+            table11.AddRow(new string[] {
+                        "Медведев"});
+            table11.AddRow(new string[] {
+                        "Медведева"});
+#line 97
+ testRunner.Then("возвращается следующий список пользователей", ((string)(null)), table11, "Тогда ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("постраничная загрузка пользователей соответствующих части email")]
+        [NUnit.Framework.TestCaseAttribute("kreml.uc", "4", "3", null)]
+        [NUnit.Framework.TestCaseAttribute("", "8", "3", null)]
+        public virtual void ПостраничнаяЗагрузкаПользователейСоответствующихЧастиEmail(string фильтр, string всего, string наСтранице, string[] exampleTags)
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("постраничная загрузка пользователей соответствующих части email", exampleTags);
+#line 102
+this.ScenarioSetup(scenarioInfo);
+#line 4
+this.FeatureBackground();
+#line hidden
+            TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
+                        "имя",
+                        "email"});
+            table12.AddRow(new string[] {
+                        "Медведев",
+                        "Сидоров@kreml.uc"});
+            table12.AddRow(new string[] {
+                        "Медведева",
+                        "Петров@kreml.uc"});
+            table12.AddRow(new string[] {
+                        "Путин",
+                        "Путин@kreml.uc"});
+            table12.AddRow(new string[] {
+                        "Кабаева",
+                        "Кабаева@kreml.uc"});
+            table12.AddRow(new string[] {
+                        "Сабчак",
+                        "Сабчак@mail.ru"});
+#line 103
+ testRunner.Given("существуют пользователи", ((string)(null)), table12, "Пусть ");
+#line 110
+ testRunner.When(string.Format("загружают 1 страницу пользоватлей по 3 пользователя с фильтром по email \"{0}\"", фильтр), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
+#line hidden
+            TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
                         "всего",
                         "на странице"});
-            table7.AddRow(new string[] {
+            table13.AddRow(new string[] {
                         string.Format("{0}", всего),
                         string.Format("{0}", наСтранице)});
-#line 73
- testRunner.Then("возвращается страница пользователей", ((string)(null)), table7, "Тогда ");
+#line 111
+ testRunner.Then("возвращается страница пользователей", ((string)(null)), table13, "Тогда ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -301,53 +413,53 @@ this.FeatureBackground();
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("постраничная загрузка пользователей соответствующих части email и имени приложени" +
                     "я", exampleTags);
-#line 81
+#line 119
 this.ScenarioSetup(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-            TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
                         "имя",
                         "email",
                         "приложение"});
-            table8.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Медведев",
                         "Сидоров@kreml.uc",
                         "Ru"});
-            table8.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Медведева",
                         "Петров@kreml.uc",
                         "Ru"});
-            table8.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Путин",
                         "Путин@kreml.uc",
                         "Ru"});
-            table8.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Кабаева",
                         "Кабаева@kreml.uc",
                         "Ru"});
-            table8.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Кабаев",
                         "Кабаева@yanndex.uc",
                         "Ru"});
-            table8.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Сабчак",
                         "Сабчак@kreml.ru",
                         "Yandex"});
-#line 82
- testRunner.Given("существуют пользователи", ((string)(null)), table8, "Пусть ");
-#line 90
+#line 120
+ testRunner.Given("существуют пользователи", ((string)(null)), table14, "Пусть ");
+#line 128
  testRunner.When(string.Format("загружают 1 страницу пользоватлей по 3 пользователя, по приложению \"{0}\" и части " +
                         "email \"{1}\"", приложение, фильтр), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
 #line hidden
-            TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
                         "всего",
                         "на странице"});
-            table9.AddRow(new string[] {
+            table15.AddRow(new string[] {
                         string.Format("{0}", всего),
                         string.Format("{0}", наСтранице)});
-#line 91
- testRunner.Then("возвращается страница пользователей", ((string)(null)), table9, "Тогда ");
+#line 129
+ testRunner.Then("возвращается страница пользователей", ((string)(null)), table15, "Тогда ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -359,45 +471,45 @@ this.FeatureBackground();
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("постраничная загрузка отсортированных по имени пользователей пользователей соотве" +
                     "тствующих части email", ((string[])(null)));
-#line 102
+#line 140
 this.ScenarioSetup(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-            TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
                         "имя",
                         "email"});
-            table10.AddRow(new string[] {
+            table16.AddRow(new string[] {
                         "Медведев",
                         "Сидоров@kreml.uc"});
-            table10.AddRow(new string[] {
+            table16.AddRow(new string[] {
                         "Медведева",
                         "Петров@kreml.uc"});
-            table10.AddRow(new string[] {
+            table16.AddRow(new string[] {
                         "Путин",
                         "Путин@kreml.uc"});
-            table10.AddRow(new string[] {
+            table16.AddRow(new string[] {
                         "Кабаева",
                         "Кабаева@kreml.uc"});
-            table10.AddRow(new string[] {
+            table16.AddRow(new string[] {
                         "Сабчак",
                         "Сабчак@mail.ru"});
-#line 103
- testRunner.Given("существуют пользователи", ((string)(null)), table10, "Пусть ");
-#line 110
+#line 141
+ testRunner.Given("существуют пользователи", ((string)(null)), table16, "Пусть ");
+#line 148
  testRunner.When("загружают 1 страницу пользоватлей по 3 пользователя с фильтром по email \"kreml.uc" +
                     "\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
 #line hidden
-            TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
                         "имя"});
-            table11.AddRow(new string[] {
+            table17.AddRow(new string[] {
                         "Кабаева"});
-            table11.AddRow(new string[] {
+            table17.AddRow(new string[] {
                         "Медведев"});
-            table11.AddRow(new string[] {
+            table17.AddRow(new string[] {
                         "Медведева"});
-#line 111
- testRunner.Then("возвращается страница с пользователями", ((string)(null)), table11, "Тогда ");
+#line 149
+ testRunner.Then("возвращается страница с пользователями", ((string)(null)), table17, "Тогда ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -409,139 +521,7 @@ this.FeatureBackground();
         public virtual void ПостраничнаяЗагрузкаПользователейСоответствующихЧастиИмени(string фильтр, string всего, string наСтранице, string[] exampleTags)
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("постраничная загрузка пользователей соответствующих части имени", exampleTags);
-#line 117
-this.ScenarioSetup(scenarioInfo);
-#line 4
-this.FeatureBackground();
-#line hidden
-            TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
-                        "имя"});
-            table12.AddRow(new string[] {
-                        "Медведев"});
-            table12.AddRow(new string[] {
-                        "Медведева"});
-            table12.AddRow(new string[] {
-                        "Медвед"});
-            table12.AddRow(new string[] {
-                        "Медведица"});
-            table12.AddRow(new string[] {
-                        "Сабчак"});
-#line 118
- testRunner.Given("существуют пользователи", ((string)(null)), table12, "Пусть ");
-#line 125
- testRunner.When(string.Format("загружают 1 страницу пользоватлей по 3 пользователя с фильтром по имени \"{0}\"", фильтр), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
-#line hidden
-            TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
-                        "всего",
-                        "на странице"});
-            table13.AddRow(new string[] {
-                        string.Format("{0}", всего),
-                        string.Format("{0}", наСтранице)});
-#line 126
- testRunner.Then("возвращается страница пользователей", ((string)(null)), table13, "Тогда ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("постраничная загрузка пользователей соответствующих приложению и части имени")]
-        [NUnit.Framework.TestCaseAttribute("едве", "Ru", "4", "3", null)]
-        [NUnit.Framework.TestCaseAttribute("едве", "Yandex", "0", "0", null)]
-        [NUnit.Framework.TestCaseAttribute("", "Ru", "4", "3", null)]
-        [NUnit.Framework.TestCaseAttribute("", "Yandex", "1", "1", null)]
-        public virtual void ПостраничнаяЗагрузкаПользователейСоответствующихПриложениюИЧастиИмени(string фильтр, string приложение, string всего, string наСтранице, string[] exampleTags)
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("постраничная загрузка пользователей соответствующих приложению и части имени", exampleTags);
-#line 134
-this.ScenarioSetup(scenarioInfo);
-#line 4
-this.FeatureBackground();
-#line hidden
-            TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
-                        "имя",
-                        "приложение"});
-            table14.AddRow(new string[] {
-                        "Медведев",
-                        "Ru"});
-            table14.AddRow(new string[] {
-                        "Медведева",
-                        "Ru"});
-            table14.AddRow(new string[] {
-                        "Медвед",
-                        "Ru"});
-            table14.AddRow(new string[] {
-                        "Медведица",
-                        "Ru"});
-            table14.AddRow(new string[] {
-                        "Сабчак",
-                        "Yandex"});
-#line 135
- testRunner.Given("существуют пользователи", ((string)(null)), table14, "Пусть ");
-#line 142
- testRunner.When(string.Format("загружают 1 страницу пользоватлей по 3 пользователя, по приложению \"{0}\" и части " +
-                        "имени \"{1}\"", приложение, фильтр), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
-#line hidden
-            TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
-                        "всего",
-                        "на странице"});
-            table15.AddRow(new string[] {
-                        string.Format("{0}", всего),
-                        string.Format("{0}", наСтранице)});
-#line 143
- testRunner.Then("возвращается страница пользователей", ((string)(null)), table15, "Тогда ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("постраничная загрузка отсортированных по имени пользователей соответствующих част" +
-            "и имени")]
-        public virtual void ПостраничнаяЗагрузкаОтсортированныхПоИмениПользователейСоответствующихЧастиИмени()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("постраничная загрузка отсортированных по имени пользователей соответствующих част" +
-                    "и имени", ((string[])(null)));
-#line 153
-this.ScenarioSetup(scenarioInfo);
-#line 4
-this.FeatureBackground();
-#line hidden
-            TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
-                        "имя"});
-            table16.AddRow(new string[] {
-                        "Медведев"});
-            table16.AddRow(new string[] {
-                        "Медведева"});
-            table16.AddRow(new string[] {
-                        "Медвед"});
-            table16.AddRow(new string[] {
-                        "Медведица"});
-            table16.AddRow(new string[] {
-                        "Сабчак"});
-#line 154
- testRunner.Given("существуют пользователи", ((string)(null)), table16, "Пусть ");
-#line 161
- testRunner.When("загружают 1 страницу пользоватлей по 3 пользователя с фильтром по имени \"едве\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
-#line hidden
-            TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
-                        "имя"});
-            table17.AddRow(new string[] {
-                        "Медвед"});
-            table17.AddRow(new string[] {
-                        "Медведев"});
-            table17.AddRow(new string[] {
-                        "Медведева"});
-#line 162
- testRunner.Then("возвращается страница с пользователями", ((string)(null)), table17, "Тогда ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("постраничная загрузка пользователей")]
-        public virtual void ПостраничнаяЗагрузкаПользователей()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("постраничная загрузка пользователей", ((string[])(null)));
-#line 168
+#line 155
 this.ScenarioSetup(scenarioInfo);
 #line 4
 this.FeatureBackground();
@@ -558,19 +538,151 @@ this.FeatureBackground();
                         "Медведица"});
             table18.AddRow(new string[] {
                         "Сабчак"});
-#line 169
+#line 156
  testRunner.Given("существуют пользователи", ((string)(null)), table18, "Пусть ");
-#line 176
- testRunner.When("загружают 1 страницу пользоватлей по 3 пользователя", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
+#line 163
+ testRunner.When(string.Format("загружают 1 страницу пользоватлей по 3 пользователя с фильтром по имени \"{0}\"", фильтр), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
 #line hidden
             TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
                         "всего",
                         "на странице"});
             table19.AddRow(new string[] {
+                        string.Format("{0}", всего),
+                        string.Format("{0}", наСтранице)});
+#line 164
+ testRunner.Then("возвращается страница пользователей", ((string)(null)), table19, "Тогда ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("постраничная загрузка пользователей соответствующих приложению и части имени")]
+        [NUnit.Framework.TestCaseAttribute("едве", "Ru", "4", "3", null)]
+        [NUnit.Framework.TestCaseAttribute("едве", "Yandex", "0", "0", null)]
+        [NUnit.Framework.TestCaseAttribute("", "Ru", "4", "3", null)]
+        [NUnit.Framework.TestCaseAttribute("", "Yandex", "1", "1", null)]
+        public virtual void ПостраничнаяЗагрузкаПользователейСоответствующихПриложениюИЧастиИмени(string фильтр, string приложение, string всего, string наСтранице, string[] exampleTags)
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("постраничная загрузка пользователей соответствующих приложению и части имени", exampleTags);
+#line 172
+this.ScenarioSetup(scenarioInfo);
+#line 4
+this.FeatureBackground();
+#line hidden
+            TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
+                        "имя",
+                        "приложение"});
+            table20.AddRow(new string[] {
+                        "Медведев",
+                        "Ru"});
+            table20.AddRow(new string[] {
+                        "Медведева",
+                        "Ru"});
+            table20.AddRow(new string[] {
+                        "Медвед",
+                        "Ru"});
+            table20.AddRow(new string[] {
+                        "Медведица",
+                        "Ru"});
+            table20.AddRow(new string[] {
+                        "Сабчак",
+                        "Yandex"});
+#line 173
+ testRunner.Given("существуют пользователи", ((string)(null)), table20, "Пусть ");
+#line 180
+ testRunner.When(string.Format("загружают 1 страницу пользоватлей по 3 пользователя, по приложению \"{0}\" и части " +
+                        "имени \"{1}\"", приложение, фильтр), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
+#line hidden
+            TechTalk.SpecFlow.Table table21 = new TechTalk.SpecFlow.Table(new string[] {
+                        "всего",
+                        "на странице"});
+            table21.AddRow(new string[] {
+                        string.Format("{0}", всего),
+                        string.Format("{0}", наСтранице)});
+#line 181
+ testRunner.Then("возвращается страница пользователей", ((string)(null)), table21, "Тогда ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("постраничная загрузка отсортированных по имени пользователей соответствующих част" +
+            "и имени")]
+        public virtual void ПостраничнаяЗагрузкаОтсортированныхПоИмениПользователейСоответствующихЧастиИмени()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("постраничная загрузка отсортированных по имени пользователей соответствующих част" +
+                    "и имени", ((string[])(null)));
+#line 191
+this.ScenarioSetup(scenarioInfo);
+#line 4
+this.FeatureBackground();
+#line hidden
+            TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
+                        "имя"});
+            table22.AddRow(new string[] {
+                        "Медведев"});
+            table22.AddRow(new string[] {
+                        "Медведева"});
+            table22.AddRow(new string[] {
+                        "Медвед"});
+            table22.AddRow(new string[] {
+                        "Медведица"});
+            table22.AddRow(new string[] {
+                        "Сабчак"});
+#line 192
+ testRunner.Given("существуют пользователи", ((string)(null)), table22, "Пусть ");
+#line 199
+ testRunner.When("загружают 1 страницу пользоватлей по 3 пользователя с фильтром по имени \"едве\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
+#line hidden
+            TechTalk.SpecFlow.Table table23 = new TechTalk.SpecFlow.Table(new string[] {
+                        "имя"});
+            table23.AddRow(new string[] {
+                        "Медвед"});
+            table23.AddRow(new string[] {
+                        "Медведев"});
+            table23.AddRow(new string[] {
+                        "Медведева"});
+#line 200
+ testRunner.Then("возвращается страница с пользователями", ((string)(null)), table23, "Тогда ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("постраничная загрузка пользователей")]
+        public virtual void ПостраничнаяЗагрузкаПользователей()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("постраничная загрузка пользователей", ((string[])(null)));
+#line 206
+this.ScenarioSetup(scenarioInfo);
+#line 4
+this.FeatureBackground();
+#line hidden
+            TechTalk.SpecFlow.Table table24 = new TechTalk.SpecFlow.Table(new string[] {
+                        "имя"});
+            table24.AddRow(new string[] {
+                        "Медведев"});
+            table24.AddRow(new string[] {
+                        "Медведева"});
+            table24.AddRow(new string[] {
+                        "Медвед"});
+            table24.AddRow(new string[] {
+                        "Медведица"});
+            table24.AddRow(new string[] {
+                        "Сабчак"});
+#line 207
+ testRunner.Given("существуют пользователи", ((string)(null)), table24, "Пусть ");
+#line 214
+ testRunner.When("загружают 1 страницу пользоватлей по 3 пользователя", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
+#line hidden
+            TechTalk.SpecFlow.Table table25 = new TechTalk.SpecFlow.Table(new string[] {
+                        "всего",
+                        "на странице"});
+            table25.AddRow(new string[] {
                         "8",
                         "3"});
-#line 177
- testRunner.Then("возвращается страница пользователей", ((string)(null)), table19, "Тогда ");
+#line 215
+ testRunner.Then("возвращается страница пользователей", ((string)(null)), table25, "Тогда ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -580,38 +692,38 @@ this.FeatureBackground();
         public virtual void ПостраничнаяЗагрузкаОтсортированныхПоИмениПользователей()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("постраничная загрузка отсортированных по имени пользователей", ((string[])(null)));
-#line 181
+#line 219
 this.ScenarioSetup(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-            TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table26 = new TechTalk.SpecFlow.Table(new string[] {
                         "имя"});
-            table20.AddRow(new string[] {
+            table26.AddRow(new string[] {
                         "Медведев"});
-            table20.AddRow(new string[] {
+            table26.AddRow(new string[] {
                         "Медведева"});
-            table20.AddRow(new string[] {
+            table26.AddRow(new string[] {
                         "Путин"});
-            table20.AddRow(new string[] {
+            table26.AddRow(new string[] {
                         "Кабаева"});
-            table20.AddRow(new string[] {
+            table26.AddRow(new string[] {
                         "Сабчак"});
-#line 182
- testRunner.Given("существуют пользователи", ((string)(null)), table20, "Пусть ");
-#line 189
+#line 220
+ testRunner.Given("существуют пользователи", ((string)(null)), table26, "Пусть ");
+#line 227
  testRunner.When("загружают 1 страницу пользоватлей по 3 пользователя", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
 #line hidden
-            TechTalk.SpecFlow.Table table21 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table27 = new TechTalk.SpecFlow.Table(new string[] {
                         "имя"});
-            table21.AddRow(new string[] {
+            table27.AddRow(new string[] {
                         "Иванов"});
-            table21.AddRow(new string[] {
+            table27.AddRow(new string[] {
                         "Кабаева"});
-            table21.AddRow(new string[] {
+            table27.AddRow(new string[] {
                         "Медведев"});
-#line 190
- testRunner.Then("возвращается страница с пользователями", ((string)(null)), table21, "Тогда ");
+#line 228
+ testRunner.Then("возвращается страница с пользователями", ((string)(null)), table27, "Тогда ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -621,28 +733,28 @@ this.FeatureBackground();
         public virtual void КоличествоПользователейСПоследнейАктивностьюНеМеньшеУказаннойДаты()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("количество пользователей с последней активностью не меньше указанной даты", ((string[])(null)));
-#line 196
+#line 234
 this.ScenarioSetup(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-            TechTalk.SpecFlow.Table table22 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table28 = new TechTalk.SpecFlow.Table(new string[] {
                         "имя",
                         "активность"});
-            table22.AddRow(new string[] {
+            table28.AddRow(new string[] {
                         "Сидоров",
                         "12.02.2012"});
-            table22.AddRow(new string[] {
+            table28.AddRow(new string[] {
                         "Иванов",
                         "30.10.2012"});
-            table22.AddRow(new string[] {
+            table28.AddRow(new string[] {
                         "Петров",
                         "29.10.2012"});
-#line 197
- testRunner.Given("задана активность пользователей", ((string)(null)), table22, "Пусть ");
-#line 202
+#line 235
+ testRunner.Given("задана активность пользователей", ((string)(null)), table28, "Пусть ");
+#line 240
  testRunner.When("получают количество пользователей с последней активностью от 28.10.2012", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
-#line 203
+#line 241
  testRunner.Then("количество пользователей равно 2", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Тогда ");
 #line hidden
             this.ScenarioCleanup();
@@ -653,30 +765,30 @@ this.FeatureBackground();
         public virtual void СозданиеПользователяСПустымСпискомРолей()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("создание пользователя с пустым списком ролей", ((string[])(null)));
-#line 205
+#line 243
 this.ScenarioSetup(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-            TechTalk.SpecFlow.Table table23 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table29 = new TechTalk.SpecFlow.Table(new string[] {
                         "имя"});
-            table23.AddRow(new string[] {
+            table29.AddRow(new string[] {
                         "Врач"});
-            table23.AddRow(new string[] {
+            table29.AddRow(new string[] {
                         "Медсестра"});
-            table23.AddRow(new string[] {
+            table29.AddRow(new string[] {
                         "Админ"});
-#line 206
- testRunner.Given("существуют роли", ((string)(null)), table23, "Пусть ");
-#line 211
+#line 244
+ testRunner.Given("существуют роли", ((string)(null)), table29, "Пусть ");
+#line 249
  testRunner.When("создают нового пользователя \"Медведев\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
-#line 212
+#line 250
  testRunner.Then("существует 4 пользователя", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Тогда ");
 #line hidden
-            TechTalk.SpecFlow.Table table24 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table30 = new TechTalk.SpecFlow.Table(new string[] {
                         "роль"});
-#line 213
- testRunner.And("существует пользователь \"Медведев\" со списком ролей", ((string)(null)), table24, "И ");
+#line 251
+ testRunner.And("существует пользователь \"Медведев\" со списком ролей", ((string)(null)), table30, "И ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -686,53 +798,53 @@ this.FeatureBackground();
         public virtual void СозданиеПользователяСоСписомРолей()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("создание пользователя со списом ролей", ((string[])(null)));
-#line 216
+#line 254
 this.ScenarioSetup(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-            TechTalk.SpecFlow.Table table25 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table31 = new TechTalk.SpecFlow.Table(new string[] {
                         "имя"});
-            table25.AddRow(new string[] {
+            table31.AddRow(new string[] {
                         "Врач"});
-            table25.AddRow(new string[] {
+            table31.AddRow(new string[] {
                         "Медсестра"});
-            table25.AddRow(new string[] {
+            table31.AddRow(new string[] {
                         "Админ"});
-#line 217
- testRunner.Given("существуют роли", ((string)(null)), table25, "Пусть ");
+#line 255
+ testRunner.Given("существуют роли", ((string)(null)), table31, "Пусть ");
 #line hidden
-            TechTalk.SpecFlow.Table table26 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table32 = new TechTalk.SpecFlow.Table(new string[] {
                         "роль"});
-            table26.AddRow(new string[] {
+            table32.AddRow(new string[] {
                         "Медсестра"});
-            table26.AddRow(new string[] {
+            table32.AddRow(new string[] {
                         "Админ"});
-#line 222
- testRunner.When("создают нового пользователя \"Медведев\" с назначенными ролями", ((string)(null)), table26, "Когда ");
+#line 260
+ testRunner.When("создают нового пользователя \"Медведев\" с назначенными ролями", ((string)(null)), table32, "Когда ");
 #line hidden
-            TechTalk.SpecFlow.Table table27 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table33 = new TechTalk.SpecFlow.Table(new string[] {
                         "имя"});
-            table27.AddRow(new string[] {
+            table33.AddRow(new string[] {
                         "Медведев"});
-#line 226
- testRunner.Then("существует роль \"Админ\" со списком пользователей", ((string)(null)), table27, "Тогда ");
+#line 264
+ testRunner.Then("существует роль \"Админ\" со списком пользователей", ((string)(null)), table33, "Тогда ");
 #line hidden
-            TechTalk.SpecFlow.Table table28 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table34 = new TechTalk.SpecFlow.Table(new string[] {
                         "имя"});
-            table28.AddRow(new string[] {
+            table34.AddRow(new string[] {
                         "Медведев"});
-#line 229
- testRunner.And("существует роль \"Медсестра\" со списком пользователей", ((string)(null)), table28, "И ");
+#line 267
+ testRunner.And("существует роль \"Медсестра\" со списком пользователей", ((string)(null)), table34, "И ");
 #line hidden
-            TechTalk.SpecFlow.Table table29 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table35 = new TechTalk.SpecFlow.Table(new string[] {
                         "роль"});
-            table29.AddRow(new string[] {
+            table35.AddRow(new string[] {
                         "Медсестра"});
-            table29.AddRow(new string[] {
+            table35.AddRow(new string[] {
                         "Админ"});
-#line 232
- testRunner.And("существует пользователь \"Медведев\" со списком ролей", ((string)(null)), table29, "И ");
+#line 270
+ testRunner.And("существует пользователь \"Медведев\" со списком ролей", ((string)(null)), table35, "И ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -742,133 +854,133 @@ this.FeatureBackground();
         public virtual void ОбновлениеПользователя()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("обновление пользователя", ((string[])(null)));
-#line 237
+#line 275
 this.ScenarioSetup(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-            TechTalk.SpecFlow.Table table30 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table36 = new TechTalk.SpecFlow.Table(new string[] {
                         "имя"});
-            table30.AddRow(new string[] {
+            table36.AddRow(new string[] {
                         "Медведев"});
-#line 238
- testRunner.Given("существуют пользователи", ((string)(null)), table30, "Пусть ");
-#line 241
+#line 276
+ testRunner.Given("существуют пользователи", ((string)(null)), table36, "Пусть ");
+#line 279
  testRunner.Given("пользователь \"Медведев\" имеет Id \"C6AFF080-2B78-453A-B841-F37E91B36483\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Пусть ");
 #line hidden
-            TechTalk.SpecFlow.Table table31 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table37 = new TechTalk.SpecFlow.Table(new string[] {
                         "поле",
                         "значение"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "Email",
                         "Медведев@mail.ru"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "ApplicationName",
                         "Unknown"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "Имя",
                         "Медвед"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "Пароль",
                         "7F664E0F-177E-4582-B057-23546388052D"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "Комментарий",
                         "Бла бла"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "ConfirmationToken",
                         "123a"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "CreateDate",
                         "12.02.2012"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "IsApproved",
                         "true"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "IsLockedOut",
                         "false"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "LastActivityDate",
                         "25.10.2012"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "LastLockoutDate",
                         "12.06.2012"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "LastLoginDate",
                         "25.10.2012"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "LastPasswordChangedDate",
                         "13.06.2012"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "LastPasswordFailureDate",
                         "11.06.2012"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "PasswordFailuresSinceLastSuccess",
                         "2"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "PasswordVerificationToken",
                         "456a"});
-            table31.AddRow(new string[] {
+            table37.AddRow(new string[] {
                         "PasswordVerificationTokenExpirationDate",
                         "26.10.2012"});
-#line 242
- testRunner.When("для пользователя с Id \"C6AFF080-2B78-453A-B841-F37E91B36483\" обновляют поля", ((string)(null)), table31, "Когда ");
+#line 280
+ testRunner.When("для пользователя с Id \"C6AFF080-2B78-453A-B841-F37E91B36483\" обновляют поля", ((string)(null)), table37, "Когда ");
 #line hidden
-            TechTalk.SpecFlow.Table table32 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table38 = new TechTalk.SpecFlow.Table(new string[] {
                         "поле",
                         "значение"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "Email",
                         "Медведев@mail.ru"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "Имя",
                         "Медвед"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "ApplicationName",
                         "Unknown"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "Пароль",
                         "7F664E0F-177E-4582-B057-23546388052D"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "Комментарий",
                         "Бла бла"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "ConfirmationToken",
                         "123a"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "CreateDate",
                         "12.02.2012"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "IsApproved",
                         "true"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "IsLockedOut",
                         "false"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "LastActivityDate",
                         "25.10.2012"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "LastLockoutDate",
                         "12.06.2012"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "LastLoginDate",
                         "25.10.2012"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "LastPasswordChangedDate",
                         "13.06.2012"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "LastPasswordFailureDate",
                         "11.06.2012"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "PasswordFailuresSinceLastSuccess",
                         "2"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "PasswordVerificationToken",
                         "456a"});
-            table32.AddRow(new string[] {
+            table38.AddRow(new string[] {
                         "PasswordVerificationTokenExpirationDate",
                         "26.10.2012"});
-#line 261
- testRunner.Then("пользователь с Id \"C6AFF080-2B78-453A-B841-F37E91B36483\" имеет следующие поля", ((string)(null)), table32, "Тогда ");
+#line 299
+ testRunner.Then("пользователь с Id \"C6AFF080-2B78-453A-B841-F37E91B36483\" имеет следующие поля", ((string)(null)), table38, "Тогда ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -878,67 +990,48 @@ this.FeatureBackground();
         public virtual void ОбновлениеРолейПользователя()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("обновление ролей пользователя", ((string[])(null)));
-#line 281
+#line 319
 this.ScenarioSetup(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-            TechTalk.SpecFlow.Table table33 = new TechTalk.SpecFlow.Table(new string[] {
-                        "имя"});
-            table33.AddRow(new string[] {
-                        "Врач"});
-            table33.AddRow(new string[] {
-                        "Медсестра"});
-            table33.AddRow(new string[] {
-                        "Админ"});
-#line 282
- testRunner.Given("существуют роли", ((string)(null)), table33, "Пусть ");
-#line hidden
-            TechTalk.SpecFlow.Table table34 = new TechTalk.SpecFlow.Table(new string[] {
-                        "роль"});
-            table34.AddRow(new string[] {
-                        "Медсестра"});
-            table34.AddRow(new string[] {
-                        "Админ"});
-#line 287
- testRunner.When("создают нового пользователя \"Медведев\" с назначенными ролями", ((string)(null)), table34, "Когда ");
-#line hidden
-            TechTalk.SpecFlow.Table table35 = new TechTalk.SpecFlow.Table(new string[] {
-                        "роль"});
-            table35.AddRow(new string[] {
-                        "Админ"});
-            table35.AddRow(new string[] {
-                        "Врач"});
-#line 291
- testRunner.When("пользователю \"Медведев\" меняют назначение ролей", ((string)(null)), table35, "Когда ");
-#line hidden
-            TechTalk.SpecFlow.Table table36 = new TechTalk.SpecFlow.Table(new string[] {
-                        "имя"});
-            table36.AddRow(new string[] {
-                        "Медведев"});
-#line 295
- testRunner.Then("существует роль \"Админ\" со списком пользователей", ((string)(null)), table36, "Тогда ");
-#line hidden
-            TechTalk.SpecFlow.Table table37 = new TechTalk.SpecFlow.Table(new string[] {
-                        "роль"});
-            table37.AddRow(new string[] {
-                        "Админ"});
-            table37.AddRow(new string[] {
-                        "Врач"});
-#line 298
- testRunner.And("существует пользователь \"Медведев\" со списком ролей", ((string)(null)), table37, "И ");
-#line hidden
-            TechTalk.SpecFlow.Table table38 = new TechTalk.SpecFlow.Table(new string[] {
-                        "имя"});
-            table38.AddRow(new string[] {
-                        "Медведев"});
-#line 302
- testRunner.Then("существует роль \"Врач\" со списком пользователей", ((string)(null)), table38, "Тогда ");
-#line hidden
             TechTalk.SpecFlow.Table table39 = new TechTalk.SpecFlow.Table(new string[] {
                         "имя"});
-#line 305
- testRunner.And("существует роль \"Медсестра\" со списком пользователей", ((string)(null)), table39, "И ");
+            table39.AddRow(new string[] {
+                        "Врач"});
+            table39.AddRow(new string[] {
+                        "Медсестра"});
+            table39.AddRow(new string[] {
+                        "Админ"});
+#line 320
+ testRunner.Given("существуют роли", ((string)(null)), table39, "Пусть ");
+#line hidden
+            TechTalk.SpecFlow.Table table40 = new TechTalk.SpecFlow.Table(new string[] {
+                        "роль"});
+            table40.AddRow(new string[] {
+                        "Медсестра"});
+            table40.AddRow(new string[] {
+                        "Админ"});
+#line 325
+ testRunner.When("создают нового пользователя \"Медведев\" с назначенными ролями", ((string)(null)), table40, "Когда ");
+#line hidden
+            TechTalk.SpecFlow.Table table41 = new TechTalk.SpecFlow.Table(new string[] {
+                        "роль"});
+            table41.AddRow(new string[] {
+                        "Админ"});
+            table41.AddRow(new string[] {
+                        "Врач"});
+#line 329
+ testRunner.When("пользователю \"Медведев\" меняют назначение ролей", ((string)(null)), table41, "Когда ");
+#line hidden
+            TechTalk.SpecFlow.Table table42 = new TechTalk.SpecFlow.Table(new string[] {
+                        "роль"});
+            table42.AddRow(new string[] {
+                        "Админ"});
+            table42.AddRow(new string[] {
+                        "Врач"});
+#line 333
+ testRunner.Then("существует пользователь \"Медведев\" со списком ролей", ((string)(null)), table42, "Тогда ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -948,44 +1041,34 @@ this.FeatureBackground();
         public virtual void УдалениеПользователя()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("удаление пользователя", ((string[])(null)));
-#line 308
+#line 338
 this.ScenarioSetup(scenarioInfo);
 #line 4
 this.FeatureBackground();
 #line hidden
-            TechTalk.SpecFlow.Table table40 = new TechTalk.SpecFlow.Table(new string[] {
-                        "имя"});
-            table40.AddRow(new string[] {
-                        "Врач"});
-            table40.AddRow(new string[] {
-                        "Медсестра"});
-            table40.AddRow(new string[] {
-                        "Админ"});
-#line 309
- testRunner.Given("существуют роли", ((string)(null)), table40, "Пусть ");
-#line hidden
-            TechTalk.SpecFlow.Table table41 = new TechTalk.SpecFlow.Table(new string[] {
-                        "роль"});
-            table41.AddRow(new string[] {
-                        "Медсестра"});
-            table41.AddRow(new string[] {
-                        "Админ"});
-#line 314
- testRunner.When("создают нового пользователя \"Медведев\" с назначенными ролями", ((string)(null)), table41, "Когда ");
-#line 318
- testRunner.And("удаляют пользователя \"Медведев\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "И ");
-#line 319
- testRunner.Then("существует 3 пользователя", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Тогда ");
-#line hidden
-            TechTalk.SpecFlow.Table table42 = new TechTalk.SpecFlow.Table(new string[] {
-                        "имя"});
-#line 320
- testRunner.Then("существует роль \"Врач\" со списком пользователей", ((string)(null)), table42, "Тогда ");
-#line hidden
             TechTalk.SpecFlow.Table table43 = new TechTalk.SpecFlow.Table(new string[] {
                         "имя"});
-#line 322
- testRunner.And("существует роль \"Медсестра\" со списком пользователей", ((string)(null)), table43, "И ");
+            table43.AddRow(new string[] {
+                        "Врач"});
+            table43.AddRow(new string[] {
+                        "Медсестра"});
+            table43.AddRow(new string[] {
+                        "Админ"});
+#line 339
+ testRunner.Given("существуют роли", ((string)(null)), table43, "Пусть ");
+#line hidden
+            TechTalk.SpecFlow.Table table44 = new TechTalk.SpecFlow.Table(new string[] {
+                        "роль"});
+            table44.AddRow(new string[] {
+                        "Медсестра"});
+            table44.AddRow(new string[] {
+                        "Админ"});
+#line 344
+ testRunner.When("создают нового пользователя \"Медведев\" с назначенными ролями", ((string)(null)), table44, "Когда ");
+#line 348
+ testRunner.And("удаляют пользователя \"Медведев\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "И ");
+#line 349
+ testRunner.Then("существует 3 пользователя", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Тогда ");
 #line hidden
             this.ScenarioCleanup();
         }

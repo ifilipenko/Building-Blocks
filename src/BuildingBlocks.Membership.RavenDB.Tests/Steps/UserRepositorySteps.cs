@@ -88,6 +88,20 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.Steps
             UsersResult = userRepository.FindUserById(new Guid(id)).ToEnumerableOrEmpty();
         }
 
+        [When(@"ищут пользователей с ролью ""(.*)""")]
+        public void ≈сли»щутѕользователей—–олью(string roleName)
+        {
+            var userRepository = new UserRepositoryImpl(RavenDb.Storage);
+            UsersResult = userRepository.FindUsersInRole(MembershipSettings.DefaultApplicationName, roleName);
+        }
+
+        [When(@"ищут пользователей по части имени ""(.*)"" и по роли ""(.*)""")]
+        public void ≈сли»щутѕользователейѕо„асти»мени»ѕо–оли(string usernameSubstring, string roleName)
+        {
+            var userRepository = new UserRepositoryImpl(RavenDb.Storage);
+            UsersResult = userRepository.FindUsersInRole(MembershipSettings.DefaultApplicationName, roleName, usernameSubstring);
+        }
+
         [When(@"загружают (.*) страницу пользоватлей по (.*) пользовател€, по приложению ""(.*)"" и части email ""(.*)""")]
         public void ≈сли«агружают—траницуѕользоватлейѕоѕользовател€—‘ильтромѕоEmail»ѕриложению(int pageNumber, int pageSize, string applicationName, string emailToMatch)
         {

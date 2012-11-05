@@ -59,10 +59,10 @@ namespace BuildingBlocks.Store
             if (values == null || !values.Any())
             {
                 //return queryable;
-                return queryable.Where(property + " == " + wrapper + Guid.NewGuid() + wrapper);
+                return queryable.Where(property + " = " + wrapper + Guid.NewGuid() + wrapper);
             }
 
-            var criterions = values.Select(v => property + " == " + wrapper + v + wrapper);
+            var criterions = values.Select(v => property + " = " + wrapper + v + wrapper);
             var expression = string.Join(" || ", criterions);
             return queryable.Where(expression);
         }

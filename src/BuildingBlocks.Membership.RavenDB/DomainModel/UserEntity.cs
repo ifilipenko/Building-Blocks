@@ -8,9 +8,11 @@ namespace BuildingBlocks.Membership.RavenDB.DomainModel
 {
     public class UserEntity : IEntity<string>
     {
+        private IList<string> _roles;
+
         public UserEntity()
         {
-            Roles = new List<RoleReference>();
+            Roles = new List<string>();
         }
 
         public string Id { get; set; }
@@ -40,7 +42,11 @@ namespace BuildingBlocks.Membership.RavenDB.DomainModel
         public string PasswordVerificationToken { get; set; }
         public DateTime? PasswordVerificationTokenExpirationDate { get; set; }
 
-        public IList<RoleReference> Roles { get; set; }
+        public IEnumerable<string> Roles
+        {
+            get { return _roles; }
+            set { _roles = (IList<string>) value ?? new List<string>(0); }
+        }
 
         public void UpdateUser(User user)
         {
@@ -63,44 +69,24 @@ namespace BuildingBlocks.Membership.RavenDB.DomainModel
             PasswordVerificationTokenExpirationDate = user.PasswordVerificationTokenExpirationDate;
         }
 
-        public IEnumerable<string> GetRoleIdsToRemove(IEnumerable<RoleEntity> newRoles)
+        public IEnumerable<string> GetRolesToRemove(IEnumerable<string> newRoles)
         {
             return Roles
-                .Where(exist => newRoles.All(newRole => newRole.Id != exist.Id))
-                .Select(r => r.Id)
+                .Except(newRoles)
                 .ToList();
         }
 
-        public void AddRoleOrUpdate(RoleEntity role)
+        public void AddRole(string rolename)
         {
-            var roles = Roles.Where(r => r.Id == role.Id).ToList();
-            if (roles.Any())
+            if (!_roles.Contains(rolename))
             {
-                foreach (var roleReference in roles)
-                {
-                    roleReference.Name = role.RoleName;
-                }
-            }
-            else
-            {
-                Roles.Add(new RoleReference(role));
+                _roles.Add(rolename);
             }
         }
 
-        public void RemoveRole(RoleEntity role)
+        public void RemoveRole(string roleName)
         {
-            foreach (var roleReference in Roles.Where(r => r.Id == role.Id).ToList())
-            {
-                Roles.Remove(roleReference);
-            }
-        }
-
-        public void RemoveRoleWithId(string roleId)
-        {
-            foreach (var roleReference in Roles.Where(r => r.Id == roleId).ToList())
-            {
-                Roles.Remove(roleReference);
-            }
+            _roles.Remove(roleName);
         }
 
         public override string ToString()
