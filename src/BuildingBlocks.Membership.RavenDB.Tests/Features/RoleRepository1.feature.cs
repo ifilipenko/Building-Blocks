@@ -194,50 +194,6 @@ this.FeatureBackground();
 #line hidden
             this.ScenarioCleanup();
         }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("удаление роли с удалением из списка ролей пользователей")]
-        public virtual void УдалениеРолиСУдалениемИзСпискаРолейПользователей()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("удаление роли с удалением из списка ролей пользователей", ((string[])(null)));
-#line 48
-this.ScenarioSetup(scenarioInfo);
-#line 4
-this.FeatureBackground();
-#line hidden
-            TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
-                        "имя",
-                        "роли"});
-            table5.AddRow(new string[] {
-                        "Иванов",
-                        "Медсестра,Врач"});
-            table5.AddRow(new string[] {
-                        "Петров",
-                        "Медсестра,Врач"});
-            table5.AddRow(new string[] {
-                        "Сидоров",
-                        ""});
-#line 49
- testRunner.Given("существуют пользователи", ((string)(null)), table5, "Пусть ");
-#line 54
- testRunner.When("удаляют роль \"Медсестра\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Когда ");
-#line hidden
-            TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
-                        "роль"});
-            table6.AddRow(new string[] {
-                        "Врач"});
-#line 55
- testRunner.Then("существует пользователь \"Иванов\" со списком ролей", ((string)(null)), table6, "Тогда ");
-#line hidden
-            TechTalk.SpecFlow.Table table7 = new TechTalk.SpecFlow.Table(new string[] {
-                        "роль"});
-            table7.AddRow(new string[] {
-                        "Врач"});
-#line 58
- testRunner.Then("существует пользователь \"Петров\" со списком ролей", ((string)(null)), table7, "Тогда ");
-#line hidden
-            this.ScenarioCleanup();
-        }
     }
 }
 #pragma warning restore

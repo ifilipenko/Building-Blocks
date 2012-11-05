@@ -90,8 +90,11 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.BugTests
                 ObtainRequiredRoles("role1", "role2", "role3");
                 _outsideSession.SumbitChanges();
 
-                var status = ObtainUser("user", "role3");
+                var status = ObtainUser("user");
                 status.Should().Be(MembershipCreateStatus.Success);
+                _outsideSession.SumbitChanges();
+
+                ObtainUserInRole("user", "role3");
                 _outsideSession.SumbitChanges();
             }
 
@@ -112,8 +115,21 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.BugTests
                 
                 var status = ObtainUser("user", "role3");
                 status.Should().BeNull();
-                _outsideSession.IsRolledBack.Should().BeTrue();
             }
+        }
+
+        private MembershipCreateStatus? ObtainUser(string username)
+        {
+            MembershipCreateStatus status;
+            _membershipProvider.CreateUser(username,
+                                            "234234234",
+                                            username + "@" + username + ".com",
+                                            null,
+                                            null,
+                                            true,
+                                            null,
+                                            out status);
+            return status;
         }
 
         private MembershipCreateStatus? ObtainUser(string username, string roleName)
@@ -127,15 +143,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.BugTests
                 return null;
             }
 
-            MembershipCreateStatus status;
-            _membershipProvider.CreateUser(username,
-                                            "234234234",
-                                            username + "@" + username + ".com",
-                                            null, 
-                                            null, 
-                                            true, 
-                                            null, 
-                                            out status);
+            var status = ObtainUser(username);
             _roleProvider.AddUsersToRoles(new[] {username}, new[] {roleName});
             return status;
         }
