@@ -27,10 +27,4 @@ namespace BuildingBlocks.Store
 
         void UseOptimisticConcurrency();
     }
-
-    public enum StaleResultsMode
-    {
-        AllowStaleResultsMode,
-        WaitForNonStaleResults
-    }
 }
