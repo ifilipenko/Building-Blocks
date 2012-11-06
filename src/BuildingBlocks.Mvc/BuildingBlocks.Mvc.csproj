@@ -50,6 +50,7 @@
     <Compile Include="Helpers\TagBuilderExtentions.cs" />
     <Compile Include="HttpErrorResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UrlExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BuildingBlocks.Mvc.nuspec">
