@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.Configuration.Provider;
 using System.Linq;
 using BuildingBlocks.Common;
 using BuildingBlocks.Membership.Contract;
@@ -216,6 +217,13 @@ namespace BuildingBlocks.Membership
             _log.Trace(m => m("Role with name \"{0}\" successfully created", roleName));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="roleName"></param>
+        /// <param name="throwOnPopulatedRole"></param>
+        /// <returns></returns>
+        /// <exception cref="ProviderException">Role is not empty</exception>
         public override bool DeleteRole(string roleName, bool throwOnPopulatedRole)
         {
             _log.Trace(m => m("Start role with name \"{0}\" deleting", roleName));
@@ -238,7 +246,7 @@ namespace BuildingBlocks.Membership
                 if (users.Any())
                 {
                     _log.Debug(m => m("Role \"{0}\" has {1} users and deprecated to delete", roleName, users.Count()));
-                    return false;
+                    throw new ProviderException("Role is not empty");
                 }
             }
             else
