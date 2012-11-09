@@ -11,13 +11,13 @@ namespace BuildingBlocks.Membership.RavenDB
         protected RepositoryBase(IStorage storage)
         {
             _storage = storage;
-            ProvidersIndexes.Ensure(((RavenDbStorage)_storage).DocumentStore);
+            ProvidersIndexes.Ensure(((RavenDbStorage) storage).DocumentStore);
         }
 
         protected RepositoryBase(IStorageSession outsideSession)
         {
             _outsideSession = outsideSession;
-            ProvidersIndexes.Ensure(((RavenDbSession)_storage).Session.Advanced.DocumentStore);
+            ProvidersIndexes.Ensure(((RavenDbSession)outsideSession).Session.Advanced.DocumentStore);
         }
 
         protected IStorageSession OpenSesion()
