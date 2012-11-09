@@ -5,7 +5,6 @@ using BuildingBlocks.Membership.Contract;
 using BuildingBlocks.Membership.RavenDB.DomainModel;
 using BuildingBlocks.Store;
 
-
 namespace BuildingBlocks.Membership.RavenDB
 {
     public class RoleRepositoryImpl : IRoleRepository

@@ -76,17 +76,19 @@ namespace BuildingBlocks.Membership.RavenDB.DomainModel
                 .ToList();
         }
 
-        public void AddRole(string rolename)
+        public bool AddRole(string rolename)
         {
             if (!_roles.Contains(rolename))
             {
                 _roles.Add(rolename);
+                return true;
             }
+             return false;
         }
 
-        public void RemoveRole(string roleName)
+        public bool RemoveRole(string roleName)
         {
-            _roles.Remove(roleName);
+            return _roles.Remove(roleName);
         }
 
         public override string ToString()

@@ -1,4 +1,5 @@
 using BuildingBlocks.Store;
+using BuildingBlocks.Store.RavenDB;
 
 namespace BuildingBlocks.Membership.RavenDB
 {
@@ -10,11 +11,13 @@ namespace BuildingBlocks.Membership.RavenDB
         protected RepositoryBase(IStorage storage)
         {
             _storage = storage;
+            ProvidersIndexes.Ensure(((RavenDbStorage)_storage).DocumentStore);
         }
 
         protected RepositoryBase(IStorageSession outsideSession)
         {
             _outsideSession = outsideSession;
+            ProvidersIndexes.Ensure(((RavenDbSession)_storage).Session.Advanced.DocumentStore);
         }
 
         protected IStorageSession OpenSesion()

@@ -169,6 +169,7 @@ namespace BuildingBlocks.Membership.RavenDB
 
                 var userEntity = session.Query<UserEntity>().Single(u => u.UserId == user.UserId);
                 userEntity.UpdateUser(user);
+                _log.UpdatedUserData(user, userEntity);
 
                 UpdateUsersRolesList(session, userEntity, user.Roles);
 
@@ -198,15 +199,18 @@ namespace BuildingBlocks.Membership.RavenDB
             var roleNamesToRemove = userEntity.GetRolesToRemove(newRoles);
             foreach (var roleName in roleNamesToRemove)
             {
-                userEntity.RemoveRole(roleName);
-                _log.Debug(m => m("remove role by name {0}", roleName));
+                if (userEntity.RemoveRole(roleName))
+                {
+                    _log.Debug(m => m("remove role by name {0}", roleName));
+                }
             }
 
             foreach (var roleEntity in newRolesList)
             {
-                userEntity.AddRole(roleEntity.RoleName);
-                _log.Debug(m => m("Added user {0} to role {1}", userEntity, roleEntity));
-                session.Save(roleEntity);
+                if (userEntity.AddRole(roleEntity.RoleName))
+                {
+                    _log.Debug(m => m("Added user {0} to role {1}", userEntity, roleEntity));
+                }
             }
         }
     }
