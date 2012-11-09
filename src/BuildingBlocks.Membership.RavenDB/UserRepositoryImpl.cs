@@ -163,19 +163,21 @@ namespace BuildingBlocks.Membership.RavenDB
 
         public void SaveUser(User user)
         {
+            _log.Trace(m => m("Saving user started"));
             using (var session = OpenSesion())
             {
                 session.UseOptimisticConcurrency();
 
                 var userEntity = session.Query<UserEntity>().Single(u => u.UserId == user.UserId);
+                _log.UserChanges(user, userEntity);
                 userEntity.UpdateUser(user);
-                _log.UpdatedUserData(user, userEntity);
 
                 UpdateUsersRolesList(session, userEntity, user.Roles);
 
                 session.Save(userEntity);
                 session.SumbitChanges();
             }
+            _log.Trace(m => m("User successfully saved"));
         }
 
         public void DeleteUser(User user)

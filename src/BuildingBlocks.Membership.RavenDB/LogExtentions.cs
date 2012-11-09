@@ -9,7 +9,7 @@ namespace BuildingBlocks.Membership.RavenDB
 {
     public static class LogExtentions
     {
-        public static void UpdatedUserData(this ILog log, User to, UserEntity @from)
+        public static void UserChanges(this ILog log, User to, UserEntity @from)
         {
             if (!log.IsDebugEnabled)
                 return;
