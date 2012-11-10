@@ -78,6 +78,18 @@ namespace BuildingBlocks.Common
             }
         }
 
+        public void SetItems(IEnumerable<T> enumerable)
+        {
+            if (enumerable == null)
+                throw new ArgumentNullException("enumerable");
+
+            var items = enumerable.ToList();
+            if (items.Count > PageSize)
+                throw new ArgumentException("Page items is more then page size", "enumerable");
+
+            Items = items;
+        }
+
         public void QueryFrom<TSource>(IQueryable<TSource> itemsSource, Func<TSource, T> mapFunction)
         {
             var sources = itemsSource.Skip(SkippedItems).Take(PageSize).ToList();
