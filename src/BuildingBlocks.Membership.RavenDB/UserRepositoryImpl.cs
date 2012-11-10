@@ -184,7 +184,10 @@ namespace BuildingBlocks.Membership.RavenDB
         {
             using (var session = OpenSesion())
             {
-                var userEntity = session.Query<UserEntity>().Single(u => u.UserId == user.UserId);
+                var userEntity = session.Query<UserEntity>().SingleOrDefault(u => u.UserId == user.UserId);
+                if (userEntity == null)
+                    throw new InvalidOperationException("User is not exists");
+
                 session.Delete(userEntity);
                 session.SumbitChanges();
             }
