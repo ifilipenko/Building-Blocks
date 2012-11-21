@@ -52,7 +52,9 @@ namespace BuildingBlocks.CopyManagement
 
         private static string ComputeApplicationId()
         {
-            return ComputerId.Value.ToFingerPrintMd5Hash();
+            var exeFileName = System.Reflection.Assembly.GetEntryAssembly().Location;
+            var value = "EXE_PATH >> " + exeFileName + "\n" + ComputerId.Value;
+            return value.ToFingerPrintMd5Hash();
         }
     }
 }
