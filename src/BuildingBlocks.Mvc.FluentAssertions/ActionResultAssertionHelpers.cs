@@ -8,7 +8,7 @@ namespace BuildingBlocks.Mvc.FluentAssertions
 {
     public static class ActionResultAssertionHelpers
     {
-        public static AndConstraint<ObjectAssertions> BeRedirectToAction(this ObjectAssertions assertions, string actionName, string controllerName = null)
+        public static AndConstraint<ObjectAssertions> BeRedirectToAction(this ObjectAssertions assertions, string actionName, string controllerName = null, string area = null)
         {
             var result = assertions.BeOfType<RedirectToRouteResult>();
             var actionResult = (RedirectToRouteResult)assertions.Subject;
@@ -18,6 +18,11 @@ namespace BuildingBlocks.Mvc.FluentAssertions
             {
                 actionResult.RouteValues.Should().ContainKey("controller");
                 actionResult.RouteValues["controller"].Should().Be(controllerName);
+            }
+            if (area != null)
+            {
+                actionResult.RouteValues.Should().ContainKey("area");
+                actionResult.RouteValues["area"].Should().Be(area);
             }
             return result;
         }

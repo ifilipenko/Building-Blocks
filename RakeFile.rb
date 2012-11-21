@@ -2,7 +2,7 @@ require 'albacore'
 require 'rexml/document'
 
 def get_version
-	ENV['BUILD_NUMBER'] || '1.0.0.41'
+	ENV['BUILD_NUMBER'] || '1.0.0.42'
 end
 
 params = {
