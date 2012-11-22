@@ -12,6 +12,16 @@ namespace BuildingBlocks.Mvc
             return new HttpErrorResult(HttpStatusCode.InternalServerError, message);
         }
 
+        public static HttpErrorResult NotFound(string message)
+        {
+            return new HttpErrorResult(HttpStatusCode.NotFound, message);
+        }
+
+        public static HttpErrorResult Success(string message)
+        {
+            return new HttpErrorResult(HttpStatusCode.OK, message);
+        }
+
         private readonly HttpStatusCode _httpStatusCode;
         private readonly string _message;
 
