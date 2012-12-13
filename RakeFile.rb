@@ -2,7 +2,7 @@ require 'albacore'
 require 'rexml/document'
 
 def get_version
-	ENV['BUILD_NUMBER'] || '1.0.0.44'
+	ENV['BUILD_NUMBER'] || '1.0.0.45'
 end
 
 params = {
@@ -82,9 +82,9 @@ namespace :package do
 					patch_nuspec_file_version(f, params)
 					packageDir = copy_nuspec_to_packages_dir(f, packageName, params)
 					copy_binaries_to_libs_dir(packageDir, packageName, params)
-					newNuspecFile = "#{packageDir}/" + f.pathmap("%f")
+					newNuspecFile = "#{packageDir}/" + f.pathmap("%f")					
 					nuget_pack(newNuspecFile, packageDir, params)
-				else
+				else					
 					nuget_pack(f, nil, params)
 				end
 			end
