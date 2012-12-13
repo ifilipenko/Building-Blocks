@@ -36,6 +36,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Mvc.FluentAs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.SystemInfo", "BuildingBlocks.SystemInfo\BuildingBlocks.SystemInfo.csproj", "{0D185AB7-F422-4FEF-89F0-295A09472167}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.FluentAssetions.Mvc4", "BuildingBlocks.FluentAssetions.Mvc4\BuildingBlocks.FluentAssetions.Mvc4.csproj", "{A22C3BC8-0EB1-48F6-A919-2B43716C782E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +100,10 @@ Global
 		{0D185AB7-F422-4FEF-89F0-295A09472167}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D185AB7-F422-4FEF-89F0-295A09472167}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D185AB7-F422-4FEF-89F0-295A09472167}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A22C3BC8-0EB1-48F6-A919-2B43716C782E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A22C3BC8-0EB1-48F6-A919-2B43716C782E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A22C3BC8-0EB1-48F6-A919-2B43716C782E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A22C3BC8-0EB1-48F6-A919-2B43716C782E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
