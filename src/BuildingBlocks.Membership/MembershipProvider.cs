@@ -626,7 +626,16 @@ namespace BuildingBlocks.Membership
         private User FindUserByName(string username)
         {
             var users = UserRepository.FindUsersByNames(ApplicationName, username);
-            return users == null ? null : users.SingleOrDefault();
+            if (users == null)
+                return null;
+            try
+            {
+                return users.SingleOrDefault();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new MembershipProviderException(string.Format("For username \"{0}\" founded more than one user", username), ex);
+            }
         }
 
         private string ShouldBePositive(int? value)
