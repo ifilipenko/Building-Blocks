@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>BuildingBlocks.Autopoco.Helpers</id>
+    <version>1.0.0.0</version>
+    <authors>Innokentiy Filipenko</authors>
+    <owners>Building-Blocks</owners>
+    <licenseUrl>https://raw.github.com/ifilipenko/Building-Blocks/master/License.txt</licenseUrl>
+    <projectUrl>https://github.com/ifilipenko/Building-Blocks</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Helpers for easy generate objects with Autopoco (AutoPocoBeta only)</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2012</copyright>
+    <dependencies>
+      <dependency id="BuildingBlocks.Common" version="1.0.0.0" />
+      <dependency id="AutoPocoBeta" version="1.2.0" />
+      <dependency id="fasterflect" version="[2.0.1, )" />
+    </dependencies>
+  </metadata>
+</package>
