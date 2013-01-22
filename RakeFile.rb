@@ -2,7 +2,7 @@ require 'albacore'
 require 'rexml/document'
 
 def get_version
-	ENV['BUILD_NUMBER'] || '1.0.0.46'
+	ENV['BUILD_NUMBER'] || '1.0.0.47'
 end
 
 params = {
@@ -32,7 +32,7 @@ namespace :source do
 	    asm.output_file = 'src/CommonAssemblyInfo.cs'
 	    asm.version = params[:version]
 	    asm.company_name = 'Building-Blocks'
-	    asm.copyright = 'Copyright 2012 Innokentiy Filipenko. All rights reserved.'
+	    asm.copyright = 'Copyright 2013 Innokentiy Filipenko. All rights reserved.'
 	    asm.namespaces = ['System.Security']
 	    puts "The build number is #{asm.version}"
   end
