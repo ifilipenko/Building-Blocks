@@ -13,7 +13,6 @@
     <copyright>Copyright 2012</copyright>
     <dependencies>
       <dependency id="Common.Logging" version="[2.0.0, 2.1.1]" />
-      <dependency id="RavenDB.Embedded" version="1.0.960" />
       <dependency id="BuildingBlocks.Store.RavenDB" version="1.0.0.0" />
     </dependencies>
   </metadata>
