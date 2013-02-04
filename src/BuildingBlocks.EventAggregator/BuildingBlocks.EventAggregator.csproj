@@ -66,7 +66,9 @@
     <Compile Include="SimpleEventPublisher.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="BuildingBlocks.EventAggregator.nuspec" />
+    <None Include="BuildingBlocks.EventAggregator.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
