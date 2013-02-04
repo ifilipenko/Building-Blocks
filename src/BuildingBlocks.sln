@@ -40,6 +40,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Autopoco.Hel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Store.RavenDB.TestHelpers", "BuildingBlocks.Store.RavenDB.TestHelpers\BuildingBlocks.Store.RavenDB.TestHelpers.csproj", "{B538ABC9-FEAD-469B-B21A-18C004673AAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.EventAggregator", "BuildingBlocks.EventAggregator\BuildingBlocks.EventAggregator.csproj", "{87991616-828D-40D2-9F69-0A6B93E30E01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,6 +112,10 @@ Global
 		{B538ABC9-FEAD-469B-B21A-18C004673AAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B538ABC9-FEAD-469B-B21A-18C004673AAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B538ABC9-FEAD-469B-B21A-18C004673AAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87991616-828D-40D2-9F69-0A6B93E30E01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87991616-828D-40D2-9F69-0A6B93E30E01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87991616-828D-40D2-9F69-0A6B93E30E01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87991616-828D-40D2-9F69-0A6B93E30E01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
