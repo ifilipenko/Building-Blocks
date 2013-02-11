@@ -7,7 +7,7 @@ namespace BuildingBlocks.Store.RavenDB.TestHelpers
     {
         public static void ClearStaleIndexes(this IDocumentSession documentSession)
         {
-            while (documentSession.Advanced.DatabaseCommands.GetStatistics().StaleIndexes.Length != 0)
+            while (documentSession.Advanced.DocumentStore.DatabaseCommands.GetStatistics().StaleIndexes.Length != 0)
             {
                 Thread.Sleep(10);
             }
