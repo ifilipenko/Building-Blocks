@@ -1,5 +1,4 @@
 using Raven.Client;
-using Raven.Client.Indexes;
 
 namespace BuildingBlocks.Membership.RavenDB
 {
@@ -25,7 +24,7 @@ namespace BuildingBlocks.Membership.RavenDB
 
         private static void EnsureCore(IDocumentStore documentStore)
         {
-            IndexCreation.CreateIndexes(typeof (ProvidersIndexes).Assembly, documentStore);
+            //IndexCreation.CreateIndexes(typeof (ProvidersIndexes).Assembly, documentStore);
         }
     }
 }

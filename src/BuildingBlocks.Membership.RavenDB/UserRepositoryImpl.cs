@@ -9,6 +9,7 @@ using BuildingBlocks.Membership.RavenDB.Queries;
 using BuildingBlocks.Membership.RavenDB.Queries.Criteria;
 using BuildingBlocks.Query;
 using BuildingBlocks.Store;
+using BuildingBlocks.Store.RavenDB;
 using Common.Logging;
 
 namespace BuildingBlocks.Membership.RavenDB
@@ -87,11 +88,11 @@ namespace BuildingBlocks.Membership.RavenDB
 
         public IEnumerable<User> FindUsersInRole(string applicationName, string roleName, string usernameToMatch)
         {
-            using (var session = OpenSesion())
+            using (var session = (RavenDbSession) OpenSesion())
             {
-                var usernames = from u in session.Query<UserEntity>()
+                var usernames = from u in session.Session.Query<UserEntity>()
                                 where u.ApplicationName == applicationName && u.Roles.Any(r => r == roleName) &&
-                                      u.Username.Contains(usernameToMatch)
+                                      u.Username.StartsWith(usernameToMatch)
                                 select u;
                 return usernames.AsEnumerable().Select(u => u.ToUser());
             }
