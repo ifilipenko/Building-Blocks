@@ -13,6 +13,7 @@
     <copyright>Copyright 2013</copyright>
     <dependencies>
       <dependency id="Rx-Main" version="2.1.30204.0" />
+      <dependency id="BuildingBlocks.Common" version="1.0.0.0" />
     </dependencies>
   </metadata>
 </package>

@@ -58,10 +58,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComplexEventPublisher.cs" />
-    <Compile Include="EventHandlersManager.cs" />
     <Compile Include="IReactiveEventAggregator.cs" />
     <Compile Include="IEventHandler.cs" />
     <Compile Include="IReactiveEventSubscriber.cs" />
+    <Compile Include="EventHandlersRegistrar.cs" />
+    <Compile Include="DictonaryEventHandlersManager.cs" />
     <Compile Include="ReactiveEventSubscriberHelper.cs" />
     <Compile Include="IEventPublisher.cs" />
     <Compile Include="IEventSubscriber.cs" />
@@ -74,6 +75,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BuildingBlocks.Common\BuildingBlocks.Common.csproj">
+      <Project>{D03AFEE9-3AD7-472D-8D88-4E7C19267AA3}</Project>
+      <Name>BuildingBlocks.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
