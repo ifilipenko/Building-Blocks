@@ -42,6 +42,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.Store.RavenD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.EventAggregator", "BuildingBlocks.EventAggregator\BuildingBlocks.EventAggregator.csproj", "{87991616-828D-40D2-9F69-0A6B93E30E01}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks.EventAggregator.Rx", "BuildingBlocks.EventAggregator.Rx\BuildingBlocks.EventAggregator.Rx.csproj", "{4895A660-D651-47A0-8633-26FA9789C30C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,6 +118,10 @@ Global
 		{87991616-828D-40D2-9F69-0A6B93E30E01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87991616-828D-40D2-9F69-0A6B93E30E01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87991616-828D-40D2-9F69-0A6B93E30E01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4895A660-D651-47A0-8633-26FA9789C30C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4895A660-D651-47A0-8633-26FA9789C30C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4895A660-D651-47A0-8633-26FA9789C30C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4895A660-D651-47A0-8633-26FA9789C30C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

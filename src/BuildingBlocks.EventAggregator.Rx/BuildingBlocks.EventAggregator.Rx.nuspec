@@ -1,0 +1,19 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>BuildingBlocks.EventAggregator.Rx</id>
+    <version>1.0.0.0</version>
+    <authors>Innokentiy Filipenko</authors>
+    <owners>Building-Blocks</owners>
+    <licenseUrl>https://raw.github.com/ifilipenko/Building-Blocks/master/License.txt</licenseUrl>
+    <projectUrl>https://github.com/ifilipenko/Building-Blocks</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Simple implementation of event aggregator for reactive extentions subsribtions</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <dependencies>
+      <dependency id="Rx-Main" version="2.1.30214.0" />
+      <dependency id="BuildingBlocks.EventAggregator" version="1.0.0.0" />
+    </dependencies>
+  </metadata>
+</package>
