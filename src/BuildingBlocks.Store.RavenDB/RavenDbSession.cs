@@ -112,6 +112,11 @@ namespace BuildingBlocks.Store.RavenDB
             Session.Store(entity);
         }
 
+        public void Save(object entity)
+        {
+            Session.Store(entity);
+        }
+
         public void Delete<T>(T entity)
         {
             Session.Delete(entity);
@@ -122,7 +127,7 @@ namespace BuildingBlocks.Store.RavenDB
             Session.Advanced.UseOptimisticConcurrency = true;
         }
 
-        public void SumbitChanges()
+        public void SubmitChanges()
         {
             if (!IsInitialized)
             {

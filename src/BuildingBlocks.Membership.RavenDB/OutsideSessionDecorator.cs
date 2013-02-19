@@ -32,7 +32,7 @@ namespace BuildingBlocks.Membership.RavenDB
             get { return _outsideSession.IsCancelled; }
         }
 
-        public void SumbitChanges()
+        public void SubmitChanges()
         {
             _log.Debug(m => m("Submit changes is session {0} ignored and need be submitted by outsisde session", _id));
         }
@@ -84,6 +84,11 @@ namespace BuildingBlocks.Membership.RavenDB
         }
 
         public void Save<TId>(IEntity<TId> entity) where TId : struct
+        {
+            _outsideSession.Save(entity);
+        }
+
+        public void Save(object entity)
         {
             _outsideSession.Save(entity);
         }
