@@ -69,13 +69,13 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.BugTests
             using (_outsideSession = RavenDb.Storage.OpenSesion())
             {
                 ObtainRequiredRoles("role1", "role2", "role3");
-                _outsideSession.SumbitChanges();
+                _outsideSession.SubmitChanges();
             }
 
             using (_outsideSession = RavenDb.Storage.OpenSesion())
             {
                 var status = ObtainUser("user", "role3");
-                _outsideSession.SumbitChanges();
+                _outsideSession.SubmitChanges();
                 status.Should().Be(MembershipCreateStatus.Success);
             }
         }
@@ -88,14 +88,14 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.BugTests
             using (_outsideSession = RavenDb.Storage.OpenSesion())
             {
                 ObtainRequiredRoles("role1", "role2", "role3");
-                _outsideSession.SumbitChanges();
+                _outsideSession.SubmitChanges();
 
                 var status = ObtainUser("user");
                 status.Should().Be(MembershipCreateStatus.Success);
-                _outsideSession.SumbitChanges();
+                _outsideSession.SubmitChanges();
 
                 ObtainUserInRole("user", "role3");
-                _outsideSession.SumbitChanges();
+                _outsideSession.SubmitChanges();
             }
 
             using (var session = RavenDb.Storage.OpenSesion())
@@ -111,7 +111,7 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.BugTests
             using (_outsideSession = RavenDb.Storage.OpenSesion())
             {
                 ObtainRequiredRoles("role1", "role2", "role3");
-                _outsideSession.SumbitChanges();
+                _outsideSession.SubmitChanges();
                 
                 var status = ObtainUser("user", "role3");
                 status.Should().BeNull();

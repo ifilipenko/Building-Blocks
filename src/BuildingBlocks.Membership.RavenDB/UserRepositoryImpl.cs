@@ -157,7 +157,7 @@ namespace BuildingBlocks.Membership.RavenDB
                     userEntity.AddRole(role.RoleName);
                 }
                 session.Save(userEntity);
-                session.SumbitChanges();
+                session.SubmitChanges();
             }
             _log.Trace(m => m("User successfully added"));
         }
@@ -176,7 +176,7 @@ namespace BuildingBlocks.Membership.RavenDB
                 UpdateUsersRolesList(session, userEntity, user.Roles);
 
                 session.Save(userEntity);
-                session.SumbitChanges();
+                session.SubmitChanges();
             }
             _log.Trace(m => m("User successfully saved"));
         }
@@ -190,7 +190,7 @@ namespace BuildingBlocks.Membership.RavenDB
                     throw new InvalidOperationException("User is not exists");
 
                 session.Delete(userEntity);
-                session.SumbitChanges();
+                session.SubmitChanges();
             }
         }
 

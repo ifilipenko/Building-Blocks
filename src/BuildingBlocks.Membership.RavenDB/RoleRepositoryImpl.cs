@@ -67,7 +67,7 @@ namespace BuildingBlocks.Membership.RavenDB
                     RoleName = roleName
                 };
                 session.Save(roleEntity);
-                session.SumbitChanges();
+                session.SubmitChanges();
             }
         }
 
@@ -82,7 +82,7 @@ namespace BuildingBlocks.Membership.RavenDB
                 {
                     session.Delete(roleToDelete);
                 }
-                session.SumbitChanges();
+                session.SubmitChanges();
             }
         }
 
