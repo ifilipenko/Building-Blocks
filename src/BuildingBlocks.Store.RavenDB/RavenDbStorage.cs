@@ -1,3 +1,4 @@
+using System;
 using Raven.Client;
 
 namespace BuildingBlocks.Store.RavenDB
@@ -27,9 +28,27 @@ namespace BuildingBlocks.Store.RavenDB
             }
         }
 
+        public void CheckConnection()
+        {
+            
+        }
+
         public IStorageSession OpenSesion()
         {
             return new RavenDbSession(_documentStore, _sessionSettings);
+        }
+
+        public void CheckConnection(int timeoutMilliseconds)
+        {
+            try
+            {
+                var task = _documentStore.AsyncDatabaseCommands.GetBuildNumberAsync();
+                task.Wait(timeoutMilliseconds);
+            }
+            catch (Exception ex)
+            {
+                throw new StorageConnectionFailedException(ex);
+            }
         }
     }
 }

@@ -59,6 +59,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryHelpers.cs" />
     <Compile Include="StaleResultsMode.cs" />
+    <Compile Include="StorageConnectionFailedException.cs" />
     <Compile Include="StorageSessionManager.cs" />
   </ItemGroup>
   <ItemGroup>

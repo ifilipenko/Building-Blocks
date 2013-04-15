@@ -53,6 +53,7 @@
   <ItemGroup>
     <None Include="BuildingBlocks.EventAggregator.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
