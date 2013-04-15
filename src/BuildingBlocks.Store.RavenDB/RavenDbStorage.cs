@@ -33,7 +33,7 @@ namespace BuildingBlocks.Store.RavenDB
             
         }
 
-        public IStorageSession OpenSesion()
+        public IStorageSession OpenSession()
         {
             return new RavenDbSession(_documentStore, _sessionSettings);
         }

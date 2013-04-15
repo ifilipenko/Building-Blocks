@@ -24,7 +24,7 @@ namespace BuildingBlocks.Membership.RavenDB
         {
             return _storage == null 
                        ? new OutsideSessionDecorator(_outsideSession) 
-                       : _storage.OpenSesion();
+                       : _storage.OpenSession();
         }
     }
 }
