@@ -28,11 +28,6 @@ namespace BuildingBlocks.Store.RavenDB
             }
         }
 
-        public void CheckConnection()
-        {
-            
-        }
-
         public IStorageSession OpenSession()
         {
             return new RavenDbSession(_documentStore, _sessionSettings);
