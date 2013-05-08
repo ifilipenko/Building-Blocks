@@ -66,16 +66,16 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.BugTests
         public void Should_Executed_Correctly_With_Outside_session()
         {
             _enableOutsideSession = true;
-            using (_outsideSession = RavenDb.Storage.OpenSesion())
+            using (_outsideSession = RavenDb.Storage.OpenSession())
             {
                 ObtainRequiredRoles("role1", "role2", "role3");
-                _outsideSession.SumbitChanges();
+                _outsideSession.SubmitChanges();
             }
 
-            using (_outsideSession = RavenDb.Storage.OpenSesion())
+            using (_outsideSession = RavenDb.Storage.OpenSession())
             {
                 var status = ObtainUser("user", "role3");
-                _outsideSession.SumbitChanges();
+                _outsideSession.SubmitChanges();
                 status.Should().Be(MembershipCreateStatus.Success);
             }
         }
@@ -85,20 +85,20 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.BugTests
         {
             _enableOutsideSession = true;
 
-            using (_outsideSession = RavenDb.Storage.OpenSesion())
+            using (_outsideSession = RavenDb.Storage.OpenSession())
             {
                 ObtainRequiredRoles("role1", "role2", "role3");
-                _outsideSession.SumbitChanges();
+                _outsideSession.SubmitChanges();
 
                 var status = ObtainUser("user");
                 status.Should().Be(MembershipCreateStatus.Success);
-                _outsideSession.SumbitChanges();
+                _outsideSession.SubmitChanges();
 
                 ObtainUserInRole("user", "role3");
-                _outsideSession.SumbitChanges();
+                _outsideSession.SubmitChanges();
             }
 
-            using (var session = RavenDb.Storage.OpenSesion())
+            using (var session = RavenDb.Storage.OpenSession())
             {
                 session.Query<RoleEntity>().Should().HaveCount(3);
                 session.Query<RoleEntity>().Select(r => r.RoleName).Should().Contain("role1", "role2", "role3");
@@ -108,10 +108,10 @@ namespace BuildingBlocks.Membership.RavenDB.Tests.BugTests
                 session.Query<UserEntity>().Single().Roles.Should().OnlyContain(r => r == "role3");
             }
             
-            using (_outsideSession = RavenDb.Storage.OpenSesion())
+            using (_outsideSession = RavenDb.Storage.OpenSession())
             {
                 ObtainRequiredRoles("role1", "role2", "role3");
-                _outsideSession.SumbitChanges();
+                _outsideSession.SubmitChanges();
                 
                 var status = ObtainUser("user", "role3");
                 status.Should().BeNull();

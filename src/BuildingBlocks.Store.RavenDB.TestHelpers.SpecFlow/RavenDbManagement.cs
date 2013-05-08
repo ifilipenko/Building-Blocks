@@ -46,7 +46,7 @@ namespace BuildingBlocks.Store.RavenDB.TestHelpers.SpecFlow
 
             if (ScenarioContext.Current.TestError == null)
             {
-                RavenDb.CurrentStorageSession.SumbitChanges();
+                RavenDb.CurrentStorageSession.SubmitChanges();
                 _log.Debug(m => m("All changes saved to raven db, id={0}", GetCurrentSessionId()));
             }
 

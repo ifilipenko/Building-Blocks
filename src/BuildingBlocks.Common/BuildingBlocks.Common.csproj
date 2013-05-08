@@ -42,6 +42,8 @@
     <Compile Include="Configuration\KeyValueConfiguration.cs" />
     <Compile Include="Configuration\IConfiguration.cs" />
     <Compile Include="IIocContainer.cs" />
+    <Compile Include="IIocRegistration.cs" />
+    <Compile Include="Lifecycle.cs" />
     <Compile Include="ObjectHelpers.cs" />
     <Compile Include="Page.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

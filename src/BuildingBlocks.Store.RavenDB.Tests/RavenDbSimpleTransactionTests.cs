@@ -44,7 +44,7 @@ namespace BuildingBlocks.Store.RavenDB.Tests
                 session.Save(new Employee { Name = "John Smith" });
                 session.Save(new Employee { Name = "John Smith Clone1" });
                 session.Save(new Employee { Name = "John Smith Clone2" });
-                session.SumbitChanges();
+                session.SubmitChanges();
             }
 
             using (var session = new RavenDbSession(_documentStore))
@@ -63,7 +63,7 @@ namespace BuildingBlocks.Store.RavenDB.Tests
                 session.Save(new Employee { Name = "John Smith Clone2" });
 
                 session.CancelChanges();
-                Action action = () => session.SumbitChanges();
+                Action action = () => session.SubmitChanges();
                 action.ShouldThrow<InvalidOperationException>();
             }
         }
@@ -80,7 +80,7 @@ namespace BuildingBlocks.Store.RavenDB.Tests
                 session.CancelChanges();
                 try
                 {
-                    session.SumbitChanges();
+                    session.SubmitChanges();
                 }
                 catch(InvalidOperationException)
                 {

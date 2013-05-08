@@ -9,6 +9,7 @@ using BuildingBlocks.Membership.RavenDB.Queries;
 using BuildingBlocks.Membership.RavenDB.Queries.Criteria;
 using BuildingBlocks.Query;
 using BuildingBlocks.Store;
+using BuildingBlocks.Store.RavenDB;
 using Common.Logging;
 
 namespace BuildingBlocks.Membership.RavenDB
@@ -87,11 +88,11 @@ namespace BuildingBlocks.Membership.RavenDB
 
         public IEnumerable<User> FindUsersInRole(string applicationName, string roleName, string usernameToMatch)
         {
-            using (var session = OpenSesion())
+            using (var session = (RavenDbSession) OpenSesion())
             {
-                var usernames = from u in session.Query<UserEntity>()
+                var usernames = from u in session.Session.Query<UserEntity>()
                                 where u.ApplicationName == applicationName && u.Roles.Any(r => r == roleName) &&
-                                      u.Username.Contains(usernameToMatch)
+                                      u.Username.StartsWith(usernameToMatch)
                                 select u;
                 return usernames.AsEnumerable().Select(u => u.ToUser());
             }
@@ -156,7 +157,7 @@ namespace BuildingBlocks.Membership.RavenDB
                     userEntity.AddRole(role.RoleName);
                 }
                 session.Save(userEntity);
-                session.SumbitChanges();
+                session.SubmitChanges();
             }
             _log.Trace(m => m("User successfully added"));
         }
@@ -175,7 +176,7 @@ namespace BuildingBlocks.Membership.RavenDB
                 UpdateUsersRolesList(session, userEntity, user.Roles);
 
                 session.Save(userEntity);
-                session.SumbitChanges();
+                session.SubmitChanges();
             }
             _log.Trace(m => m("User successfully saved"));
         }
@@ -189,7 +190,7 @@ namespace BuildingBlocks.Membership.RavenDB
                     throw new InvalidOperationException("User is not exists");
 
                 session.Delete(userEntity);
-                session.SumbitChanges();
+                session.SubmitChanges();
             }
         }
 

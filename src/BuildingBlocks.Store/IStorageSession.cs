@@ -23,6 +23,8 @@ namespace BuildingBlocks.Store
         void Save<TId>(IEntity<TId> entity)
             where TId : struct;
 
+        void Save(object entity);
+
         void Delete<T>(T entity);
 
         void UseOptimisticConcurrency();

@@ -13,7 +13,7 @@
     <copyright>Copyright 2012</copyright>
     <dependencies>
       <dependency id="fasterflect" version="2.1.2" />
-      <dependency id="Knockout.MVC" version="0.5.1" />      
+      <dependency id="Knockout.MVC" version="0.5.1" />
     </dependencies>
   </metadata>
 </package>

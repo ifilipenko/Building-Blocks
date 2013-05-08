@@ -67,7 +67,7 @@ namespace BuildingBlocks.Membership.RavenDB
                     RoleName = roleName
                 };
                 session.Save(roleEntity);
-                session.SumbitChanges();
+                session.SubmitChanges();
             }
         }
 
@@ -82,7 +82,7 @@ namespace BuildingBlocks.Membership.RavenDB
                 {
                     session.Delete(roleToDelete);
                 }
-                session.SumbitChanges();
+                session.SubmitChanges();
             }
         }
 
@@ -90,7 +90,7 @@ namespace BuildingBlocks.Membership.RavenDB
         {
             return _storage == null
                        ? new OutsideSessionDecorator(_outsideSession)
-                       : _storage.OpenSesion();
+                       : _storage.OpenSession();
         }
     }
 }

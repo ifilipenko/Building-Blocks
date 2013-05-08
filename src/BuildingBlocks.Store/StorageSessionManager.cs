@@ -58,7 +58,7 @@ namespace BuildingBlocks.Store
                 {
                     if (occuredException == null && session.IsInitialized && !session.IsCancelled)
                     {
-                        session.SumbitChanges();
+                        session.SubmitChanges();
                     }
                 }
             }

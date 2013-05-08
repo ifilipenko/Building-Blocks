@@ -2,6 +2,7 @@ namespace BuildingBlocks.Store
 {
     public interface IStorage
     {
-        IStorageSession OpenSesion();
+        void CheckConnection(int timeoutMilliseconds = 5000);
+        IStorageSession OpenSession();
     }
 }
