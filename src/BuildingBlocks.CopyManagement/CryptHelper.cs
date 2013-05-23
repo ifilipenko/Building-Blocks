@@ -5,20 +5,20 @@ namespace BuildingBlocks.CopyManagement
 {
     public static class CryptHelper
     {
-        public static string ToFingerPrintMd5Hash(this string value)
+        public static string ToFingerPrintMd5Hash(this string value, char? separator = '-')
         {
             var cryptoProvider = new MD5CryptoServiceProvider();
             var encoding = new ASCIIEncoding();
             var encodedBytes = encoding.GetBytes(value);
             var hashBytes = cryptoProvider.ComputeHash(encodedBytes);
 
-            var hexString = BytesToHexString(hashBytes);
+            var hexString = BytesToHexString(hashBytes, separator);
             return hexString;
         }
 
-        private static string BytesToHexString(byte[] bytes)
+        private static string BytesToHexString(byte[] bytes, char? separator)
         {
-            var result = string.Empty;
+            var stringBuilder = new StringBuilder();
             for (var i = 0; i < bytes.Length; i++)
             {
                 var b = bytes[i];
@@ -28,28 +28,28 @@ namespace BuildingBlocks.CopyManagement
 
                 if (n2 > 9)
                 {
-                    result += ((char)(n2 - 10 + 'A')).ToString();
+                    stringBuilder.Append((char) n2 - 10 + 'A');
                 }
                 else
                 {
-                    result += n2.ToString();
+                    stringBuilder.Append(n2);
                 }
 
                 if (n1 > 9)
                 {
-                    result += ((char)(n1 - 10 + 'A')).ToString();
+                    stringBuilder.Append((char) n1 - 10 + 'A');
                 }
                 else
                 {
-                    result += n1.ToString();
+                    stringBuilder.Append(n1);
                 }
 
-                if ((i + 1) != bytes.Length && (i + 1) % 2 == 0)
+                if (separator.HasValue && ((i + 1) != bytes.Length && (i + 1) % 2 == 0))
                 {
-                    result += "-";
+                    stringBuilder.Append(separator.Value);
                 }
             }
-            return result;
+            return stringBuilder.ToString();
         }
     }
 }
