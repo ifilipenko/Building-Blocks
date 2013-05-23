@@ -105,11 +105,18 @@ namespace BuildingBlocks.SystemInfo.Providers
 
         public string GetIpAddress()
         {
-            var hostEntry = Dns.GetHostEntry(Dns.GetHostName());
-            var ipAddress = (from addr in hostEntry.AddressList
-                             where addr.AddressFamily == AddressFamily.InterNetwork
-                             select addr.ToString()).FirstOrDefault();
-            return ipAddress;
+            try
+            {
+                var hostEntry = Dns.GetHostEntry(Dns.GetHostName());
+                var ipAddress = (from addr in hostEntry.AddressList
+                                 where addr.AddressFamily == AddressFamily.InterNetwork
+                                 select addr.ToString()).FirstOrDefault();
+                return ipAddress;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         public SoftwareInfo GetSoftwareInfo()
