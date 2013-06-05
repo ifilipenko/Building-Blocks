@@ -39,8 +39,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\LargestCommonSubsequence.cs" />
     <Compile Include="Configuration\KeyValueConfiguration.cs" />
     <Compile Include="Configuration\IConfiguration.cs" />
+    <Compile Include="DefaultEqualityComparer.cs" />
     <Compile Include="IIocContainer.cs" />
     <Compile Include="IIocRegistration.cs" />
     <Compile Include="Lifecycle.cs" />
