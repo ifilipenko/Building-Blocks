@@ -46,6 +46,8 @@
     <Compile Include="IIocContainer.cs" />
     <Compile Include="IIocRegistration.cs" />
     <Compile Include="Lifecycle.cs" />
+    <Compile Include="CollectionShuffleHelpers.cs" />
+    <Compile Include="NaturalComparer.cs" />
     <Compile Include="ObjectHelpers.cs" />
     <Compile Include="Page.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
