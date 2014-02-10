@@ -1,9 +1,13 @@
-﻿using System.Management;
+﻿using System;
+using System.Management;
+using Common.Logging;
 
 namespace BuildingBlocks.CopyManagement
 {
     public static class HardwareIdentifiers
     {
+        private static ILog _log = LogManager.GetLogger(typeof (HardwareIdentifiers));
+
         public static string CpuId()
         {
             var result = GetIdentifier("Win32_Processor", "UniqueId");
@@ -63,6 +67,11 @@ namespace BuildingBlocks.CopyManagement
 
         public static string GetIdentifier(string wmiClass, string wmiProperty, string wmiMustBeTrue)
         {
+            if (_log.IsTraceEnabled)
+            {
+                _log.Trace(m => m(string.Format("wmiClass:{0}, wmiProperty:{1}, wmiMustBeTrue:{2}", wmiClass, wmiProperty, wmiMustBeTrue)));
+            }
+
             string result = "";
             var managementClass = new ManagementClass(wmiClass);
             var moc = managementClass.GetInstances();
@@ -78,8 +87,9 @@ namespace BuildingBlocks.CopyManagement
                             result = mo[wmiProperty].ToString();
                             break;
                         }
-                        catch
+                        catch(Exception ex)
                         {
+                            _log.Warn(ex);
                         }
                     }
                 }
@@ -89,6 +99,11 @@ namespace BuildingBlocks.CopyManagement
 
         public static string GetIdentifier(string wmiClass, string wmiProperty)
         {
+            if (_log.IsTraceEnabled)
+            {
+                _log.Trace(m => m(string.Format("wmiClass:{0}, wmiProperty:{1}", wmiClass, wmiProperty)));
+            }
+
             string result = "";
             var mc = new ManagementClass(wmiClass);
             var moc = mc.GetInstances();
@@ -102,8 +117,9 @@ namespace BuildingBlocks.CopyManagement
                         result = mo[wmiProperty].ToString();
                         break;
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        _log.Warn(ex);
                     }
                 }
             }
