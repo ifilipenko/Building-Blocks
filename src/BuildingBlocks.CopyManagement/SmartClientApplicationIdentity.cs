@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 namespace BuildingBlocks.CopyManagement
 {
@@ -52,9 +53,14 @@ namespace BuildingBlocks.CopyManagement
 
         private static string ComputeApplicationId()
         {
-            var exeFileName = System.Reflection.Assembly.GetEntryAssembly().Location;
+            var exeFileName = GetLocation();
             var value = "EXE_PATH >> " + exeFileName + "\n" + ComputerId.Value;
             return value.ToFingerPrintMd5Hash();
+        }
+
+        private static string GetLocation()
+        {
+            return Assembly.GetEntryAssembly() != null ? Assembly.GetEntryAssembly().Location : AppDomain.CurrentDomain.SetupInformation.PrivateBinPath;
         }
     }
 }
